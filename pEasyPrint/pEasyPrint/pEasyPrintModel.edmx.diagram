@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="3b15a59eadbf491fb7048b9d8492f5d7" Name="Diagram1" >
+        <EntityTypeShape EntityType="pEasyPrintModel.UserProfile" Width="1.5" PointX="9.6994711149947115" PointY="4.8080071531273454" />
+        <EntityTypeShape EntityType="pEasyPrintModel.webpages_Membership" Width="1.5" PointX="1.2902301164764121" PointY="4.3367239108014495" />
+        <EntityTypeShape EntityType="pEasyPrintModel.webpages_Roles" Width="1.5" PointX="11.697524679683859" PointY="24.435765024477508" />
+        <AssociationConnector Association="pEasyPrintModel.webpages_UsersInRoles" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

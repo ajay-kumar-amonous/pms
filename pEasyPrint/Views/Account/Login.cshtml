@@ -1,0 +1,57 @@
+﻿@model pEasyPrint.Models.LoginModel
+
+@{
+    ViewBag.Title = "Log in";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="col-main">
+        <div class="account-login">
+            <div id="login" style="margin-bottom: 0px;height: 285px;margin-top: 30px;">
+                <div id="login_header">
+                    <div class="col2-set">
+                        <div class="col-1 new-users">
+                            <div class="content">
+                                <h2>SIGN IN</h2>
+                                <ul class="form-list">
+                                    <li>
+                                        <label class="required" for="email">Email Address</label>
+                                        <div class="input-box">
+                                            @Html.TextBoxFor(m => m.UserName, new { @class = "input-text required-entry validate-email" })
+                                            @Html.ValidationMessageFor(m => m.UserName)
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label class="required" for="pass">Password</label>
+                                        <div class="input-box">
+                                            @Html.PasswordFor(m => m.Password, new { @class = "input-text required-entry validate-password" })
+                                            @Html.ValidationMessageFor(m => m.Password)
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <button class="btn btn-primary btn-large btn-arrow" type="submit">Log In</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dvdr-or">or</div>
+                        <div class="col-2 registered-users">
+                            <div class="content">
+                                <img src="~/Images/beautyconsulting1back_1.png" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

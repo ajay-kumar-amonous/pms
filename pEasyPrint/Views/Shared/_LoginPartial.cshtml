@@ -1,0 +1,27 @@
+﻿@if (Request.IsAuthenticated)
+{
+    <text>
+
+    Hello, @Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "Manage" }) 
+      @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+        {
+            @Html.AntiForgeryToken()
+          <a href="~/Account/Manage" id="ManageAccount" style="display:block; float:left; margin-top:3px;" >Manage Account</a>
+            <a href="~/Account/LogOff">Log off</a>
+            
+        }
+   
+    </text>
+    
+} 
+
+<script>
+
+    var currenturl = window.location.href.toLowerCase();
+    if (currenturl.indexOf("customer/review") != -1) {
+        $("#ManageAccount").css('display', 'none');
+    }
+    else {
+        $("#ManageAccount").css('display', 'block');
+    }
+</script>
