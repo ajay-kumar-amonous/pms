@@ -1,0 +1,49 @@
+﻿@model  IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel>
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+}
+<div class="container-fluid  content-center">
+    <div class="row">
+       
+
+
+
+        <div class="grid_3 left-sidebar" style="width:18.667%">    
+            @{
+                var model = Model.FirstOrDefault();
+             }
+            @if(model!= null)
+            {
+            @Html.Partial("_LeftMenu", model)
+            }
+                
+        </div>
+        
+        
+         <div id="mvcGrid"  style="width:81%; padding:1px;float:left">
+            
+           
+                 <div class="grid_12" style="border-bottom:none" >
+               @Html.Partial("_ContentWriterTopMenu")
+                     
+          </div>
+
+              <div class="breadcrumbs" >
+                    <div class="center_align" >
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("Order Graph", "Reports", "Order")      </strong><span><img src="/../images/breadcrumbs_divider.png" style="height:35px;"></span></li> 
+                           
+
+
+                        </ul>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>

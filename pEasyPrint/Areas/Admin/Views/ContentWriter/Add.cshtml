@@ -1,0 +1,477 @@
+﻿@model pEasyPrint.Areas.Admin.Models.DesignerModel
+
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<style>
+    #Sex {
+        height: 10px;
+    }
+
+    .adddiv label {
+        font-family: Arial;
+        font-size: 17px;
+        font-weight: normal;
+    }
+</style>
+<div class="container-fluid  content-center">
+    <div class="row adddiv">
+        <div class="grid_3  left-sidebar" style="width: 16.667%">
+            @Html.Partial("_AdminLeftMenu", Model.objOrderModel)
+        </div>
+        <div class="grid_10">
+            <div class="grid_12" style="border-bottom: none">
+                @Html.Partial("_AdminTopMenu")
+
+            </div>
+            <div class="breadcrumbs">
+                <div class="center_align">
+                    <ul>
+                        <li class="category287"><strong>@Html.ActionLink("Content writers", "Index", "ContentWriter")      </strong><span>
+                            <img src="/../images/breadcrumbs_divider.png"></span></li>
+                        <li class="category287"><strong>@Html.ActionLink("Add Designer", "Add", "ContentWriter")      </strong></li>
+
+
+
+
+                    </ul>
+                </div>
+            </div>
+            <div class="grid_12 breadcrumb">
+                <div style="text-align: center; color: red" class="error">@ViewBag.Adderror</div>
+                @using (Html.BeginForm("Add", "ContentWriter", FormMethod.Post, new { @class = "form" }))
+                {
+                  
+                    @Html.HiddenFor(m => m.DesignerID)
+                    <div class="col-md-10 adddiv" style="background-color: white">
+                        <div class="table-responsive tabletr">
+                            <table class="table table-hover table-bordered">
+                                <tr style="background-color: #cccccc; align-content: center">
+                                    <td colspan="2">
+                                        <label for="DesignerFirstName">Add New Content Writer</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignerFirstName">FirstName</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.DesignerFirstName)
+                                        @Html.ValidationMessageFor(m => m.DesignerFirstName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesigenerLastName">LastName</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.DesigenerLastName)
+                                        @Html.ValidationMessageFor(m => m.DesigenerLastName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Sex">Sex</label>
+                                    </td>
+                                    <td style="height: 30px;">
+                                        <label for="Male">Male</label>
+                                        @Html.RadioButtonFor(m => m.Sex, "Male", true)
+                                        <label for="Female">Female</label>
+                                        @Html.RadioButtonFor(m => m.Sex, "Female", false)
+                                        @Html.ValidationMessageFor(m => m.Sex)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignerExperience">Hours Available</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.HoursAvailable)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignerExperience">From</label></td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HoursAvailableFrom, new SelectList(
+                  new List<Object>{ 
+                       new { value = 0000 , text = "00:00"},
+                       new { value = 0030 , text = "00:30"},
+                       new { value = 0100 , text = "01:00"},
+                       new { value = 0130 , text = "01:30"},
+                       new { value = 0200 , text = "02:00"},
+                       new { value = 0230 , text = "02:30"},
+                       new { value = 0300 , text = "03:00"},
+                       new { value = 0330 , text = "03:30"},
+                       new { value = 0400 , text = "04:00"},
+                       new { value = 0430 , text = "04:30"},
+                       new { value = 0500 , text = "05:00"},
+                       new { value = 0530 , text = "05:30"},
+                       new { value = 0600 , text = "06:00"},
+                       new { value = 0630 , text = "06:30"},
+                       new { value = 0700 , text = "07:00"},
+                       new { value = 0730 , text = "07:30"},
+                       new { value = 0800 , text = "08:00"},
+                       new { value = 0830 , text = "08:30"},
+                       new { value = 0900 , text = "09:00"},
+                       new { value = 0930 , text = "09:30"},
+                       new { value = 1000 , text = "10:00"},
+                       new { value = 1030 , text = "10:30"},
+                       new { value = 1100 , text = "11:00"},
+                       new { value = 1130 , text = "11:30"},
+                       
+                       
+                       new { value = 1200 , text = "12:00"},
+                       new { value = 1230 , text = "12:30"},
+                       new { value = 1300 , text = "13:00"},
+                       new { value = 1330 , text = "13:30"},
+                       new { value = 1400 , text = "14:00"},
+                       new { value = 1430 , text = "14:30"},
+                       new { value = 1500 , text = "15:00"},
+                       new { value = 1530 , text = "15:30"},
+                       new { value = 1600 , text = "16:00"},
+                       new { value = 1630 , text = "16:30"},
+                       new { value = 1700 , text = "17:00"},
+                       new { value = 1730 , text = "17:30"},
+                       new { value = 1800 , text = "18:00"},
+                       new { value = 1830 , text = "18:30"},
+                       new { value = 1900 , text = "19:00"},
+                       new { value = 1930 , text = "19:30"},
+                       new { value = 2000 , text = "20:00"},
+                       new { value = 2030 , text = "20:30"},
+                       new { value = 2100 , text = "21:00"},
+                       new { value = 2130 , text = "21:30"},
+                       new { value = 2200 , text = "22:00"},
+                       new { value = 2230 , text = "22:30"},
+                       new { value = 2300 , text = "23:00"},
+                       new { value = 2330 , text = "23:30"},
+                       new { value = 2400 , text = "24:00"}, 
+                    },
+                  "value",
+                  "text",
+                   Model.HoursAvailableTo))
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignerExperience">To</label></td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HoursAvailableTo, new SelectList(
+                  new List<Object>{ 
+                       new { value = 1200 , text = "00:00"},
+                       new { value = 1230 , text = "00:30"},
+                       new { value = 0100 , text = "01:00"},
+                       new { value = 0130 , text = "01:30"},
+                       new { value = 0200 , text = "02:00"},
+                       new { value = 0230 , text = "02:30"},
+                       new { value = 0300 , text = "03:00"},
+                       new { value = 0330 , text = "03:30"},
+                       new { value = 0400 , text = "04:00"},
+                       new { value = 0430 , text = "04:30"},
+                       new { value = 0500 , text = "05:00"},
+                       new { value = 0530 , text = "05:30"},
+                       new { value = 0600 , text = "06:00"},
+                       new { value = 0630 , text = "06:30"},
+                       new { value = 0700 , text = "07:00"},
+                       new { value = 0730 , text = "07:30"},
+                       new { value = 0800 , text = "08:00"},
+                       new { value = 0830 , text = "08:30"},
+                       new { value = 0900 , text = "09:00"},
+                       new { value = 0930 , text = "09:30"},
+                       new { value = 1000 , text = "10:00"},
+                       new { value = 1030 , text = "10:30"},
+                       new { value = 1100 , text = "11:00"},
+                       new { value = 1130 , text = "11:30"},
+                       
+                        new { value = 1200 , text = "12:00"},
+                       new { value = 1230 , text = "12:30"},
+                       new { value = 1300 , text = "13:00"},
+                       new { value = 1330 , text = "13:30"},
+                       new { value = 1400 , text = "14:00"},
+                       new { value = 1430 , text = "14:30"},
+                       new { value = 1500 , text = "15:00"},
+                       new { value = 1530 , text = "15:30"},
+                       new { value = 1600 , text = "16:00"},
+                       new { value = 1630 , text = "16:30"},
+                       new { value = 1700 , text = "17:00"},
+                       new { value = 1730 , text = "17:30"},
+                       new { value = 1800 , text = "18:00"},
+                       new { value = 1830 , text = "18:30"},
+                       new { value = 1900 , text = "19:00"},
+                       new { value = 1930 , text = "19:30"},
+                       new { value = 2000 , text = "20:00"},
+                       new { value = 2030 , text = "20:30"},
+                       new { value = 2100 , text = "21:00"},
+                       new { value = 2130 , text = "21:30"},
+                       new { value = 2200 , text = "22:00"},
+                       new { value = 2230 , text = "22:30"},
+                       new { value = 2300 , text = "23:00"},
+                       new { value = 2330 , text = "23:30"},
+                       new { value = 2400 , text = "24:00"},
+                    },
+                  "value",
+                  "text",
+                   Model.HoursAvailableTo))
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignerExperience">Experience</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.DesignerExperience)
+                                        @Html.ValidationMessageFor(m => m.DesignerExperience)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignerAddress">Address</label>
+                                    </td>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.DesignerAddress)
+                                        @Html.ValidationMessageFor(m => m.DesignerAddress)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Country">Country</label></td>
+                                    <td>
+                                        @Html.DropDownListFor(m => m.Country, new SelectList(Model.ListCountry, "PkCountryId", "CountryName"), "--Select--")
+                                        @Html.ValidationMessageFor(m => m.Country)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="State">State</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.StateName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="City">City</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CityName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Zip">Zip</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.Zip)
+                                        @Html.ValidationMessageFor(m => m.Zip)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Mobile">Mobile</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.Mobile)
+                                        @Html.ValidationMessageFor(m => m.Mobile)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="EmailId">EmailId</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.EmailId)
+                                        @Html.ValidationMessageFor(m => m.EmailId)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="EmailId">SkypeId</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.SkypeId)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center">
+                                        <input class="btn btn-default" type="Submit" value="Submit" id="btnDesigner" style="width: 168px" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    $("#AddedOn").datepicker();
+    //  $("#toDate").datepicker();
+
+    var gridParent = $("#mvcGrid");
+    $("#btnDesigner").bind("click", function () {
+        var $form = $(this).closest("form");
+
+        var _AddedOn = $("#AddedOn").val();
+        var _todate = $("#toDate").val();
+        var page = 1;
+
+
+        var url;
+        url = "/Admin/Order/Index?page=" + page + "&AddedOn=" + _AddedOn + "";
+
+        $.get(url).success(function (data) {
+            debugger;
+
+            var container = '#' + $(gridParent).attr('id');
+            var table = $('<div/>').html(data).find(container).html()
+            $(container).html(table);
+        });
+
+
+
+    });
+
+
+    // + "&todate=" + _todate
+    //Dropdownlist Selectedchange event   
+
+    $("#Country").change(function () {
+
+
+        $("#State").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetStatelistBycountryID",
+
+            data: { id: $("#Country").val() },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+                var count = 0;
+                $.each(data, function (i, city) {
+                    if (count == 0) {
+                        getcitylist(city.Value);
+                    }
+                    count++;
+
+                    $("#State").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    })
+    function getcitylist(id) {
+        $("#City").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetCitylistBystateID",
+
+            dataType: 'json',
+
+            data: { id: id },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+
+                $.each(data, function (i, city) {
+
+                    $("#City").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    }
+    $("#State").change(function () {
+
+        $("#City").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetCitylistBystateID",
+
+            dataType: 'json',
+
+            data: { id: $("#State").val() },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+
+                $.each(data, function (i, city) {
+
+                    $("#City").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    })
+
+
+    //$(document).ready(function () {
+    //    var txtaddedon = $('#hiddendate').val();
+    //    $("#AddedOn").val(txtaddedon);
+    //});
+
+
+</script>
+
+
+
+
+
+
+
+

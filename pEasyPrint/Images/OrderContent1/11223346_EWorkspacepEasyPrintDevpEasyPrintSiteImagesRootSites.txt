@@ -1,0 +1,6 @@
+Site Label: paragonknittingmills.com
+HostName: paragonknittingmills.com
+Username: para9871
+Password: ******
+Port: 21
+Uses passive mode

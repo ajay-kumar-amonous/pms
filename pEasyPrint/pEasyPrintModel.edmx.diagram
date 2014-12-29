@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="36379907332642be8bbae259e31ee7ad" Name="Diagram1" ZoomLevel="100">
+        <EntityTypeShape EntityType="pEasyPrintModel.MstOrderStatu" Width="1.5" PointX="5.125" PointY="1.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblCity" Width="1.5" PointX="5.125" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblCountry" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblCustomerOrderReview" Width="1.5" PointX="0.5" PointY="2.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblOrderStage" Width="1.5" PointX="2.875" PointY="2.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblState" Width="1.5" PointX="2.875" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.webpages_Membership" Width="1.5" PointX="0.5" PointY="2.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.webpages_OAuthMembership" Width="1.5" PointX="5.125" PointY="2.125" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.webpages_Roles" Width="1.5" PointX="0.5" PointY="1.5" IsExpanded="false" />
+        <AssociationConnector Association="pEasyPrintModel.FK_tblCity1_tblState1" ManuallyRouted="false" />
+        <AssociationConnector Association="pEasyPrintModel.FK_tblState1_tblCountry1" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblOrderContent" Width="1.5" PointX="5.125" PointY="2.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.OrderAssignment" Width="1.5" PointX="0.5" PointY="3.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.UserProfile" Width="1.5" PointX="2.875" PointY="1.5" IsExpanded="false" />
+        <AssociationConnector Association="pEasyPrintModel.webpages_UsersInRoles" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblOrderProof" Width="1.5" PointX="7.25" PointY="0.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblContentWriter" Width="1.5" PointX="2.875" PointY="3.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblDesigner" Width="1.5" PointX="5.125" PointY="3.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblOrder" Width="1.5" PointX="2.875" PointY="2.75" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblOrderItem" Width="1.5" PointX="7.25" PointY="1.5" IsExpanded="false" />
+        <EntityTypeShape EntityType="pEasyPrintModel.tblShippingAddress" Width="1.5" PointX="7.25" PointY="2.125" IsExpanded="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

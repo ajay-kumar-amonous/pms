@@ -1,0 +1,282 @@
+﻿@model pEasyPrint.Areas.Admin.Models.OrderModel
+@{
+    ViewBag.Title = "_AdminLeftMenu";
+}
+
+<style>
+    .Leftmenu
+    {
+        cursor: pointer;
+    }
+</style>
+<div id="dialog" style="display: none">
+    This is a simple popup
+</div>
+<div class="service-div" style="width: 100%">
+
+
+    <h2>Order Category </h2>
+    <div id="industry-group2">
+        <p class="Leftmenu list-group-item" id="0" style="">Unassigned Orders<span class="badge">@Model.UnAssignOrder</span> </p>
+        <p class="Leftmenu list-group-item" id="1">Need-To-Assign Orders<span class="badge">@Model.AssignOrder</span></p>
+        <p class="Leftmenu list-group-item" id="2">Orders In Design Stage <span class="badge">@Model.DesignStagerCount</span></p>
+        <p class="Leftmenu list-group-item" id="3">Orders In Proof Stage <span class="badge">@Model.ProofStageCount</span></p>
+        <p class="Leftmenu list-group-item" id="4">Approved By Client<span class="badge">@Model.ApprovedCount</span></p>
+        <p class="Leftmenu list-group-item" id="6">Completed(Print Files)<span class="badge">@Model.CompletedCount</span></p>
+        <p class="Leftmenu list-group-item" id="5">Print Jobs (Design Svc)<span class="badge">@Model.PrintingCount</span></p>
+        <p class="Leftmenu list-group-item" id="7">Print Jobs (Cust. Upload)<span class="badge">@Model.PrintJobsCount</span></p>
+
+    </div>
+    <h2>Search Order</h2>
+    <div id="industry-group1" style="padding: 12px">
+        <select id="OrdersSearchType">
+            <option value="ProjectType">Project Type</option>           
+            <option value="OrderNumber">Order Number</option>
+            <option value="ClientName">Client Name</option>
+            <option value="Project">Project</option>            
+            <option value="OrderEmail">Email</option>
+
+
+        </select>
+        @*                               @if(Model.ddlOrderList != null)
+                               {
+                                   @Html.DropDownListFor(m => m.pkOrderId, new SelectList(Model.ddlOrderList, "pkOrderId", "OrderNumber", Model.pkOrderId),  "----- Select -----",new {@Id="ddlOrderList" })
+               
+                               }*@
+
+        <input id="txtOrderEmail" name="email" type="text" class="email" placeholder="" style="margin-top: 5px" />
+        <input id="btnOrdetSearch" class="btn btn-default" name="Submit" type="button" value="Submit" style="margin-top: 5px; margin: 5px 5px 5px 45px" />
+    </div>
+    <h2>Search Designer</h2>
+    <div id="industry-group3" style="padding: 12px">
+
+        <select id="DesignerSearchType">
+            <option value="-1">Select Option</option>
+            <option value="Name">Name</option>
+            <option value="Experience">Experience</option>
+
+            <option value="Phone">Phone</option>
+            <option value="Email">Email</option>
+
+
+        </select>
+        @*@if (Model.DesingerList != null)
+                               {
+                                    @Html.DropDownListFor(m => m.pkOrderId, new SelectList(Model.DesingerList, "DesignerId", "DesignerName", Model.pkOrderId), "----- Select -----", new {@Id="ddlDesignerList" })
+                                }*@
+        <input id="txtDesignerEmail" name="email" type="text" class="email" placeholder="" style="margin-top: 5px" />
+        <input id="btnDesignerSearch" class="btn btn-default" name="Submit" type="button" value="Submit" style="margin-top: 5px; margin: 5px 5px 5px 45px" />
+    </div>
+</div>
+<script>
+
+    $(function () {
+
+    });
+
+    $("#btnDesignerSearch").bind("click", function () {
+        var $form = $(this).closest("form");
+        var currenturl = window.location.href.toLowerCase();
+
+
+
+
+
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var SearchType = $("#DesignerSearchType").val(); //txtDesignerEmail  
+        var SearchValue = $("#txtDesignerEmail").val();
+
+        var OrderNumber = "";
+        var url;
+        if (SearchType != -1) {
+            if (SearchValue != "") {
+                if (currenturl.indexOf("order/edit") != -1) {
+                    var finalstring = currenturl.split("edit/");
+                    window.location.href = finalstring[0] + "?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+                }
+                else if (currenturl.indexOf("order/item") != -1) {
+                    var finalstring = currenturl.split("item/");
+                    window.location.href = finalstring[0] + "?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+                }
+                else if (currenturl.indexOf("admin/designer") != -1) {
+                    var finalstring = currenturl.split("admin/");
+                    window.location.href = finalstring[0] + "Admin/Order/Index?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+
+                }
+                else if (currenturl.indexOf("admin/admindashboard") != -1) {
+
+                    var finalstring = currenturl.split("admin/");
+                    var url = finalstring[0] + "Admin/Order/Index?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+
+
+                    window.location.href = finalstring[0] + "Admin/Order/Index?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+
+
+                }
+                else {
+                    url = "/Admin/Order/Index?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+
+                    $.get(url).success(function (data) {
+
+                        var container = '#' + $(gridParent).attr('id');
+                        var table = $('<div/>').html(data).find(container).html()
+                        $(container).html(table);
+                    });
+                    $("#toDate").val("");
+                    $("#fromDate").val("");
+
+                }
+
+                $("#txtDesignerEmail").val("");
+            }
+            else {
+                alert("Please fill search Value.")
+            }
+        }
+        else {
+            alert("Please Select options.")
+        }
+    });
+
+    $("#btnOrdetSearch").bind("click", function () {
+
+        var $form = $(this).closest("form");
+        var currenturl = window.location.href.toLowerCase();
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = "";
+        var SearchType = $("#OrdersSearchType").val();//txtOrderEmail
+        if (SearchType != -1) {
+            var SearchValue = $("#txtOrderEmail").val();//
+
+            if (SearchValue != "") {
+                if (currenturl.indexOf("order/edit") != -1) {
+
+                    var finalstring = currenturl.split("edit/");
+                    window.location.href = "/Admin/Order/Index?page=" + page + "&SearchBy=" + "Order" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+                }
+                else if (currenturl.indexOf("order/item") != -1) {
+
+                    var finalstring = currenturl.split("item/");
+                    window.location.href = "/Admin/Order/Index?page=" + page + "&SearchBy=" + "Order" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+                }
+                else if (currenturl.indexOf("admin/designer") != -1) {
+                    var finalstring = currenturl.split("admin/");
+                    window.location.href = finalstring[0] + "admin/Order/Index?page=" + page + "&SearchBy=" + "Order" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+
+                }
+                else if (currenturl.indexOf("admin/admindashboard") != -1) {
+                    var finalstring = currenturl.split("admin/");
+                    window.location.href = finalstring[0] + "admin/Order/Index?page=" + page + "&SearchBy=" + "Order" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+
+                }
+
+                else {
+
+                    var url;
+                    url = "/Admin/Order/Index?page=" + page + "&SearchBy=" + "Order" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+
+                    $.get(url).success(function (data) {
+                        if (data.indexOf("Showing Orders By Order Number") == -1) {
+                            //  $("#ddlPageSize2").css("display", "none");///(e.value);
+                            //  $("#ddlPageSize").css("display", "none");
+                        }
+                        else {
+                            //  $("#ddlPageSize2").css("display", "block");///(e.value);
+                            //  $("#ddlPageSize").css("display", "block");
+                        }
+
+                        var container = '#' + $(gridParent).attr('id');
+                        var table = $('<div/>').html(data).find(container).html()
+                        $(container).html(table);
+                    });
+
+                    $("#toDate").val("");
+                    $("#fromDate").val("");
+                }
+                $("#txtOrderEmail").val("");
+            }
+            else {
+                alert("Please fill search Value.");
+            }
+        }
+        else {
+            alert("Please select search options.");
+        }
+
+    });
+
+
+    $(".Leftmenu").bind("click", function () {
+        var $form = $(this).closest("form");
+        var currenturl = window.location.href.toLowerCase();
+
+
+        //("#dialog").dialog({});
+
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = ""; //txtDesignerEmail
+        var DesignerEmail = "";
+        var OrderStage = this.id;
+        $(".Leftmenu ").css('background-color', '');
+        $("#" + OrderStage).css('background-color', '#787878');
+
+        var OrderNumber = "";
+        var url;
+        if (currenturl.indexOf("order/edit") != -1) {
+            var finalstring = currenturl.split("edit/");
+            window.location.href = finalstring[0] + "?page=" + page + "&OrderStage=" + OrderStage;
+
+        }
+        else if (currenturl.indexOf("order/item") != -1) {
+            var finalstring = currenturl.split("item/");
+            window.location.href = finalstring[0] + "?page=" + page + "&OrderStage=" + OrderStage;
+
+        }
+        else if (currenturl.indexOf("admin/designer") != -1) {
+
+            var finalstring = currenturl.split("admin/");
+
+            window.location.href = finalstring[0] + "Admin/Order?page=" + page + "&OrderStage=" + OrderStage;
+        }
+        else if (currenturl.indexOf("admin/admindashboard") != -1) {
+
+
+            var finalstring = currenturl.split("admin/");
+            window.location.href = finalstring[0] + "admin/Order/Index?page=" + page + "&fromdate=" + _fromdate + "&todate=" + _todate + "&DesignerId=" + DesignerId + "&OrderNumber=" + OrderNumber + "&DesignerEmail=" + DesignerEmail + "&OrderStage=" + OrderStage + "";;
+
+        }
+        else {
+            if (OrderStage != null) {
+                url = "/Admin/Order/Index?page=" + page + "&fromdate=" + _fromdate + "&todate=" + _todate + "&DesignerId=" + DesignerId + "&OrderNumber=" + OrderNumber + "&DesignerEmail=" + DesignerEmail + "&OrderStage=" + OrderStage + "";
+
+
+
+                $.get(url).success(function (data) {
+                    //ar _dialog = $("#dialog").dialog({});
+
+
+                    var container = '#' + $(gridParent).attr('id');
+                    var table = $('<div/>').html(data).find(container).html()
+                    $(container).html(table);
+                });
+
+            }
+            $("#toDate").val("");
+            $("#fromDate").val("");
+        }
+
+
+
+
+
+
+    });
+
+
+</script>

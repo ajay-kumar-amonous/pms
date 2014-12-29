@@ -1,0 +1,1470 @@
+using FSM.Data;
+using FSM.Web.Models;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace FSM.Web.Controllers
+{
+    public class ApparatusController : Controller
+    {
+        //
+        // GET: /Apparatus/
+        public OS_FSMEntities _dataContext;
+        public ApparatusController()
+        {
+            _dataContext = new OS_FSMEntities();
+        }
+
+        public ActionResult ApparatusDetails()
+        {
+            return View();
+        }
+
+        public ActionResult ApparatusFiles()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ActionResult ApparatusTreeView()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult ApparatusGet(int? id)
+        {
+
+            List<data> data_ = new List<data>();
+
+            data _data = new data
+            {
+                id = 0,
+                text = "Apparatus",
+                hasChildren = true,
+                childType = "Apparatus"
+            };
+
+
+            var ApparatusList = _dataContext.Apparatus.AsEnumerable().Select(i =>
+                new
+                {
+                    ApparatusID = i.ApparatusID
+                ,
+                    text = i.ApparatusName
+                ,
+                    ApparatusCompartmentItems = i.ApparatusCompartments.AsEnumerable().Select(j => new { CompartmentID = j.ApparatusComparmentID, text = j.ApparatusCompartmentName }).ToList()
+                ,
+                    CompartmentItems = i.CompartmentItems.AsEnumerable().Select(k => new { CompartmentItemID = k.CompartmentItemID, text = k.CompartmentItemName, ApparatusCompartmentID = k.ApparatusComparmentID }).ToList()
+                }).ToList();
+            _data.items = new List<data>();
+            List<data> _apparatusDataItems;
+            List<data> _compartmentDataItem;
+            foreach (var item in ApparatusList)
+            {
+
+                _apparatusDataItems = new List<data>();
+                foreach (var dataItem in item.ApparatusCompartmentItems)
+                {
+                    _compartmentDataItem = new List<data>();
+
+                    var data = item.CompartmentItems.Where(x => x.ApparatusCompartmentID == dataItem.CompartmentID);
+
+
+                    foreach (var compItem in data)
+                    {
+                        _compartmentDataItem.Add(new data
+                        {
+                            id = compItem.CompartmentItemID,
+                            text = compItem.text,
+                            hasChildren = false,
+                            childType = "CompItem"
+                        });
+                    }
+                    _apparatusDataItems.Add(new data
+                    {
+                        id = dataItem.CompartmentID,
+                        text = dataItem.text,
+                        hasChildren = true,
+                        items = _compartmentDataItem,
+                        childType = "AppCompItem"
+                    });
+                }
+                _data.items.Add(new data
+                {
+                    id = item.ApparatusID,
+                    text = item.text,
+                    hasChildren = true,
+                    items = _apparatusDataItems,
+                    childType = "AppData"
+                }
+                );
+
+
+            }
+
+            data_.Add(_data);
+
+            if (id.HasValue)
+            {
+                data_ = data_.FirstOrDefaultFromMany(p => p.items, p => p.id == id).items;
+            }
+
+            return Json(data_, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AddApparatus()
+        {
+            return View();
+        }
+        public ActionResult AddCompartment(int id)
+        {
+            ApparatusCompartment _appCompData = _dataContext.ApparatusCompartments.Where(x => x.ApparatusComparmentID == id).FirstOrDefault();
+            return View(_appCompData);
+        }
+        public ActionResult AddItem(int id)
+        {
+            CompartmentItem _appItemData = _dataContext.CompartmentItems.Where(x => x.CompartmentItemID == id).FirstOrDefault();
+            return View(_appItemData);
+        }
+        public JsonResult SaveApparatus()
+        {
+            return Json(new { statusApp = PostApparatus() });
+        }
+        public JsonResult SaveCompartment()
+        {
+            return Json(new { status = PostCompartment() });
+        }
+
+        public JsonResult SaveItem()
+        {
+            return Json(new { status = PostItems() });
+        }
+        private int PostItems()
+        {
+            string[] itemNames = Request.Form["CompartmentItemName"].Split(',');
+            //for (int i = 0; i < itemNames.Length; i++)
+            //{
+            CompartmentItem _compItem = new CompartmentItem()
+            {
+                //CompartmentItemName = itemNames[i],
+                CompartmentItemName = Request.Form["CompartmentItemName"],
+                ApparatusID = Convert.ToInt32(Request.Form["ApparatusID"]),
+                ApparatusComparmentID = Convert.ToInt32(Request.Form["ApparatusComparmentID"]),
+                Cost = Request.Form["Cost"] == "" ? null : (Nullable<int>)Convert.ToInt32(Request.Form["Cost"]),
+                Description = Request.Form["Description"],
+                Location = Request.Form["ItemLocation"],
+                SerialNumber = Request.Form["SerialNumber"],
+                Code = Request.Form["Code"],
+                Size = Request.Form["Size"],
+                PurchaseDate = Convert.ToDateTime(Request.Form["PurchaseDate"])
+            };
+            if (Request.Files["Image"] != null)
+            {
+                HttpPostedFileBase fileData = Request.Files["Image"] as HttpPostedFileBase;
+                string fileName = Guid.NewGuid() + "_" + fileData.FileName;
+
+                if (!Directory.Exists(Server.MapPath("/ItemImages")))
+                    Directory.CreateDirectory(Server.MapPath("/ItemImages"));
+                fileData.SaveAs(Server.MapPath("/ItemImages/" + fileName));
+
+                _compItem.Image = fileName;
+            }
+            if (!String.IsNullOrEmpty(Request.Form["CompartmentItemID"]) && Request.Form["CompartmentItemID"] != "0")
+            {
+                _compItem.CompartmentItemID = Convert.ToInt32(Request.Form["CompartmentItemID"]);
+                int id = Convert.ToInt32(Request.Form["CompartmentItemID"]);
+                var file = _dataContext.CompartmentItems.AsNoTracking().Where(x => x.CompartmentItemID == id).FirstOrDefault();
+
+                if (Request.Files["Image"] == null)
+                    _compItem.Image = file.Image;
+
+                if (String.IsNullOrEmpty(Request.Form["ApparatusID"]))
+                    _compItem.ApparatusID = file.ApparatusID;
+                if (String.IsNullOrEmpty(Request.Form["ApparatusComparmentID"]))
+                    _compItem.ApparatusComparmentID = file.ApparatusComparmentID;
+                _dataContext.CompartmentItems.Attach(_compItem);
+                _dataContext.ObjectStateManager.ChangeObjectState(_compItem, System.Data.EntityState.Modified);
+            }
+            else
+                _dataContext.CompartmentItems.AddObject(_compItem);
+
+            // }
+            return _dataContext.SaveChanges();
+        }
+        private int PostCompartment()
+        {
+            ApparatusCompartment _appCompartment = new ApparatusCompartment()
+            {
+                ApparatusCompartmentName = Request.Form["ApparatusCompartmentName"],
+            };
+            if (Request.Files["CompartmentImage"] != null)
+            {
+                HttpPostedFileBase fileData = Request.Files["CompartmentImage"] as HttpPostedFileBase;
+                string fileName = Guid.NewGuid() + "_" + fileData.FileName;
+
+                if (!Directory.Exists(Server.MapPath("/CompartmentImages")))
+                    Directory.CreateDirectory(Server.MapPath("/CompartmentImages"));
+                fileData.SaveAs(Server.MapPath("/CompartmentImages/" + fileName));
+
+                _appCompartment.CompartmentImage = fileName;
+            }
+            if (!String.IsNullOrEmpty(Request.Form["ApparatusID"]))
+            {
+                _appCompartment.ApparatusID = Convert.ToInt32(Request.Form["ApparatusID"]);
+            }
+            if (!String.IsNullOrEmpty(Request.Form["ApparatusComparmentID"]) && Request.Form["ApparatusComparmentID"] != "0")
+            {
+                _appCompartment.ApparatusComparmentID = Convert.ToInt32(Request.Form["ApparatusComparmentID"]);
+                int id = Convert.ToInt32(Request.Form["ApparatusComparmentID"]);
+                var file = _dataContext.ApparatusCompartments.AsNoTracking().Where(x => x.ApparatusComparmentID == id).FirstOrDefault();
+
+                if (Request.Files["CompartmentImage"] == null)
+                    _appCompartment.CompartmentImage = file.CompartmentImage;
+
+                if (String.IsNullOrEmpty(Request.Form["ApparatusID"]))
+                    _appCompartment.ApparatusID = file.ApparatusID;
+                _dataContext.ApparatusCompartments.Attach(_appCompartment);
+                _dataContext.ObjectStateManager.ChangeObjectState(_appCompartment, System.Data.EntityState.Modified);
+            }
+            else
+                _dataContext.ApparatusCompartments.AddObject(_appCompartment);
+            return _dataContext.SaveChanges();
+        }
+
+
+        public JsonResult MoveToInventory(string ItemIDs)
+        {
+            return Json(new { status = MoveItem(ItemIDs) });
+        }
+        private int MoveItem(string Ids)
+        {
+            try
+            {
+
+                List<int> ids = Ids.Split(',').Select(int.Parse).ToList();
+                foreach (int item in ids)
+                {
+
+                    CompartmentItem _itemToMove = _dataContext.CompartmentItems.Where(x => x.CompartmentItemID == item).FirstOrDefault();
+                    Inventory _itemInventory = _dataContext.Inventories.Where
+                        (
+                        x => x.Code == _itemToMove.Code
+                            //&& x.Cost == _itemToMove.Cost
+                           // && x.Description.ToLower().Trim() == _itemToMove.Description.ToLower().Trim()
+                           // && x.Item.ToLower().Trim() == _itemToMove.CompartmentItemName.ToLower().Trim()
+                            //&& x.ItemSize == _itemToMove.Size
+                            //&& x.Location == _itemToMove.Location
+                           // && x.PurchaseDate == _itemToMove.PurchaseDate
+                            && x.SerialNumber == _itemToMove.SerialNumber
+                            ).FirstOrDefault();
+                    if (_itemInventory == null)
+                    {
+                        _itemInventory = new Inventory();
+                        _itemInventory.Code = _itemToMove.Code;
+                        _itemInventory.Cost = _itemToMove.Cost;
+                        _itemInventory.Description = _itemToMove.Description;
+                        _itemInventory.Item = _itemToMove.CompartmentItemName;
+                        _itemInventory.ItemSize = _itemToMove.Size;
+                        _itemInventory.Location = _itemToMove.Location;
+                        _itemInventory.PurchaseDate = _itemToMove.PurchaseDate;
+                        _itemInventory.Quantity = 1;
+                        _itemInventory.SerialNumber = _itemToMove.SerialNumber;
+                        _dataContext.Inventories.AddObject(_itemInventory);
+                        _dataContext.CompartmentItems.DeleteObject(_itemToMove);
+                    }
+                    else
+                    {
+                        _itemInventory.Quantity = _itemInventory.Quantity + 1;
+                        _dataContext.ObjectStateManager.ChangeObjectState(_itemInventory, EntityState.Modified);
+                        _dataContext.CompartmentItems.DeleteObject(_itemToMove);
+                    }
+                    _dataContext.SaveChanges();
+                }
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
+        }
+
+        [HttpGet]
+        public JsonResult GetStationForApparatus([DataSourceRequest] DataSourceRequest request)
+        {
+            try
+            {
+                OS_FSMEntities db = (new DataService()).DbContext;
+                var stations = db.Stations.OrderBy(o => o.StationText).Select(i => new { StationId = i.StationId, StationText = i.StationText }).ToList();
+
+                return Json(stations, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetApparatusForCompartment([DataSourceRequest] DataSourceRequest request)
+        {
+            try
+            {
+                OS_FSMEntities db = (new DataService()).DbContext;
+                var apparatus = db.Apparatus.OrderBy(o => o.ApparatusID).Select(i => new { ApparatusID = i.ApparatusID, ApparatusName = i.ApparatusName }).ToList();
+
+                return Json(apparatus, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetApparatusForCompartmentItem([DataSourceRequest] DataSourceRequest request)
+        {
+            try
+            {
+                OS_FSMEntities db = (new DataService()).DbContext;
+                var apparatus = db.Apparatus.OrderBy(o => o.ApparatusID).Where(x => x.ApparatusCompartments.Count() != 0).Select(i => new { ApparatusID = i.ApparatusID, ApparatusName = i.ApparatusName }).ToList();
+
+                return Json(apparatus, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+        public JsonResult GetCompartmentForApparatus(int ApparatusID)
+        {
+
+            try
+            {
+                OS_FSMEntities db = (new DataService()).DbContext;
+                var apparatusCOmpartment = db.ApparatusCompartments.OrderBy(o => o.ApparatusComparmentID).Where(x => x.ApparatusID == ApparatusID).Select(i => new { ApparatusCompartmentID = i.ApparatusComparmentID, ApparatusCompartmentName = i.ApparatusCompartmentName }).ToList();
+
+                return Json(apparatusCOmpartment, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+        public ActionResult ApparatusGeneralView(int id)
+        {
+            return View(_dataContext.Apparatus.Where(x => x.ApparatusID == id).FirstOrDefault());
+        }
+        public ActionResult ApparatusDetailView(int id)
+        {
+            return View(_dataContext.Apparatus.Where(x => x.ApparatusID == id).FirstOrDefault());
+        }
+        public JsonResult DeleteApparatus(int id)
+        {
+            Apparatus _appDelete = _dataContext.Apparatus.Where(x => x.ApparatusID == id).FirstOrDefault();
+            if (_appDelete != null)
+            {
+                _dataContext.Apparatus.DeleteObject(_appDelete);
+
+            }
+            return Json(new { status = _dataContext.SaveChanges() });
+        }
+
+
+        public JsonResult DeleteCompartment(int id)
+        {
+            ApparatusCompartment _appDelete = _dataContext.ApparatusCompartments.Where(x => x.ApparatusComparmentID == id).FirstOrDefault();
+            string fileName = "";
+            if (_appDelete != null)
+            {
+                fileName = _appDelete.CompartmentImage;
+                _dataContext.ApparatusCompartments.DeleteObject(_appDelete);
+
+            }
+            int status = _dataContext.SaveChanges();
+            if (status > 0)
+            {
+                if (fileName != "")
+                    System.IO.File.Delete(Server.MapPath("/CompartmentImages/" + fileName));
+            }
+            return Json(new { status = status });
+        }
+
+
+        public JsonResult GetLocationForApparatus()
+        {
+            var _Location = _dataContext.Locations.Select(i => new { i.LocationID, i.LocationName }).ToList();
+            return Json(_Location, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult DeleteCompartmentItem(int id)
+        {
+            CompartmentItem _appDelete = _dataContext.CompartmentItems.Where(x => x.CompartmentItemID == id).FirstOrDefault();
+            string fileName = "";
+            if (_appDelete != null)
+            {
+                fileName = _appDelete.Image;
+                _dataContext.CompartmentItems.DeleteObject(_appDelete);
+
+            }
+            int status = _dataContext.SaveChanges();
+            if (status > 0)
+            {
+                if (fileName != "")
+                    System.IO.File.Delete(Server.MapPath("/ItemImages/" + fileName));
+            }
+            return Json(new { status = status });
+        }
+        private int PostApparatus()
+        {
+            Apparatus _apparatusData = new Apparatus()
+            {
+                ApparatusID = Convert.ToInt32(Request.Form["ApparatusID"]),
+                ApparatusName = Request.Form["ApparatusName"],
+                Description = Request.Form["Description"],
+                ApparautsCheck = Request.Form["ApparautsCheck"] == "on" ? true : false,
+                ApparatusCheckTitle = Request.Form["ApparatusCheckTitle"],
+                ApparatusGearRatio = Request.Form["ApparatusGearRatio"],
+                ApparatusManufacturer = Request.Form["ApparatusManufacturer"],
+                ApparatusModel = Request.Form["ApparatusModel"],
+                ApparatusNFIRSType = Request.Form["ApparatusNFIRSType"],
+                ApparatusSerial = Request.Form["ApparatusSerial"],
+                ApparatusVIN = Request.Form["ApparatusVIN"],
+                ApparatusYear = Request.Form["ApparatusYear"] == "" ? null : (Nullable<int>)Convert.ToInt32(Request.Form["ApparatusYear"]),
+                ChassisManufacturer = Request.Form["ChassisManufacturer"],
+                ChassisModel = Request.Form["ChassisModel"],
+                ChassisSerial = Request.Form["ChassisSerial"],
+                EngineManufacturer = Request.Form["EngineManufacturer"],
+                EngineModel = Request.Form["EngineModel"],
+                EngineSerial = Request.Form["EngineSerial"],
+                NFIRSID = Request.Form["NFIRSID"],
+                PumpManufacturer = Request.Form["PumpManufacturer"],
+                PumpModel = Request.Form["PumpModel"],
+                PumpSerial = Request.Form["PumpSerial"],
+                PumpType = Request.Form["PumpType"],
+                RecordFuelLevel = Request.Form["RecordFuelLevel"] == "on" ? true : false,
+                RecordMileage = Request.Form["RecordMileage"] == "on" ? true : false,
+                RecordO2Level = Request.Form["RecordO2Level"] == "on" ? true : false,
+                RecordPumpHours = Request.Form["RecordPumpHours"] == "on" ? true : false,
+                ReplacementYear = Request.Form["ReplacementYear"] == "" ? null : (Nullable<int>)Convert.ToInt32(Request.Form["ReplacementYear"]),
+                // ServiceDate = Request.Form["ServiceDate"] == "" ? null : Convert.ToDateTime(Request.Form["ServiceDate"]),
+                //StationID = Convert.ToInt32(Request.Form["StationID"] == "" ? null : Request.Form["StationID"]),
+                Use = Request.Form["Use"] == "" ? null : (Nullable<int>)Convert.ToInt32(Request.Form["Use"])
+            };
+            if (!String.IsNullOrEmpty(Request.Form["InService"]))
+            {
+                _apparatusData.InService = Convert.ToDateTime(Request.Form["InService"]);
+            }
+            if (!String.IsNullOrEmpty(Request.Form["StationID"]) && Request.Form["StationID"] != "-1")
+                _apparatusData.StationID = Convert.ToInt32(Request.Form["StationID"]);
+            else
+                _apparatusData.StationID = null;
+            if (Request.Form["ApparatusID"] == null)
+            {
+                _dataContext.Apparatus.AddObject(_apparatusData);
+            }
+            else
+            {
+                _dataContext.Apparatus.Attach(_apparatusData);
+                _dataContext.ObjectStateManager.ChangeObjectState(_apparatusData, System.Data.EntityState.Modified);
+            }
+
+            _dataContext.SaveChanges();
+            return _apparatusData.ApparatusID;
+        }
+        [HttpPost]
+        public JsonResult UpdateApparatusGeneralDetail()
+        {
+            return Json(new { status = PostApparatus() });
+        }
+
+
+
+        [HttpGet]
+        public ActionResult _FileUpload(int id = 0)
+        {
+            return View(_dataContext.ApparatusFiles.ToList());
+        }
+
+
+
+
+
+
+        [HttpGet]
+        public JsonResult FilesGet([DataSourceRequest] DataSourceRequest request)
+        {
+            try
+            {
+                OS_FSMEntities db = (new DataService()).DbContext;
+
+                if (request.PageSize == 0)
+                {
+                    request.PageSize = 10;
+                }
+                //string FirefighterID;
+                //if (id == "0")
+                //{
+                //    FirefighterID = Session.SessionID;
+                //}
+                //else
+                //{
+                //    FirefighterID = id;
+                //}
+                List<ApparatusFile> ApparatusFiles = db.ApparatusFiles.ToList();
+
+                DataSourceResult response = ApparatusFiles.ToDataSourceResult(request);
+                return Json(response, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+        public ActionResult RemoveAndPersistfile(string[] fileNames)
+        {
+
+            DataService ds = new DataService();
+            Int32 FileID = Convert.ToInt32(Request["ApparatusFileID"]);
+
+            ApparatusFile ApparatusFiles = ds.DbContext.ApparatusFiles.Where(i => i.ApparatusFileID == FileID).SingleOrDefault();
+            // The parameter of the Remove action must be called "fileNames"
+            if (ApparatusFiles != null)
+            {
+                //foreach (var fullName in fileNames)
+                //{
+                var fileName = ApparatusFiles.FileName;
+                var physicalPath = Path.Combine(Server.MapPath("/Uploaded/ApparatusFiles"), fileName);
+
+                ds.DbContext.ApparatusFiles.DeleteObject(ApparatusFiles);
+                int status = ds.DbContext.SaveChanges();
+
+                if (status > 0)
+                {
+                    SessionUploadInitialFilesRepository.Remove(fileName);
+
+
+                    if (System.IO.File.Exists(physicalPath))
+                    {
+                        // The files are not actually removed in this demo
+                        System.IO.File.Delete(physicalPath);
+
+                    }
+                }
+                return Json(new { status = "File deleted successfully" }, JsonRequestBehavior.AllowGet);
+            }
+
+            // Return an empty string to signify success
+            return Json(new { status = "There is some error" }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public FileResult Downloadfile(int id = 0)
+        {
+            try
+            {
+                OS_FSMEntities db = (new DataService()).DbContext;
+                ApparatusFile ApparatusFiles = db.ApparatusFiles.Where(f => f.ApparatusFileID == id).FirstOrDefault();
+                string fileName = ApparatusFiles.FileName;
+                string strURL = Path.Combine(Server.MapPath("/Uploaded/ApparatusFiles"), fileName);
+
+                Response.AddHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+                byte[] data = System.IO.File.ReadAllBytes(strURL);
+
+                return new FileContentResult(data, "application/octet-stream");
+            }
+            catch (Exception)
+            {
+                return new FileContentResult(null, null);
+            }
+        }
+
+        public ActionResult SaveAndPersistfile(IEnumerable<HttpPostedFileBase> file)
+        {
+            DataService ds = new DataService();
+
+            //The Name of the Upload component is "files"
+            if (file != null)
+            {
+                foreach (var fl in file)
+                {
+                    var fileName = Path.GetFileName(fl.FileName);
+                    if (!Directory.Exists(Server.MapPath("/Uploaded")))
+                        Directory.CreateDirectory(Server.MapPath("/Uploaded"));
+
+                    if (!Directory.Exists(Server.MapPath("/Uploaded/ApparatusFiles")))
+                        Directory.CreateDirectory(Server.MapPath("/Uploaded/ApparatusFiles"));
+                    var physicalPath = Path.Combine(Server.MapPath("/Uploaded/ApparatusFiles"), fileName);
+                    var fileExtension = Path.GetExtension(fl.FileName);
+
+                    if (fileExtension == ".pdf" || fileExtension == ".doc" || fileExtension == ".docx" || fileExtension == ".xls" || fileExtension == ".xlsx" || fileExtension == ".txt" || fileExtension == ".csv")
+                    {
+                        ApparatusFile ApparatusFiles = ds.DbContext.ApparatusFiles.Where(i => i.FileName == fileName).FirstOrDefault();
+                        if (ApparatusFiles == null)
+                        {
+                            SessionUploadInitialFilesRepository.Add(new UploadInitialFile(fileName, fl.ContentLength, fileExtension));
+
+                            // The files are not actually saved in this demo
+                            fl.SaveAs(physicalPath);
+
+                            string fileUrl = Path.Combine(Url.Content("/Uploaded/ApparatusFiles"), fileName);
+                            ApparatusFiles = new ApparatusFile();
+                            ApparatusFiles.FileName = fileName;
+                            ApparatusFiles.UploadedOn = DateTime.Now;
+                            ds.DbContext.ApparatusFiles.AddObject(ApparatusFiles);
+                            ds.DbContext.SaveChanges();
+
+                            // Return an empty string to signify success
+                            return Json(ApparatusFiles, JsonRequestBehavior.AllowGet);
+
+                        }
+                        return Content("File already exists");
+                    }
+                    return Content("Please upload '.pdf, .doc, .docx, .xls, .xlsx, .txt, or .csv files only'");
+                }
+            }
+            return Content("");
+        }
+        public ActionResult SubmitApparatusProblem()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult GetApparatusForApparatusProblem()
+        {
+            try
+            {
+                var apparatus = _dataContext.Apparatus.OrderBy(o => o.ApparatusName).Select(i => new { ApparatusID = i.ApparatusID, ApparatusName = i.ApparatusName }).ToList();
+                return Json(apparatus, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult GetPersonnelForApparatusProblem()
+        {
+            try
+            {
+                var personnel = _dataContext.Firefighters.OrderBy(o => o.FirstName).Select(i => new { FirefighterID = i.FirefighterID, FirefighterName = i.FirstName + " " + i.LastName }).ToList();
+                return Json(personnel, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ApparatusProblemSave(ApparatusProblem model)
+        {
+            if (model != null)
+            {
+                ApparatusProblem apparatusProblem = new ApparatusProblem();
+                apparatusProblem.ApparatusID = model.ApparatusID;
+                apparatusProblem.Problem = model.Problem;
+                apparatusProblem.AssignedToID = model.AssignedToID;
+                apparatusProblem.DateReported = DateTime.Now;
+                _dataContext.ApparatusProblems.AddObject(apparatusProblem);
+                _dataContext.SaveChanges();
+                return Json(
+                   new
+                   {
+                       Status = "save",
+
+                   }
+              );
+            }
+            return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+        }
+
+
+        [HttpGet]
+        public ActionResult ViewApparatusProblem()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public JsonResult GetApparatusProblemGrid(ApparatusProblem model)
+        {
+            var apparatusProblem = _dataContext.ApparatusProblems.AsQueryable();
+
+            var data = (from d in apparatusProblem.AsEnumerable()
+                        join f in _dataContext.Firefighters.AsEnumerable()
+                        on d.AssignedToID equals f.FirefighterID
+                        join a in _dataContext.Apparatus.AsEnumerable()
+                        on d.ApparatusID equals a.ApparatusID
+                        select new
+                        {
+                            ID = d.ID,
+                            DateReported = Convert.ToDateTime(d.DateReported).ToShortDateString(),
+                            ApparatusName = a.ApparatusName,
+                            Problem = d.Problem,
+                            AssignedToID = f.FirstName + " " + f.LastName,
+                            AssignedName = f.FirstName + " " + f.LastName,
+                            Fixed = d.Fixed,
+                            Resolution = d.Resolution,
+                            DateFixed = d.DateFixed == null ? "" : Convert.ToDateTime(d.DateFixed).ToShortDateString(),
+                        });
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateProblem(ApparatusProblem model)
+        {
+            ApparatusProblem apparatusProblem = _dataContext.ApparatusProblems.Where(i => i.ID == model.ID).FirstOrDefault();
+
+            if (model.AssignedToID != null)
+            {
+                apparatusProblem.AssignedToID = model.AssignedToID;
+            }           
+            apparatusProblem.Fixed = model.Fixed;
+            apparatusProblem.Resolution = model.Resolution;
+            apparatusProblem.DateFixed = DateTime.Now;
+            _dataContext.ObjectStateManager.ChangeObjectState(apparatusProblem, System.Data.EntityState.Modified);
+            _dataContext.SaveChanges();
+
+            var data = (from d in _dataContext.ApparatusProblems.AsEnumerable()
+                        join f in _dataContext.Firefighters.AsEnumerable()
+                        on d.AssignedToID equals f.FirefighterID
+                        join a in _dataContext.Apparatus.AsEnumerable()
+                        on d.ApparatusID equals a.ApparatusID
+                        select new
+                        {
+                            ID = d.ID,
+                            DateReported = Convert.ToDateTime(d.DateReported).ToShortDateString(),
+                            ApparatusName = a.ApparatusName,
+                            Problem = d.Problem,
+                            AssignedToID = f.FirstName + " " + f.LastName,
+                            AssignedName = f.FirstName + " " + f.LastName,
+                            Fixed = d.Fixed,
+                            Resolution = d.Resolution,
+                            DateFixed = d.DateFixed == null ? "" : Convert.ToDateTime(d.DateFixed).ToShortDateString(),
+                        }).Where(i => i.ID == model.ID).FirstOrDefault(); ;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult MaintenanceRecords()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult GetPersonnelForMaintenance()
+        {
+            try
+            {
+                var firefighter = _dataContext.Firefighters.AsEnumerable().Select(i => new { Personnel = i.FirstName + " " + i.LastName }).ToList();
+                return Json(firefighter, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult GetEquipmentForMaintenance()
+        {
+            try
+            {
+                var Equipments = _dataContext.Apparatus.AsEnumerable().Select(i => new { text = i.ApparatusName }).ToList();
+                Equipments.AddRange(_dataContext.CompartmentItems.AsEnumerable().Select(i => new { text = i.CompartmentItemName }).ToList());
+
+                return Json(Equipments, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                   new
+                   {
+                       Status = "fail",
+
+                   }
+              );
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult GetItemsForMaintenance()
+        {
+            var compartmentItem = _dataContext.CompartmentItems.AsEnumerable().Select(i => new { CompartmentItemName = i.CompartmentItemName }).ToList();
+            return Json(compartmentItem, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetMaintenanceGrid(MaintenanceRecord model)
+        {
+            var maintenanceData = _dataContext.MaintenanceRecords.AsQueryable();
+            var data = (from d in maintenanceData.AsEnumerable()
+                        select new
+                        {
+                            ID = d.ID,
+                            DateCompleted = Convert.ToDateTime(d.DateCompleted).ToShortDateString(),
+                            Item = d.Item,
+                            Description = d.Description,
+                            Personnel = d.Personnel,
+                            AmountUsed = d.AmountUsed,
+                            Hours = d.Hours,
+                            Cost = d.Cost,
+                        });
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult SaveMaintenance(MaintenanceRecord model)
+        {
+            if (model != null)
+            {
+                MaintenanceRecord maintenanceRecord = new MaintenanceRecord();
+                maintenanceRecord.DateCompleted = model.DateCompleted;
+                maintenanceRecord.Item = model.Item;
+                maintenanceRecord.Personnel = model.Personnel;
+                maintenanceRecord.Description = model.Description;
+                maintenanceRecord.Cost = model.Cost;
+                maintenanceRecord.AmountUsed = model.AmountUsed;
+                maintenanceRecord.Hours = model.Hours;
+                _dataContext.MaintenanceRecords.AddObject(maintenanceRecord);
+                _dataContext.SaveChanges();
+                return Json(
+                  new
+                  {
+                      Status = "save",
+
+                  }
+             );
+
+            }
+            else
+            {
+                return Json(
+                  new
+                  {
+                      Status = "fail",
+
+                  }
+             );
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult DeleteMaintenanceRecord(MaintenanceRecord model)
+        {
+            try
+            {
+                MaintenanceRecord maintenanceRecord = _dataContext.MaintenanceRecords.Where(i => i.ID == model.ID).FirstOrDefault();
+                _dataContext.MaintenanceRecords.DeleteObject(maintenanceRecord);
+                _dataContext.SaveChanges();
+                return Json(
+                  new
+                  {
+                      Status = "done",
+
+                  }
+             );
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                  new
+                  {
+                      Status = "fail",
+
+                  }
+             );
+            }
+
+        }
+
+        [HttpGet]
+        public ActionResult ApparatusCheck()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult ApparatusCheckSourceTree()
+        {
+            List<data> data_ = new List<data>();
+            var FireFighter = (from f in _dataContext.Firefighters
+                               join s in _dataContext.Stations
+                                   on f.StationAssignment equals s.StationId
+                               select new
+                               {
+                                   FirefighterID = f.FirefighterID,
+                                   Name = ("#" + f.FFID + " " + f.FirstName + " " + f.LastName),
+                                   StationId = f.StationAssignment,
+                                   StationAssignment = s.StationText,
+                                   PermissionGroupId = f.PermissionGroupId,
+                                   IsActive = f.IsActive,
+                               }
+                ).AsEnumerable().Where(i => i.IsActive == true);
+            data _data = new data();
+
+            var stations = _dataContext.Stations.ToList();
+
+
+            foreach (var sta in stations)
+            {
+                _data = new data
+                {
+                    id = Convert.ToInt32(sta.StationId),
+                    childType = "station",
+                    text = sta.StationText,
+                    hasChildren = true,
+                };
+
+                foreach (var personal in FireFighter)
+                {
+                    _data.items = FireFighter.Where(f => f.StationId == sta.StationId).Select(s => new data { id = s.FirefighterID, text = s.Name, childType = "personal" }).ToList();
+                    _data.hasChildren = false;
+                }
+                data_.Add(_data);
+            }
+            return Json(data_, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetApparatusforCheck()
+        {
+            var apparatusDetails = (from a in _dataContext.Apparatus
+                                    join b in _dataContext.Instructions
+                                    on a.ApparatusID equals b.ApparatusID
+                                    select new {
+                                        a.ApparatusID,
+                                        a.ApparatusName,
+                                        a.ApparautsCheck,
+                                        a.RecordFuelLevel,
+                                        a.RecordMileage,
+                                        a.RecordO2Level,
+                                        a.RecordPumpHours,
+                                        b.InstructionName
+                                    }).ToList();            
+            return Json(apparatusDetails, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ApparatusCheckItemTree(int id = 0)
+        {
+            List<data> data_ = new List<data>();
+
+            var Items = (from c in _dataContext.CompartmentItems
+                         join ac in _dataContext.ApparatusCompartments
+                             on c.ApparatusComparmentID equals ac.ApparatusComparmentID
+                         join a in _dataContext.Apparatus
+                         on c.ApparatusID equals a.ApparatusID
+
+                         select new
+                         {
+                             ApparatusID = a.ApparatusID,
+                             ApparatusComparmentID = ac.ApparatusComparmentID,
+                             ApparatusCompartmentName = ac.ApparatusCompartmentName,
+                             CompartmentItemID = c.CompartmentItemID,
+                             CompartmentItemName = c.CompartmentItemName,
+                         }
+                  ).AsEnumerable().Where(i => i.ApparatusID == id);
+
+            data _data = new data();
+            var ApparatusCompartments = Items.Where(s => s.ApparatusID == id).Select(s => new { s.ApparatusComparmentID, s.ApparatusCompartmentName, hasChildren = true, expanded = true }).Distinct();
+            foreach (var compartment in ApparatusCompartments)
+            {
+                _data = new data
+                {
+                    id = Convert.ToInt32(compartment.ApparatusComparmentID),
+                    childType = "Comparment",
+                    text = compartment.ApparatusCompartmentName,
+                    hasChildren = true,
+                };
+
+                foreach (var item in Items)
+                {
+                    _data.items = Items.Where(f => f.ApparatusComparmentID == compartment.ApparatusComparmentID).Select(s => new data { id = s.CompartmentItemID, text = s.CompartmentItemName, childType = "Item" }).ToList();
+                    _data.hasChildren = false;
+                }
+                data_.Add(_data);
+            }
+            return Json(data_, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ApparatusCheckSave(Completed_TruckChecks model)
+        {
+
+
+            Completed_TruckChecks completed_TruckChecks = new Completed_TruckChecks();
+            completed_TruckChecks.Apparatus = model.Apparatus;
+            completed_TruckChecks.Comments = model.Comments;
+            completed_TruckChecks.FuelLevel = model.FuelLevel;
+            completed_TruckChecks.Inventory_Report = model.Inventory_Report;
+            completed_TruckChecks.Mileage = model.Mileage;
+            completed_TruckChecks.O2Level = model.O2Level;
+            completed_TruckChecks.Participants = model.Participants;
+            completed_TruckChecks.Problems = model.Problems;
+            completed_TruckChecks.ProblemsText = model.ProblemsText;
+            completed_TruckChecks.PumpHours = model.PumpHours;
+            completed_TruckChecks.TimeStamp = DateTime.Now;
+            _dataContext.Completed_TruckChecks.AddObject(completed_TruckChecks);
+            _dataContext.SaveChanges();
+
+            return Json(
+                             new
+                             {
+                                 status = "save",
+
+                             }
+                        );
+        }
+
+        [HttpGet]
+        public ActionResult ViewCompletedChecks()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult GetApparatusProblemGridForCompletedChecks()
+        {
+            var truckChecks = _dataContext.Completed_TruckChecks_view.AsQueryable();
+            var data = (from d in truckChecks.AsEnumerable()
+                        join a in _dataContext.Apparatus.AsEnumerable()
+                        on d.Apparatus equals a.ApparatusName
+                        select new
+                        {
+                            ID = d.TruckCheck_id,
+                            DateReported = Convert.ToDateTime(d.TimeStamp).ToShortDateString(),
+                            ApparatusName = a.ApparatusName,
+                            Problem = d.Problems == 1 ? "Yes" : "No",
+                            AssignedName = d.ParticipantsName,
+                        }).OrderByDescending(i => i.ID);
+
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpGet]
+        public ActionResult ViewApparatusCheckList()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
+        public JsonResult GetApparatusforCheckList()
+        {
+            var apparatus = (from a in _dataContext.Apparatus
+                             join i in _dataContext.Instructions
+                             on a.ApparatusID equals i.ApparatusID into t
+                             from rt in t.DefaultIfEmpty()
+                             select new
+                                 {
+                                     ApparatusID = a.ApparatusID,
+                                     ApparatusName = a.ApparatusName,
+                                     Instruction = rt.InstructionName,
+                                 }).ToList();
+
+
+            return Json(apparatus, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ApparatusCheckListItemTree(int id = 0)
+        {
+            List<data> data_ = new List<data>();
+
+            var Items = (from c in _dataContext.CompartmentItems
+                         join ac in _dataContext.ApparatusCompartments
+                             on c.ApparatusComparmentID equals ac.ApparatusComparmentID
+                         join a in _dataContext.Apparatus
+                         on c.ApparatusID equals a.ApparatusID
+
+                         select new
+                         {
+                             ApparatusID = a.ApparatusID,
+                             ApparatusComparmentID = ac.ApparatusComparmentID,
+                             ApparatusCompartmentName = ac.ApparatusCompartmentName,
+                             CompartmentItemID = c.CompartmentItemID,
+                             CompartmentItemName = c.CompartmentItemName,
+                         }
+                  ).AsEnumerable().Where(i => i.ApparatusID == id);
+
+            data _data = new data();
+            var ApparatusCompartments = Items.Where(s => s.ApparatusID == id).Select(s => new { s.ApparatusComparmentID, s.ApparatusCompartmentName }).Distinct();
+            foreach (var compartment in ApparatusCompartments)
+            {
+                _data = new data
+                {
+                    id = Convert.ToInt32(compartment.ApparatusComparmentID),
+                    childType = "Comparment",
+                    text = compartment.ApparatusCompartmentName,
+                    hasChildren = true,
+                    expanded = true,
+                };
+
+                foreach (var item in Items)
+                {
+                    _data.items = Items.Where(f => f.ApparatusComparmentID == compartment.ApparatusComparmentID).Select(s => new data { id = s.CompartmentItemID, text = s.CompartmentItemName, childType = "Item", expanded = true }).ToList();
+                }
+                data_.Add(_data);
+            }
+            return Json(data_, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult ViewSchedule()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult GetScheduleGroup(int id = 0)
+        {
+            List<data> data_ = new List<data>();
+
+            var Items = (from f in _dataContext.Firefighters.AsEnumerable()
+                         join gm in _dataContext.GroupMembers.AsEnumerable()
+                             on f.FirefighterID equals gm.FirefighterID
+                         join g in _dataContext.Groups
+                         on gm.GroupID equals g.GroupID
+
+                         select new
+                         {
+                             FirefighterID = f.FirefighterID,
+                             Name = f.FirstName + " " + f.LastName,
+                             GroupID = g.GroupID,
+                             GroupName = g.GroupName,
+                             Color = g.Color,
+                         }
+                  ).AsEnumerable();
+
+            data _data = new data();
+            var Groups = Items.Where(i => i.GroupID == id).Select(s => new { s.GroupID, s.GroupName }).Distinct();
+            foreach (var Group in Groups)
+            {
+                _data = new data
+                {
+                    id = Group.GroupID,
+                    childType = "Group",
+                    text = Group.GroupName,
+                    hasChildren = true,
+                    expanded = true,
+                };
+
+                foreach (var item in Items)
+                {
+                    _data.items = Items.Where(f => f.GroupID == Group.GroupID).Select(s => new data { id = s.FirefighterID, text = s.Name, childType = "Personnel", expanded = true, nodeColor = s.Color }).ToList();
+                }
+                data_.Add(_data);
+            }
+            return Json(data_, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetGroupForSchedule()
+        {
+            var Groups = _dataContext.Groups.Select(s => new { s.GroupID, s.GroupName }).Distinct();
+            return Json(Groups, JsonRequestBehavior.AllowGet);
+        }
+
+
+        //[HttpPost]
+        //public JsonResult CreateSchedule(Schedule model)        
+        //{
+        //    Apparatus apparatusFirst = _dataContext.Apparatus.Where(i => i.ApparautsCheck == true).FirstOrDefault();
+        //    List<Apparatus> apparatus = _dataContext.Apparatus.Where(i => i.ApparautsCheck == true && i.ApparatusID!=apparatusFirst.ApparatusID).ToList();
+
+        //    Schedule scheduleFirst = new Schedule();
+        //    scheduleFirst.GroupID = model.GroupID;
+        //    scheduleFirst.TargetDate = model.TargetDate;
+        //    scheduleFirst.TruckCheckID = apparatusFirst.ApparatusID;
+        //    _dataContext.Schedules.AddObject(scheduleFirst);
+        //    _dataContext.SaveChanges();
+
+        //    foreach (Apparatus item in apparatus)
+        //    {
+        //        Schedule scheduleNext = new Schedule();
+        //        scheduleNext.TargetDate = model.TargetDate;
+
+        //    }
+
+        //}
+
+
+        [HttpGet]
+        public ActionResult PumpService(int id = 0)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult SavePumpServiceApparatus(ApparatusServiceTesting model)
+        {
+            ApparatusServiceTesting apparatusServiceTesting = new ApparatusServiceTesting();
+            if (model != null)
+            {
+                apparatusServiceTesting.ApparatusID = model.ApparatusID;
+                apparatusServiceTesting.HeightOfLift = model.HeightOfLift;
+                apparatusServiceTesting.Notes = model.Notes;
+                apparatusServiceTesting.SuctionFrom = model.SuctionFrom;
+                apparatusServiceTesting.SuctionHoseLength = model.SuctionHoseLength;
+                apparatusServiceTesting.SuctionHoseSize = model.SuctionHoseSize;
+                apparatusServiceTesting.TestDate = model.TestDate;
+                apparatusServiceTesting.TestedAt = model.TestedAt;
+                apparatusServiceTesting.Tester = model.Tester;
+                _dataContext.ApparatusServiceTestings.AddObject(apparatusServiceTesting);
+                _dataContext.SaveChanges();
+            }
+            return Json(apparatusServiceTesting, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpGet]
+        public JsonResult GetPumpServiceGrid(int id = 0)
+        {
+            List<PumpTest> pumpTest = _dataContext.PumpTests.Where(i => i.ApparatusServiceID == id).ToList();
+            return Json(pumpTest, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult SavePumpServiceTest(PumpTest model)
+        {
+            PumpTest pumpTest = new PumpTest();
+            if (model != null)
+            {
+                pumpTest.ApparatusServiceID = model.ApparatusServiceID;
+                pumpTest.Duration = model.Duration;
+                pumpTest.EngineSpeedRPM = model.EngineSpeedRPM;
+                pumpTest.GPM = model.GPM;
+                pumpTest.NetPressure = model.NetPressure;
+                pumpTest.OilPressure = model.OilPressure;
+                pumpTest.PumpPressure = model.PumpPressure;
+                pumpTest.PumpSpeed = model.PumpSpeed;
+                pumpTest.RequiredDuration = model.RequiredDuration;
+                pumpTest.RequiredGPM = model.RequiredGPM;
+                pumpTest.RequiredNetPressure = model.RequiredNetPressure;
+                pumpTest.TestName = model.TestName;
+                pumpTest.VacuumDrop = model.VacuumDrop;
+                pumpTest.Voltage = model.Voltage;
+                pumpTest.WaterTemp = model.WaterTemp;
+                _dataContext.PumpTests.AddObject(pumpTest);
+                _dataContext.SaveChanges();
+            }
+            return Json(pumpTest, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteTest(int id = 0)
+        {
+            PumpTest pumpTest = _dataContext.PumpTests.Where(i => i.ID == id).FirstOrDefault();
+            _dataContext.PumpTests.DeleteObject(pumpTest);
+            _dataContext.SaveChanges();
+            return Json(
+                            new
+                            {
+                                status = "done",
+
+                            }
+                       );
+        }
+
+        [HttpGet]
+        public JsonResult GetPumpTestDetailsStation()
+        {
+            var station = _dataContext.Stations.Select(i => new { StationId = i.StationId, StationText = i.StationText }).ToList();
+            station.Insert(1, new { StationId = 0, StationText = "" });
+            return Json(station.OrderBy(i => i.StationText), JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public JsonResult GetPumpTestDetailsApparatus(int? Station, string ApparatusFilter)
+        {
+            var Apparatus = _dataContext.Apparatus.Select(i => new { ApparatusID = i.ApparatusID, ApparatusName = i.ApparatusName, StationID = i.StationID }).AsQueryable();
+            if (Station > 0)
+            {
+                Apparatus = Apparatus.Where(i => i.StationID == Station);
+            }
+            //if (!string.IsNullOrEmpty(ApparatusFilter))
+            //{
+            //    Apparatus = Apparatus.Where(p => p.ApparatusName.Contains(ApparatusFilter));
+            //}
+            return Json(Apparatus, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult GetPumpTestDetails(PumpTestDetailsSearch model)
+        {
+            var details = _dataContext.ApparatusServiceTestings.AsQueryable();
+
+            if (model.ApparatusID != 0)
+            {
+                details = details.Where(i => i.ApparatusID == model.ApparatusID);
+            }
+
+            if (model.TestDate != null)
+            {
+                details = details.Where(i => i.TestDate == model.TestDate);
+            }
+            var data = (from d in details.AsEnumerable()
+                        join a in _dataContext.Apparatus
+                        on d.ApparatusID equals a.ApparatusID
+                        select new
+                        {
+                            ID = d.ID,
+                            Date = Convert.ToDateTime(d.TestDate).ToShortDateString(),
+                            Apparatus = a.ApparatusName,
+                            StationID = a.StationID,
+                        });
+            if (model.StationID > 0)
+            {
+                data = data.Where(a => a.StationID == model.StationID);
+            }
+            return Json(data, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpPost]
+        public JsonResult DeleteTestDetails(int id = 0)
+        {
+            ApparatusServiceTesting apparatusServiceTesting = _dataContext.ApparatusServiceTestings.Where(i => i.ID == id).FirstOrDefault();
+            try
+            {
+                _dataContext.ApparatusServiceTestings.DeleteObject(apparatusServiceTesting);
+                _dataContext.SaveChanges();
+                return Json(
+                                new
+                                {
+                                    status = "done",
+
+                                }
+                           );
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                                              new
+                                              {
+                                                  status = "fail",
+
+                                              }
+                                         );
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult loadPreSeletedItems(int id, string type)
+        {
+            if (type == "apparatus")
+            {
+                var _Apparatus = _dataContext.Apparatus.Where(i => i.ApparatusID == id).Select(i => new { i.ApparatusID, i.ApparatusName });
+                return Json(_Apparatus, JsonRequestBehavior.AllowGet);
+            }
+            if (type == "compartment")
+            {
+                var _Compartment = _dataContext.ApparatusCompartments.Where(i => i.ApparatusComparmentID == id).Select(i => new { i.ApparatusID, i.ApparatusComparmentID, i.ApparatusCompartmentName });
+                return Json(_Compartment, JsonRequestBehavior.AllowGet);
+            }
+            if (type == "compartmentItems")
+            {
+                var _CompartmentItem = _dataContext.CompartmentItems.Where(i => i.CompartmentItemID == id).Select(i => new { i.ApparatusID, i.ApparatusComparmentID, i.CompartmentItemID, i.CompartmentItemName });
+                return Json(_CompartmentItem, JsonRequestBehavior.AllowGet);
+
+            }
+            return Json(new { status = "done" });
+        }
+        [HttpPost]
+        public JsonResult getItemGrid(CompartmentItem model)
+        {
+            List<CompartmentItem> Items = _dataContext.CompartmentItems.AsQueryable().ToList();
+
+            var data = (from item in Items.AsEnumerable()
+                        select new
+                        {
+                            ID = item.CompartmentItemID,
+                            Item = item.CompartmentItemName,
+                            Description = item.Description,
+                            Code = item.Code,
+                            Cost = item.Cost,
+                            Location = item.Location,
+                            PurchaseDate = Convert.ToDateTime(item.PurchaseDate).ToShortDateString(),
+                            SerialNumber = item.SerialNumber
+
+                        });
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+    }
+}

@@ -1,0 +1,128 @@
+﻿@model  IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel>
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+}
+<div class="container-fluid  content-center">
+    <div class="row">
+       
+
+
+
+        <div class="grid_3 left-sidebar" style="width:18.667%">    
+            @{
+                var model = Model.FirstOrDefault();
+             }
+            @if(model!= null)
+            {
+            @Html.Partial("_LeftMenu", model)
+            }
+                
+        </div>
+        
+        
+         <div id="mvcGrid"  style="width:81%; padding:1px;float:left">
+            
+           
+                 <div class="grid_12" style="border-bottom:none" >
+               @Html.Partial("_ContentWriterTopMenu")
+                     
+          </div>
+
+              <div class="breadcrumbs" >
+                    <div class="center_align" >
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("DashBoard", "Index", "Order")      </strong><span><img src="/../images/breadcrumbs_divider.png" style="height:35px;"></span></li> 
+                           
+
+
+                        </ul>
+                    </div>
+                </div>
+          
+          
+        <div class="grid_12" style="float:left ; background-color:white; padding:10px;min-width:100%; min-height:250px;"  > 
+            <div style="float: right; padding:10px">
+                                    Page Size  
+                                    <select id="ddlPageSize" onchange="RefreshGrid(this)">
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+
+                                    </select>
+                                </div>
+             @if (Model != null && Model.Count() > 0)
+                {
+                if ( Model.ElementAt(0).pkOrderId >0)
+                     {
+               
+            @Html.Grid(Model).Columns(col =>
+                {
+                    // col.For(p => p.pkOrderId  ).Named("Shop Name").Sortable(false);
+                    col.For(p => p.OrderNumber).Named("Order #").Sortable(false);
+                    col.For(p => p.ClientName).Named("Client Name").Sortable(false);
+                   // col.For(p => p.ProjectName).Named("Project Name").Sortable(false);
+                  //  col.For(p => p.ProjectType).Named("Project Type").Sortable(false);
+                   // col.For(p => p.Phone).Named("Phone").Sortable(false);
+                  //  col.For(p => p.Email).Named("Email").Sortable(false);
+                  //  col.For(p => p.IsRejected == false ? "Yes" : "No").Named("Rejected").Sortable(false);
+                    col.For(p => p.OrderDate).Named("Order Date").Sortable(false);
+                //    col.For(p => p.IsContentWriterAccepted == true ? "Yes" : "No").Named("Accepted").Sortable(false);
+                    col.For(p => Html.ActionLink(" ", "Edit", new { id = p.pkOrderId }, new { @class = "fa fa-pencil" })).Named("Details").Sortable(false);
+
+                }).Attributes(@class => "records_list table table-bordered table-hover table-responsive")
+               <div class="index-nav" style="text-align: center">
+                @Html.Raw(Html.Pager((IPagination)Model))
+
+                   <div style="float: right">
+                                    Page Size  
+                                    <select id="ddlPageSize2" onchange="RefreshGrid(this)">
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+
+                                    </select>
+                                </div>
+            </div>
+                }
+                else{
+                     <div class="grid_12"><h3>No Records Found</h3></div>
+                     }
+             }
+             else{
+                     <div class="grid_12"><h3>No Records Found</h3></div>
+                     }
+               
+        </div>
+    </div>
+</div>
+
+
+    </div>
+    <script>
+        var gridParent = $("#mvcGrid");
+
+        function RefreshGrid(e) {
+            var currenturl = window.location.href.toLowerCase();
+            url = currenturl + "?pagesize=" + e.value;
+
+            $("#ddlPageSize2").val(e.value);
+            $("#ddlPageSize").val(e.value);
+           
+            $.get(url).success(function (data) {
+
+                var container = '#' + $(gridParent).attr('id');
+                var table = $('<div/>').html(data).find(container).html()
+                $(container).html(table);
+            });
+
+        }
+
+
+    </script>
+

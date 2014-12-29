@@ -1,0 +1,1105 @@
+﻿@model pEasyPrint.Areas.Admin.Models.OrderModel
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using pEasyPrint.Models
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .labeltd {
+        width: 30%;
+    }
+
+    .labeltdright {
+        width: 40%;
+    }
+
+    .trheader {
+        background-color: #eaeaea;
+    }
+
+    .chkproof {
+        cursor: pointer;
+    }
+    .cmmnt-bttn {}
+    .cmmnt-bttn input {float: right;
+    margin: 0;}
+    .orignal-order dl.item-options dt, .orignal-order dl.item-options dd {width: 100%;
+    }
+    .orignal-order {margin:0;}
+       
+    .btn-success1 {margin: 0;padding: 0;}
+    input.add-more-succ {
+    margin: 5px 0 0;
+}
+    .btn-success { padding: 6px 0 !important;}
+    .add-more { float: left!important;}
+    input, select, textarea { width: 256px;}
+    .panel-heading {font-size: 18px;}
+    input.btn-danger { margin-top: 9px !important; margin-left: 8px;}
+</style>
+
+<div class="container-fluid content-center">
+    <div class="row">
+        <div class="grid_3 left-sidebar" style="width: 16.667%">
+            @Html.Partial("_AdminLeftMenu", Model)
+        </div>
+        @if (Model.GetOrderItems != null)
+        {
+            <div style="width: 81%; padding: 1px; float: left">
+                @Html.HiddenFor(m => m.GetOrderItems.ElementAt(0).ID)
+                @Html.HiddenFor(m => m.OrderNumber)
+                <div class="grid_12" style="border-bottom: none">
+                    @Html.Partial("_AdminTopMenu")
+
+                </div>
+                <div class="breadcrumbs">
+                    <div class="center_align">
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("DashBoard", "Index", "Order")      </strong><span>
+                                <img src="/../images/breadcrumbs_divider.png"></span></li>
+                            <li class="category287"><strong>@Html.ActionLink("Order Details", "Index", "Order")      </strong><span>
+                                <img src="/../images/breadcrumbs_divider.png" style="height: 35px;"></span></li>
+                            <li class="category287"><strong>@Html.ActionLink("Item Details", "item", "Order", new { id =  Encdy.Encode(Model.GetOrderItems.ElementAt(0).ID) }, null)      </strong></li>
+                            <li class="category287"><strong>@*@Html.ActionLink("Item Details", "item", "Order", new { id =  Model.GetOrderItems.ElementAt(0).ID }, null)*@      </strong></li>
+                        </ul>
+                    </div>
+                </div>
+                                @if (Model.ListOrderProof != null)
+                {
+                    int count = 1;
+                    int count1 = 0;
+                    if (Model.ListOrderProof.Count() > 0)
+                    {
+                    <div class="col-md-12" id="prooflog">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading" data-toggle="collapse" data-target="#prooflogdiv">Proof Log</div>
+                            <div class="panel-body" id="prooflogdiv">
+                                <div class="row form-group">
+
+                                    <div class="col-sm-12">
+
+                                        @for (int i = 0; i < Model.ListOrderProof.Count(); i++)
+                                        {
+
+                                            string Proofno = string.Empty;
+                                            string id = string.Empty;
+                                            string frontpoofID = string.Empty;
+                                            string backpoofID = string.Empty;
+
+                                            if (Model.ListOrderProof[i].ParentProofId != null)
+                                            {
+
+                                                Proofno = string.Empty;
+                                                Proofno = count + "-" + count1 + "-R";
+                                                id = "tblControl" + Proofno;
+                                                frontpoofID = "frontpoof" + Proofno;
+                                                backpoofID = "backpoof" + Proofno;
+                                                count1 = count1 + 1;
+
+                                            }
+                                            else
+                                            {
+
+                                                Proofno = string.Empty;
+                                                Proofno = (count).ToString();
+                                                id = "tblControl" + Proofno;
+                                                frontpoofID = "frontpoof" + Proofno;
+                                                backpoofID = "backpoof" + Proofno;
+                                                count = count + 1;
+                                                count1 = 0;
+                                            }
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            <div class="panel  panel-default">
+                                                <div class="panel-heading"style="font-weight:bold" data-toggle="collapse" data-target="#@id" >
+                                                    Proof @Proofno
+                                                    @if (Model.ListOrderProof[i].IsAdminApproved == null)
+                                                    {
+                                                        <a style="float: right;color: #c9302c;" id="disapprove" href="javascript:void(0);" data-OrderProofId ="@Model.ListOrderProof[i].PkOrderProofId">Disapprove</a>
+                                                        <a style="float: right;color: #4cae4c;" id="approveAndinform" href="javascript:void(0);" data-OrderProofId ="@Model.ListOrderProof[i].PkOrderProofId">Approve and Inform Client</a>
+                                                    }
+                                                    else if (Convert.ToBoolean(Model.ListOrderProof[i].IsAdminApproved) == true)
+                                                    {
+                                                        <span>Approved by Admin</span>                                                  
+                                                    }
+                                                    else if (Convert.ToBoolean(Model.ListOrderProof[i].IsAdminApproved) == false)
+                                                    {
+                                                        <span>Disapproved by Admin</span> 
+                                                    }
+                                                    @if (@Model.ListOrderProof.ElementAt(i).IsCustomerApproved == true)
+                                                    {
+                                                        <div style="float: right">Approved</div>
+                                                    }
+
+                                                </div>
+                                                <div class="panel-body collapse" id="@id">
+
+                                                    <div class="col-md-12 boxgrid" >
+                                                        <div class="panel  panel-default" id="@frontpoofID" style="text-align:center">
+                                                            <div class="panel-heading">Front Proof</div>
+                                                            <div class="panel-body">
+                                                                <div class="row form-group">
+                                                                    <label for="inputEmail3" class="col-sm-12 control-label">Designer Files</label>
+                                                                    <div class="col-sm-12">
+                                                                        @{
+                                                    char[] splitedBy = new char[] { ',' };
+                                                    var AllFiles = @Model.ListOrderProof.ElementAt(i).DesignerFiles;
+                                                    var splitedfile = AllFiles.Split(splitedBy);
+                                                    var CustomerFrontFile = @Model.ListOrderProof.ElementAt(i).CustomerFiles;
+                                                                        }
+                                                                        @for (int j = 1; j < splitedfile.Count(); j++)
+                                                                        {
+                                                                            #region front Proof
+                                                                            var imgpath1 = "/../Images/proofUpload/" + splitedfile.ElementAt(j);
+
+                                                                            var DesignerFileName = splitedfile.ElementAt(j);
+                                                                            if (DesignerFileName.ToLower().Contains(".jpg") || DesignerFileName.ToLower().Contains(".png") || DesignerFileName.ToLower().Contains(".gif") || DesignerFileName.ToLower().Contains(".tif"))
+                                                                            {
+
+                                                                                if (Model.GetOrderItems.ElementAt(0).ItemName.ToLower().Contains("brochures"))
+                                                                                {
+                                                                            <img src="@imgpath1" class="brochure-img" style="width:100%; height:100%"/>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                            <img src="@imgpath1" class="bussinessCard" />
+                                                                                }
+                                                                            <br />
+                                                                            @Html.ActionLink("Download Proof As Image", "DownloadProofFile", new { FileName = splitedfile.ElementAt(j).ToString() }) <br />
+                                                                            }
+                                                                            else if (DesignerFileName.ToLower().Contains(".pdf"))
+                                                                            {
+                                                                            @Html.ActionLink("Download Proof As PDF", "DownloadProofFile", new { FileName = splitedfile.ElementAt(j).ToString() }) <br />
+                                                                            }
+
+                                                                            else if (DesignerFileName.ToLower().Contains(".txt"))
+                                                                            {
+                                                                            @Html.ActionLink("Download Proof As Text", "DownloadProofFile", new { FileName = splitedfile.ElementAt(j).ToString() }) <br />
+                                                                       
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                            @Html.ActionLink("Download Front Proof", "DownloadProofFile", new { FileName = splitedfile.ElementAt(j).ToString() }) 
+                                                                       
+                                                                            }
+                                                                            #endregion
+
+
+                                                                        }
+
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row form-group">
+                                                                <label for="inputEmail3" class="col-sm-3 control-label" style="text-align: left; margin: 0 0 0 14px;">Designer Comment</label>
+                                                                <div class="col-sm-9" style="text-align: left; margin: 0 0 0 14px;">
+                                                                    @Model.ListOrderProof.ElementAt(i).FrontComments
+                                                                </div>
+                                                            </div>
+                                                            <div class="row form-group">
+                                                                <label for="inputEmail3" class="col-sm-3 control-label" style="text-align: left; margin: 0 0 0 14px;">Customer Comment</label>
+                                                                <div class="col-sm-9" style="text-align: left; margin: 0 0 0 14px;">
+                                                                    @Model.ListOrderProof.ElementAt(i).CustomerFrontComment
+                                                                </div>
+                                                            </div>
+                                                            @if (CustomerFrontFile != null)
+                                                            {
+                                                                <div class="row form-group">
+                                                                    @{ var splitedCustomerFrontFile = CustomerFrontFile.Split(splitedBy);}
+                                                                    <label for="inputEmail3" class="col-sm-3 control-label" style="text-align: left; margin: 0 0 0 14px;">Customer Files</label>
+                                                                    <div class="col-sm-9" style="text-align: left; margin: 0 0 0 14px;">
+                                                                        @for (int j = 1; j < splitedCustomerFrontFile.Count(); j++)
+                                                                        {
+                                                                            var imgpath = "/../Images/proofUpload/" + splitedCustomerFrontFile.ElementAt(j); 
+                                                                            <span class='zoom'>
+                                                                                <img src="@imgpath"  style="max-height:200px; max-width:300px"/>
+                                                                            </span>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            <div class="row form-group">
+                                                                <label for="inputEmail3" class="col-sm-12 control-label" style="text-align: left; margin: 0 0 0 14px;">Admin Comment</label>
+                                                                <div class="col-sm-12" style="text-align: left; margin: 0 0 0 14px;">
+                                                                    @{var backcommentId1 = "AdminBackComment1_" + Model.ListOrderProof.ElementAt(i).PkOrderProofId;}
+                                                                    <textarea cols="50" rows="5" style="width: 97%" id="@backcommentId1"> @Model.ListOrderProof.ElementAt(i).AdminFrontComment</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-md-12 boxgrid">
+                                                        @if (!string.IsNullOrEmpty(Model.ListOrderProof.ElementAt(i).DesignerBackFiles))
+                                                        {
+                                                            <div class="panel  panel-default" id="@backpoofID" style="display:none; text-align:center">
+                                                                <div class="panel-heading">Back Proof</div>
+                                                                <div class="panel-body">
+                                                                    <div class="row form-group">
+                                                                        <label for="inputEmail3" class="col-sm-12 control-label">Designer Files</label>
+                                                                        <div class="col-sm-12">
+                                                                            @{
+                                                            char[] splitedBy2 = new char[] { ',' };
+                                                            var AllFiles2 = @Model.ListOrderProof.ElementAt(i).DesignerBackFiles;
+                                                            var splitedfile2 = AllFiles2.Split(splitedBy);
+                                                            var CustomerBackFile = @Model.ListOrderProof.ElementAt(i).CustomerBackFiles;
+                                                                            }
+                                                                            @for (int j = 1; j < splitedfile2.Count(); j++)
+                                                                            {
+                                                                                var imgpath = "/../Images/proofUpload/" + splitedfile2.ElementAt(j);
+
+                                                                                var Designbackfile = splitedfile2.ElementAt(j);
+                                                                                if (Designbackfile.ToLower().Contains(".jpg") || Designbackfile.ToLower().Contains(".png") || Designbackfile.ToLower().Contains(".jpeg") || Designbackfile.ToLower().Contains(".gif"))
+                                                                                {
+                                                                                    if (Model.GetOrderItems.ElementAt(0).ItemName.ToLower().Contains("brochure"))
+                                                                                    {
+                                                                                <img src="@imgpath" class="brochure-img" />
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                <img src="@imgpath" class="bussinessCard" />
+                                                                                    }
+                                 
+                                                                                <br />
+                                                                                @Html.ActionLink("Download Back Proof", "DownloadProofFile", new { FileName = splitedfile2.ElementAt(j).ToString() }) <br />
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                @Html.ActionLink("Download Proof", "DownloadProofFile", new { FileName = splitedfile2.ElementAt(j).ToString() }) 
+                                                                                }
+
+
+                                                                            }
+
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            <div class="row form-group">
+                                                                <label for="inputEmail3" class="col-sm-3 control-label" style="text-align: left; margin: 0 0 0 14px;">Designer Comment</label>
+                                                                <div class="col-sm-9" style="text-align: left; margin: 0 0 0 14px;">
+                                                                    @Model.ListOrderProof.ElementAt(i).BackComments
+                                                                </div>
+                                                            </div>
+                                                            <div class="row form-group">
+                                                                <label for="inputEmail3" class="col-sm-3 control-label" style="text-align: left; margin: 0 0 0 14px;">Customer Comment</label>
+                                                                <div class="col-sm-9" style="text-align: left; margin: 0 0 0 14px;">
+                                                                    @Model.ListOrderProof.ElementAt(i).CustomerBackComment
+                                                                </div>
+                                                            </div>
+                                                                @if (CustomerBackFile != null)
+                                                                {
+                                                                     <div class="row form-group">
+                                                                    @{ var splitedCustomerFile = CustomerBackFile.Split(splitedBy);}
+                                                                    <label for="inputEmail3" class="col-sm-3 control-label" style="text-align: left; margin: 0 0 0 14px;">Customer Files</label>
+                                                                    <div class="col-sm-9" style="text-align: left; margin: 0 0 0 14px;">
+                                                                        @for (int j = 1; j < splitedCustomerFile.Count(); j++)
+                                                                        {
+                                                                            var imgpath = "/../Images/proofUpload/" + splitedCustomerFile.ElementAt(j); 
+                                                                            <span class='zoom'>
+                                                                                <img src="@imgpath"  style="max-height:200px; max-width:300px"/>
+                                                                            </span>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                }
+                                                                <div class="row form-group">
+                                                                    <label for="inputEmail3" class="col-sm-12 control-label"style="text-align: left; margin: 0 0 0 14px;">Admin Comment</label>
+                                                                    <div class="col-sm-12"style="text-align: left; margin: 0 0 0 14px;">
+                                                                        @{var backcommentId = "AdminBackComment_" + Model.ListOrderProof.ElementAt(i).PkOrderProofId;}
+                                                                        <textarea  id="@backcommentId" cols="50" rows="5" style="width: 97%"> @Model.ListOrderProof.ElementAt(i).AdminBackComment</textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                                                                      
+
+                                                    <div class="col-md-4 btnfrnt">
+
+                                                        <div class="btn btn-default frontProof " title="@backpoofID" id="@frontpoofID">Front</div>
+                                                        @if (!string.IsNullOrEmpty(Model.ListOrderProof.ElementAt(i).DesignerBackFiles))
+                                                        {          
+                                                            <div class="btn btn-default frontProof1" title="@frontpoofID" id="@backpoofID">Back</div>
+                                                        }
+                                                    </div>
+                                                    <div class="col-md-8 cmmnt-bttn">
+                                                        <input type="button" class="@Model.ListOrderProof.ElementAt(i).PkOrderProofId btn-success" id="@Model.ListOrderProof.ElementAt(i).PkOrderProofId" value="Add Comment" style="width:200px" onclick="AddAdminComment(this)" />
+                                                        </div>
+                                                </div>
+                                            </div>
+                                       
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    }
+                }
+                <div class="col-md-12">
+                    <div class="col-md-6 boxgrid" style="margin: 0px; padding: 0 15px 0 0;">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading orignal-order" data-toggle="collapse" data-target="#OrgnalOrderInfo">Orignal Order Info   </div>
+                            <div class="panel-body collapse in" id="OrgnalOrderInfo">
+                                <div class="row form-group">
+                                    <div class="col-sm-12">
+                                        <dl class="item-options">
+                                            <dt>Size</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).size                           </dd>
+                                            <dt>Paper</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).paper                            </dd>
+                                            <dt>Card Color</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).CardColor                          </dd>
+                                            <dt>Quantity</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).quantity                            </dd>
+                                            <dt>Printing Turnaround Time</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).turnaround                            </dd>
+
+
+                                            @if (Model.GetOrderItems.ElementAt(0).fileupload1 != null)
+                                            {
+                                                <dt style="margin-top: 13px;">Uploaded File 1 </dt>
+                                                <dd>
+                                                    @{var path1 = "http://peasyprint.com/index.php/test/index/download/id/" + Model.GetOrderItems.ElementAt(0).fileupload1.Replace('"', ' ');}
+                                                    <a href="@path1" style="font-size:30px">Download File 1</a>
+                                                </dd>
+                                            }
+                                            @if (Model.GetOrderItems.ElementAt(0).fileupload2 != null)
+                                            {
+                                                <dt style="margin-top: 13px;">Uploaded File 2</dt>
+                                                <dd>
+                                                    @{var path2 = "http://peasyprint.com/index.php/test/index/download/id/" + Model.GetOrderItems.ElementAt(0).fileupload2.Replace('"', ' ');}
+                                                    <a href="@path2" style="font-size:30px">Download File 2</a>
+
+
+
+                                                </dd>
+                                            }
+                                            @if (Model.GetOrderItems.ElementAt(0).fileupload3 != null)
+                                            {
+                                                <dt style="margin-top: 13px;">Uploaded File 3</dt>
+                                                <dd>@{var path3 = "http://peasyprint.com/index.php/test/index/download/id/" + Model.GetOrderItems.ElementAt(0).fileupload3.Replace('"', ' ');}
+                                                    <a href="@path3" style="font-size:30px">Download File 3</a>
+
+                                                </dd>
+                                            }
+                                            @if (Model.GetOrderItems.ElementAt(0).front != null)
+                                            {
+                                                <dt style="margin-top: 13px;">Front</dt>
+                                                <dd>
+
+                                                    @{var path4 = "http://peasyprint.com/index.php/test/index/download/id/" + Model.GetOrderItems.ElementAt(0).front.Replace('"', ' ');}
+                                                    <a href="@path4" style="font-size:30px">Download Front File</a>
+
+                                                </dd>
+                                            }
+                                            @if (Model.GetOrderItems.ElementAt(0).Back != null)
+                                            {
+                                                <dt style="margin-top: 13px;">Back</dt>
+                                                <dd>
+                                                    @{var path5 = "http://peasyprint.com/index.php/test/index/download/id/" + Model.GetOrderItems.ElementAt(0).Back.Replace('"', ' ');}
+                                                    <a href="@path5" style="font-size:30px">Download Back File</a>
+
+                                                </dd>
+                                            }
+
+                                            <dt>General Instruction</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).generalInstruction                            </dd>
+                                            <dt>Design Instructions Front</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).DesignInstructionsFront                          </dd>
+
+                                            <dt>Design Instructions Back</dt>
+                                            <dd>@Model.GetOrderItems.ElementAt(0).DesignInstructionsBack                            </dd>
+
+
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-md-6 boxgrid " style="margin: 0px; padding: 0 0 0 15px;">
+                    <div class="panel  panel-default">
+                        <div class="panel-heading" data-toggle="collapse" data-target="#ChangeStatging">Change  Staging</div>
+                        <div class="panel-body collapse in" id="ChangeStatging">
+                            <div class="row form-group">
+                                <label for="inputEmail3" class="col-sm-12 control-label">Select Stage:</label>
+                                <div class="col-sm-5">
+                                    @if (Model.GetOrderItems.ElementAt(0).PkStageId != null)
+                                    {
+                                        @Html.DropDownListFor(m => m.GetOrderItems.ElementAt(0).PkStageId, new SelectList(Model.StageList, "PkStageId", "StageName", Model.GetOrderItems.ElementAt(0).PkStageId), "----- Select -----", new { @Id = "ddlStageList", @style = "width:200px" })
+                                    }
+                                </div>
+                                @if (Model.ProjectType.ToString().ToLower() == "design job")
+                                {
+                                <div class="row form-group">
+                                    
+                                    <div class="col-sm-4">
+                                    <input type="button" class="btn-success" value="SUBMIT" id="btnUpdateStage" style="margin-top: 0px;" />
+                                        </div>
+                                </div>
+                                }
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-12 boxgrid" style="margin: 0px; padding: 0px;">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading" data-toggle="collapse" data-target="#AssignDesigner">Assigned Designer @Model.OrderNumber</div>
+                            <div class="panel-body collapse in" id="AssignDesigner">
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Job Type </label>
+                                    <div class="col-sm-12">
+                                        @Model.GetOrderItems.ElementAt(0).JobType
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Designer Job Status </label>
+                                    <div class="col-sm-12">
+                                        @if (Model.GetOrderItems.ElementAt(0).IsItemAccepted == true)
+                                        {
+                                            if (Model.GetOrderItems.ElementAt(0).IsDesignerJobClosed == true)
+                                            {
+                                            <div>Closed</div> 
+                                            }
+                                            else
+                                            {
+                                            <div>Open</div>
+                                            }
+                                        }
+                                        else if (Model.GetOrderItems.ElementAt(0).IsItemAccepted == false)
+                                        {
+                                            <div>Rejected</div>
+                                        }
+                                        else
+                                        {
+                                            <div>No Status</div>
+                                        }
+                                    </div>
+                                </div>
+                                @using (Html.BeginForm("AssignDesignerWithFile", "Order", FormMethod.Post, new { Id = "main_graphics", @class = "", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                                {
+                                    
+
+                                    <div class="row form-group">
+                                        <label for="inputEmail3" class="col-sm-12 control-label">Item Name </label>
+                                        <div class="col-sm-12">
+                                            @Model.GetOrderItems.ElementAt(0).ItemName
+                                        </div>
+                                    </div>
+                             <div class="row form-group">
+                                        <label for="inputEmail3" class="col-sm-12 control-label">Select Desinger</label>
+                                        <div class="col-sm-12">
+                                            @Html.HiddenFor(m => m.GetOrderItems.ElementAt(0).ID)
+                                            @Html.HiddenFor(m => m.OrderNumber)
+
+                                            @if (Model.GetOrderItems.ElementAt(0).IsItemAccepted == true)
+                                            {
+                                                @Html.DropDownListFor(m => m.GetOrderItems.ElementAt(0).DesignerId, new SelectList(Model.DesingerList, "DesignerId", "DesignerName", Model.GetOrderItems.ElementAt(0).DesignerId), "----- Select -----", new { @id = "Designerddl", @disabled = "disabled" })
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(m => m.GetOrderItems.ElementAt(0).DesignerId, new SelectList(Model.DesingerList, "DesignerId", "DesignerName", Model.GetOrderItems.ElementAt(0).DesignerId), "----- Select -----", new { @id = "Designerddl" })
+                                            }
+                                        </div>
+                                    </div>                     
+                                    <div class="row form-group">
+                                        <label for="inputEmail3" class="col-sm-12 control-label">Admin Comment </label>
+                                        <div class="col-sm-12">
+                                            <textarea id="txtAdminComment" cols="50" rows="5" style="width: 95%" name="txtAdminComment"> </textarea>
+                                        </div>
+                                    </div>
+                                 
+                                    <div class="row form-group">
+                                        <label for="inputEmail3" class="col-sm-12 control-label">Files</label>
+                                        <div class="col-sm-12">
+                                            <div id="content">
+                                                <style scoped >
+                                                    .row {
+                                                        margin-left:0px;
+                                                        margin-top:5px;
+                                                    }
+                                                </style>
+                                                <div class="row">
+                                                    <input type="file" class="col-sm-6" name="files" id="file" />
+                                                    <input style="float: left; margin-top: 2px; margin-left: 10px" type="button" class="btn-danger" value="REMOVE" onclick="removeRow(this)">
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="add-more" style="float: right;">
+                                            <input type="button" class="btn-success add-more-succ" name="files" id="addmorefile" value="ADD MORE" onclick="addRow()" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                 
+                                 
+                    
+                            
+                                    <div class="row form-group">
+                                        <label for="inputEmail3" class="col-sm-12 control-label"></label>
+                                        @if (Model.ProjectType.ToString().ToLower() == "design job")
+                                        {
+                                            <div class="col-sm-12">
+                                                <input id="takejobback" type="button" class="btn-danger" value="TAKE BACK" style="height: 36px; margin-bottom: 41px; margin-left: 0px;"> 
+                                                <input type="submit" class="btn-success" style="width:106px;"  value="SUBMIT">
+                                                
+                                                @*@if (Model.GetOrderItems.ElementAt(0).JobType != "Designing")
+                                    {
+                                        <input type="button" class="btn btn-default" value="Submit" id="btnAssignDesigner" style="margin-top: 0px; margin-left: 37%" />
+                                    }
+                                    else
+                                    {
+                                        <input type="button" class="btn btn-default" value="Submit" id="btnAssignDesigner" style="margin-top: 0px; margin-left: 37%" />
+                                    }*@
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-12 boxgrid"  style="margin: 0px; padding: 0px;">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading" data-toggle="collapse" data-target="#OrderContent">Order Content</div>
+                            <div class="panel-body collapse in" id="OrderContent">
+                                
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Designer Content Request </label>
+                                    <div class="col-sm-12">
+                                        @if (Model.GetOrderItems.ElementAt(0).IsContentRequset == true)
+                                        {
+                                            <div>Received</div> 
+                                        }
+                                        else
+                                        {
+                                            <div>No</div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Download Content</label>
+                                    <div class="col-sm-12">
+                                        @{
+                                        char[] splitedcBy123 = new char[] { ',' };
+                                        char[] splitedcBy3 = new char[] { '_' };
+                                        var cAllFiles12 = @Model.ContentFile;
+                                        var CustomerUploadedFiles = @Model.GetOrderItems.ElementAt(0).CustomerUploadedFiles;
+                                    
+                                        }
+                                        @{ if (cAllFiles12 != null)
+                                           {
+                                               var csplitedfile1 = cAllFiles12.Split(splitedcBy123);
+                                               if (csplitedfile1.Count() > 1)
+                                               {
+                                                   for (int j = 1; j < csplitedfile1.Count(); j++)
+                                                   {
+                                                       var imgpath = "/../Images/proofUpload/" + csplitedfile1.ElementAt(j);
+                                                       var filenamw = csplitedfile1.ElementAt(j).Split(splitedcBy3);
+                                            @Html.ActionLink(filenamw[2], "DownloadContentFiles", new { FileName = csplitedfile1.ElementAt(j).ToString() })                                                                   
+                                                   }
+                                               }
+                                               else
+                                               {
+                                            <div>
+                                                <h5>No files uploaded yet for this order.</h5>
+                                            </div>
+                                               }
+                                           }
+                                        }
+
+
+                                    </div>
+
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Accepted </label>
+                                    <div class="col-sm-12">
+                                        @if (Model.GetOrderItems.ElementAt(0).IsContentWriterAccepted == true)
+                                        {
+                                            <div id="ContentWriterstatus1">Yes</div>
+                                        }
+                                        else
+                                        {
+                                            <div id="ContentWriterstatus">No</div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Job Status</label>
+                                    <div class="col-sm-12">
+                                        @if (Model.GetOrderItems.ElementAt(0).IsContentWriterJobClosed == true)
+                                        {
+                                            <div style="width: 100px">
+                                                <h5>Closed</h5>
+                                            </div>  <div id="Closethejob" style="cursor: pointer; float: left">
+                                                <h5>Reopen This Job</h5>
+                                            </div>
+                                            <br /> <br />
+                                        }
+                                        else
+                                        {
+                                            <div style="width: 100px">
+                                                <h5>Open</h5>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Content Writter</label>
+                                    <div class="col-sm-12">
+                                        @if (Model.GetOrderItems.ElementAt(0).IsContentWriterAccepted == true)
+                                        {
+                                            @Html.DropDownListFor(m => m.GetOrderItems.ElementAt(0).fkContentWritterId, new SelectList(Model.ContentWriterList, "pkWriterId", "WriterName", Model.GetOrderItems.ElementAt(0).fkContentWritterId), "----- Select -----", new { @id = "ContentWriterddl", @disabled = "disabled" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(m => m.GetOrderItems.ElementAt(0).fkContentWritterId, new SelectList(Model.ContentWriterList, "pkWriterId", "WriterName", Model.GetOrderItems.ElementAt(0).fkContentWritterId), "----- Select -----", new { @id = "ContentWriterddl" })
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Admin Comment</label>
+                                    <div class="col-sm-12">
+                                        <textarea id="txtAdminCommentForContentWriter" style="width: 95%" rows="5" cols="50">@Model.GetOrderItems.ElementAt(0).AdminCommentforContent</textarea>
+                                    </div>
+                                </div>
+                                @if (Model.ProjectType.ToString().ToLower() == "design job")
+                                {
+                                    <div class="row form-group"  style="margin: 0px 0px 36px;">
+                                        <label for="inputEmail3" class="col-sm-12 control-label"></label>
+                                        <div class="col-sm-12">
+                                             <div class="col-sm-3 btn-success1">
+                                                <input type="button" class="btn btn-success" value="SUBMIT" id="btnAssignContentWriter"  />
+                                                 </div>
+                                            <div class="col-sm-3 btn-success1">
+                                                <input type="button" class="btn btn-danger" value="Take back" id="takebackcontent"   />
+                                                </div>
+                                            <style scoped="scoped">
+                                                input[type="button"] {
+                                                    margin-top:10px;
+                                                    margin-left:0px;
+                                                }
+                                                .col-sm-6 {
+                                                    padding-left:0px;
+                                                }
+                                            </style>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 boxgrid">
+                    <div class="panel  panel-default">
+                        <div class="panel-heading" data-toggle="collapse" data-target="#AdminCommentsAndFiles">Admin Comment And File</div>
+                        <div class="panel-body collapse in" id="AdminCommentsAndFiles">
+                            <div class="row form-group">
+                                <label for="inputEmail3" class="col-sm-12 control-label">Comment:</label>
+                                <div class="col-sm-12">
+                                    @Model.GetOrderItems.ElementAt(0).Comments
+                                </div>
+                            </div>
+
+                            <div class="row form-group">
+                                <label for="inputEmail3" class="col-sm-12 control-label">File:</label>
+                                <div class="col-sm-12">
+
+                                    @{ 
+                                   
+                                char[] splitedBy1 = new char[] { ',' };
+                                char[] splitedByhifen = new char[] { '_' };
+                                string[] splitedfilebycomma = new string[10];
+                                if (Model.GetOrderItems.ElementAt(0).AdminAssignFile != null)
+                                {
+                                    var AllFiles123 = @Model.GetOrderItems.ElementAt(0).AdminAssignFile.ToString();
+                                    splitedfilebycomma = AllFiles123.Split(splitedBy1);
+
+                                }
+                                          
+                                          
+                                    }
+
+                                    @for (int j = 1; j < splitedfilebycomma.Count(); j++)
+                                    {
+                                        if (splitedfilebycomma.ElementAt(j) != null)
+                                        {
+                                            var filenamw = splitedfilebycomma.ElementAt(j).Split(splitedByhifen);
+                                 
+                                        @Html.ActionLink(filenamw[3], "DownloadAdminProofFile", new { FileName = splitedfilebycomma.ElementAt(j).ToString() }) <br />
+                                        }
+
+                                    }
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+               
+                <div class="col-md-12 boxgrid">
+                    <div class="panel  panel-default">
+                        <div class="panel-heading" data-toggle="collapse" data-target="#CustomerComment">Customer Comment and Files</div>
+                        <div class="panel-body collapse in" id="CustomerComment">
+                            <div class="row form-group">
+                                <label for="inputEmail3" class="col-sm-12 control-label">Front Comment</label>
+                                <div class="col-sm-12">
+                                    @Model.GetOrderItems.ElementAt(0).ItemFrontComment
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label for="inputEmail3" class="col-sm-12 control-label">Back Comment</label>
+                                <div class="col-sm-12">
+                                    @Model.GetOrderItems.ElementAt(0).ItemBackComment
+                                </div>
+                            </div>
+                            @if (CustomerUploadedFiles != null)
+                            {
+                                var csplitedfile1 = CustomerUploadedFiles.Split(splitedcBy123);
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-12 control-label">Files</label>
+                                    <div class="col-sm-12">
+                                        <div>
+                                            @for (int j = 1; j < csplitedfile1.Count(); j++)
+                                            {
+                                                var imgpath1 = "/../Images/proofUpload/" + csplitedfile1.ElementAt(j);
+                                                var filenamw = csplitedfile1.ElementAt(j).Split(splitedcBy3);
+                                                <img src="@imgpath1"  style="max-height:200px; max-width:300px"/>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+
+
+                <div class="col-md-3"></div>
+                <div class="col-md-8" id="demo">
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+<script>
+
+    $("#approveAndinform").bind("click", function () {
+        debugger;
+        var OrderProofId = $(this).data("orderproofid");
+        if (OrderProofId > 0) {
+            $.post('@Url.Action("approveAndinform", "Order")', { OrderProofId: OrderProofId }, function (data) {
+                if (data == "True") {
+                    toastr.success("Approved and informed to client Succesfully!");
+                    setTimeout(function () { window.location.href = window.location.href; }, 1000);
+                }
+            });
+
+        }
+    });
+
+    $("#disapprove").bind("click", function () {
+        debugger;
+        var OrderProofId = $(this).data("orderproofid");
+        if (OrderProofId > 0) {
+            $.post('@Url.Action("disApprove", "Order")', { OrderProofId: OrderProofId }, function (data) {
+                if (data == "True") {
+                    toastr.success("Disapproved Succesfully!");
+                    setTimeout(function () { window.location.href = window.location.href; }, 1000);
+                }
+            });
+
+        }
+    });
+
+
+    function onSuccess() {
+        toastr.success("Changes Saved Succesfully");
+
+    }
+
+
+    $(".frontProof").bind("click", function () {
+        var otherproofID = this.title;
+        var CurrentproofID = this.id;
+
+        $(".frontProof1").css("background-color", "#e7e7e7");
+        $(".frontProof").css("background-color", "white");
+
+
+        $("#" + otherproofID).css("display", "none");
+        $("#" + CurrentproofID).css("display", "block");;
+
+    })
+    $(".frontProof1").bind("click", function () {
+        var otherproofID = this.title;
+        var CurrentproofID = this.id;
+
+        $(".frontProof").css("background-color", "#e7e7e7");
+        $(".frontProof1").css("background-color", "white");
+        $("#" + otherproofID).css("display", "none");
+        $("#" + CurrentproofID).css("display", "block");
+
+
+    });
+
+
+
+    function checkFile(e) {
+
+        /// get list of files
+        var file_list = e.files;
+
+        /// go through the list of files
+        for (var i = 0, file; file = file_list[i]; i++) {
+
+            var sFileName = file.name;
+
+            var sFileExtension = sFileName.split('.')[sFileName.split('.').length - 1].toLowerCase();
+            if (sFileExtension != "png") {
+                toastr.success("only PNG files will be uploaded.");
+                removeRow(e);
+
+            }
+            else {
+                return true;
+            }
+        }
+    }
+
+
+    function addRow() {
+        var div = document.createElement('div');
+
+        div.className = 'row';
+        div.style = 'padding:0';
+
+        div.innerHTML = '<input type="file" class="col-sm-6" name="files"  style="float:left;"  />\
+        \
+        \
+        <input style="float:left;margin-top:2px; margin-left:10px" type="button" value="REMOVE" class="btn-danger" onclick="removeRow(this)">';
+
+        document.getElementById('content').appendChild(div);
+    }
+    function removeRow(input) {
+        document.getElementById('content').removeChild(input.parentNode);
+    }
+
+    function AddAdminComment(e) {
+
+        var pkOrderId = $("#ID").val();
+        var PkOrderProofId = e.id;
+        var bckid = "#AdminBackComment_" + PkOrderProofId;
+        var frntid = "#AdminBackComment1_" + PkOrderProofId;
+
+
+        var frontcomment1 = $(frntid).val();
+        var backcomment = $(bckid).val();
+
+        $.ajax({
+            url: '@Url.Action("AddFrntAndBckproofComment", "Order")',
+
+            type: "POST",
+            data: { PkOrderProofId: PkOrderProofId, frontcomment: frontcomment1, backcomment: backcomment },
+
+
+            success: function (result) {
+                toastr.success("Comment Added Succesfully");
+            }
+        });
+
+
+    }
+
+
+    $("#takejobback").bind("click", function () {
+        var id = $("#ID").val();
+        $.ajax({
+            url: '@Url.Action("TakeJobBack", "Order")',
+            type: 'POST',
+            data: { ItemID: id },
+            success: function (result) {
+                toastr.success("Job tool back Succesfully");
+                window.location.reload();
+            }
+        });
+    });
+
+
+
+        $("#takebackcontent").bind("click", function () {
+            var id = $("#ID").val();
+            $.ajax({
+                url: '@Url.Action("TakeJobBackContent", "Order")',
+                type: 'POST',
+                data: { ItemID: id },
+                success: function (result) {
+                    toastr.success("Job tool back Succesfully");
+                    window.location.reload();
+                }
+            });
+        });
+        $(".chkproof").bind("click", function () {
+            var chkOrderId = this.id;
+            var splitid = chkOrderId.split("_");
+            var pkOrderId = splitid[1];
+
+            var ordernumber = this.title;
+
+
+            $.ajax({
+                url: '@Url.Action("SelectProofforCustomer", "Order")',
+                type: "POST",
+                data: { OrderId: pkOrderId, orderNumber: ordernumber },
+
+
+                success: function (result) {
+                    toastr.success("Saved Succesfully");
+                    window.location.reload();
+
+                }
+            });
+
+        });
+        $("#Closethejob").bind("click", function () {
+
+            var pkOrderId = $("#ID").val();
+
+
+            $.ajax({
+                url: '@Url.Action("ReopenContentWriterJob", "Order")',
+            type: "POST",
+            data: { OrderId: pkOrderId },
+
+
+            success: function (result) {
+                toastr.success("Saved Succesfully");
+
+                window.location.reload();
+
+            }
+        });
+    });
+    $("#btnAssignContentWriter").bind("click", function () {
+
+        var pkOrderId = $("#ID").val();
+        var ContentWritterId = $("#ContentWriterddl").val();
+        var OrderNumber = $("#OrderNumber").val();
+        var Comments = $("#txtAdminCommentForContentWriter").val();
+
+
+
+        var IsContentAssign = $("#IsContentAssign").is(":checked") ? "true" : "false"
+
+
+        $.ajax({
+            url: '@Url.Action("AssignContentWriter", "Order")',
+
+            type: "POST",
+            data: { OrderId: pkOrderId, ContentWritterId: ContentWritterId, OrderNumber: OrderNumber, IsContentAssign: IsContentAssign, Comments: Comments },
+            success: function (result) {
+                toastr.success("Content Saved Succesfully");
+                $("#ContentWriterstatus").text("Yes");
+                location.reload();
+            }
+        });
+    });
+    $("#btnAssignDesigner").bind("click", function () {
+
+        var pkOrderId = $("#ID").val();
+        var Designerddl = $("#Designerddl").val();
+        var OrderNumber = $("#OrderNumber").val();
+        var Comments = $("#txtAdminComment").val();
+
+
+        $.ajax({
+            url: '@Url.Action("AssignDesigner", "Order")',
+
+                 type: "POST",
+                 data: { OrderId: pkOrderId, DesignerId: Designerddl, OrderNumber: OrderNumber, Comments: Comments },
+                 success: function (result) {
+
+                     toastr.success("Designer Assigned Succesfully");
+                     location.reload();
+                 }
+             });
+         });
+
+
+         $("#btnAdminComment").bind("click", function () {
+
+             var pkOrderId = $("#pkOrderId").val();
+             var Comments = $("#txtAdminComment").val();
+             var OrderNumber = $("#OrderNumber").val();
+
+             $.ajax({
+                 url: '@Url.Action("AddComments", "Order")',
+
+            type: "POST",
+            data: { OrderId: pkOrderId, Comments: Comments, OrderNumber: OrderNumber },
+
+
+            success: function (result) {
+                toastr.success("Comment Saved Succesfully");
+                location.reload();
+
+            }
+        });
+    });
+
+
+    $("#btnUpdateStage").bind("click", function () {
+
+        var OrderNumber = $("#ID").val();
+        var OrderStage = $("#ddlStageList").val();
+
+
+
+        $.ajax({
+            url: '@Url.Action("UpdateOrderStage", "Order")',
+
+            type: "POST",
+            data: { OrderNumber: OrderNumber, OrderStage: OrderStage },
+
+
+            success: function (result) {
+                toastr.success("Saved Succesfully");
+                location.reload();
+
+            }
+        });
+    });
+
+
+
+</script>
+

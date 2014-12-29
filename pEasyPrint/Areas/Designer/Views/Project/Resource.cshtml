@@ -1,0 +1,229 @@
+﻿@model pEasyPrint.Areas.Designer.Models.OrderModel
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    ViewBag.Title = "Resource";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+}
+
+
+
+
+<style>
+    /* Example Styles for Demo */
+    .etabs
+    {
+        margin: 0;
+        padding: 0;
+    }
+
+    .tab
+    {
+        display: inline-block;
+        zoom: 1;
+        *display: inline;
+        background: #eee;
+        border: solid 1px #999;
+        border-bottom: none;
+        -moz-border-radius: 4px 4px 0 0;
+        -webkit-border-radius: 4px 4px 0 0;
+    }
+
+        .tab a
+        {
+            font-size: 14px;
+            line-height: 2em;
+            display: block;
+            padding: 0 10px;
+            outline: none;
+        }
+
+            .tab a:hover
+            {
+                text-decoration: underline;
+            }
+
+        .tab.active
+        {
+            background: #fff;
+            padding-top: 6px;
+            position: relative;
+            top: 1px;
+            border-color: #666;
+        }
+
+        .tab a.active
+        {
+            font-weight: bold;
+        }
+
+    .tab-container .panel-container
+    {
+        background: #fff;
+        border: solid #666 1px;
+        padding: 10px;
+        -moz-border-radius: 0 4px 4px 4px;
+        -webkit-border-radius: 0 4px 4px 4px;
+    }
+
+    .panel-container
+    {
+        margin-bottom: 10px;
+    }
+    .tab-content
+    {
+        background: #fff;
+        padding: 10px 0;
+        border-bottom: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+    }
+</style>
+
+
+
+<div class="row">
+    <div class="grid_3 left-sidebar" style="width: 18.667%">
+
+        @Html.Partial("_LeftMenu", Model)
+
+
+    </div>
+    <div id="mvcGrid" style="width: 81%; padding: 1px; float: left">
+
+
+        <div class="grid_12" style="border-bottom: none">
+            @Html.Partial("_DesignerTopMenu")
+
+        </div>
+
+        <div class="breadcrumbs">
+            <div class="center_align">
+                <ul>
+                    <li class="category287"><strong>@Html.ActionLink("DashBoard", "Index", "Project")      </strong><span>
+                        <img src="/../images/breadcrumbs_divider.png"></span></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div role="tabpanel">
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Video Tutorial</a></li>
+                <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">File Setup</a></li>
+                <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Turnaround Times</a></li>
+                <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Design Contest</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <p>
+                        <ul>
+                            <li>
+                                <p>Projects will be available on your list as well other designer’s list, so it’s on a first-come first-served basis (unless restrictions apply).</p>
+                            </li>
+                            <li>
+                                <p>Only choose a project if you are ready to start immediately.</p>
+                            </li>
+                            <li>
+                                <p>Only accept projects which you feel you will excel at.</p>
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="profile">
+                    <p>
+                        <ul>
+                            <h4>File Setup / Upload Instructions
+                            </h4>
+                            <li>
+                                <p style="font-size: 12px"><b>COLOR MODE:</b> All files should be in CMYK, full bleed.</p>
+                            </li>
+                            <li>
+                                <p><b>START FILES:</b> Use attached start files w/ each project.  Stay inside safe zones.   </p>
+                            </li>
+                            <li>
+                                <p>
+                                    <b>BACKUPS:</b> At the stage when you see that client is ok with overall design and only requires minor changes,
+                                    <br />
+                                    then upload your Source File (PSD) into the system so we have backups just in case you’re sick or absent.
+                                </p>
+                            </li>
+                            <li>
+                                <p><b>WATERMARK:</b> Please add watermark (PeasyPrint) into your proofs (72dpi).  Make it light and diagonal ( / ).</p>
+                            </li>
+                            <li>
+                                <p><b>PROOF FILE NAMES:</b> Name your files same as the name of the project. </p>
+                            </li>
+                            <li>
+                                <p><b>PROOF FILE NAMES:</b> “The Name Of Project_Proof1” / “The Name Of Project_Proof2” etc. </p>
+                            </li>
+                            <li>
+                                <p><b>ZIPS:</b> Once client approves your design, please provide a zip containing the following: 1) PDF (300 dpi, CMYK) and 2) final SOURCE FILES.</p>
+                            </li>
+                            <li>
+                                <p><b>FINAL FILE NAMES:</b>"The Name Of Project_Final"</p>
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="messages">
+                    <ul>
+                        <li>
+                            <p>You must provide 1st Proof within <b>8 hours</b> of project acceptance or else project will be reassigned</p>
+                        </li>
+                        <li>
+                            <p>You must provide edits within a timely manner (8-10 hrs.) or else job will be reassigned and there will be reductions in pay (TBD).</p>
+                        </li>
+                        <li>
+                            <p>You will be notified immediately from Admin of any edits</p>
+                        </li>
+                    </ul>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="settings">
+                    <ul>
+                        <li>
+                            <p>Customers will be rating your performance at the end of each project (5 Star System).</p>
+                        </li>
+                        <li>
+                            <p>You must maintain a minimum performance rating of 4 stars at all times.</p>
+                        </li>
+                        <li>
+                            <p>Bonuses will given at the end of the month to the team member with the best performance (TBD).</p>
+                        </li>
+                        <li>
+                            <p>Our goal is to be different so we expect VERY high standards from team members.</p>
+                        </li>
+                        <li>
+                            <p>We only want to work with the best and on a long-term basis.</p>
+                        </li>
+                        <li>
+                            <p>Thank you for helping us support local food banks!</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+<script>
+    var gridParent = $("#mvcGrid");
+    $('#myTab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+</script>

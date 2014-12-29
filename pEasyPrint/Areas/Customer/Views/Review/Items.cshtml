@@ -1,0 +1,30 @@
+﻿@model IEnumerable<pEasyPrint.Models.OrderItemModel>
+@using pEasyPrint.Models
+
+@using MvcContrib.UI.Grid
+
+@{
+    ViewBag.Title = "Items";
+    Layout = "~/Areas/Customer/Views/Shared/_Layout.cshtml";
+}
+<style>
+
+    .broucherField
+    {
+        width:500px;
+       
+    }
+
+</style>
+
+<div id="mvcGrid" class="col-md-12" style="background-color: white; float: left;">    
+    @Html.Grid(Model).Columns(col =>
+                {                   
+                    col.For(p => p.ItemName).Named("Item Name").Sortable(true);
+                    col.For(p => p.CreatedOn).Named("Order Date").Sortable(false);
+                    col.For(p => "Size : " + p.size + " Folding :" + p.folding + " Paper :" + p.paper
+                        + " Color  Cord:" + p.color + " Quantity: " + p.quantity + "Printing Turnaround Time :" + p.turnaround
+                        ).Named("Details").Sortable(false).Attributes(@class => "broucherField");
+                    col.For(p => Html.ActionLink(" ", "Item", new { id = Encdy.Encode(p.ID)}, new { @class = "fa fa-pencil" })).Named("Review").Sortable(false);
+                }).Attributes(@class => "records_list table table-bordered table-hover table-responsive")
+</div>

@@ -1,0 +1,124 @@
+﻿@model pEasyPrint.Areas.Admin.Models.OrderModel      
+<style>
+
+    .Leftmenu {
+     cursor:pointer;
+    }
+</style>
+<div class="left-sidebar">
+    <div class="service-div">
+        <h2>Status Information</h2>
+        <div id="industry-group1">
+            <p  class="Leftmenu list-group-item" id="-1">Total Earnings <span class="badge">@Model.TotalEarnings</span></p>
+            <p  class="Leftmenu list-group-item" id="-2">Earning for this months <span class="badge">@Model.MonthEarnings</span></p>
+            <p  class="Leftmenu list-group-item" id="1">New Orders <span class="badge">@Model.NewOrderCount </span></p>
+            
+           
+            <p  class="Leftmenu list-group-item" id="2">Accepted <span class="badge">@Model.ApprovedCount</span></p>
+           
+            <p  class="Leftmenu list-group-item" id="3">Completed <span class="badge">@Model.CompletedCount</span></p>
+
+
+           
+        </div>
+       
+            <h2>Search Order</h2>
+            
+             <div id="industry-group2"  style="padding:12px">
+                               <select id="OrdersSearchType">
+            <option value="-1">Select Option</option>
+            <option value="OrderNumber">Order Number</option>
+            <option value="ClientName">Client Name</option>
+            <option value="Project">Project</option>
+            <option value="ProjectType">Project Type</option>
+            <option value="Phone">Phone</option>
+            <option value="OrderEmail">Email</option>
+
+
+        </select>
+                           
+                           <input id="txtOrderEmail" name="email" type="text" class="email" placeholder="Email Address" style="margin-top:5px;" />
+                           <input id="btnDesignerOrdetSearch" class ="btn btn-default" name="Submit" type="button" value="Submit" style="margin-top:5px; margin:5px 5px 5px 45px"  />
+                          </div> 
+            
+                
+    </div>
+</div>
+<script>
+   // var gridParent = $("#mvcGrid");
+    $("#btnDesignerOrdetSearch").bind("click", function () {
+       
+        var currenturl = window.location.href.toLowerCase();;
+
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = "";
+      
+        var SearchType = "";
+        var SearchValue = "";
+        SearchType = $("#OrdersSearchType").val(); //txtDesignerEmail
+        SearchValue = $("#txtOrderEmail").val();
+
+        if (SearchType != -1) {
+             
+            if (SearchValue != "") {
+               
+               
+
+                var finalstring = currenturl.split("order");
+       
+                window.location.href = finalstring[0] + "order/?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+                $("#txtOrderEmail").val("");
+            }
+
+            else {
+                alert("Please fill search value.");
+            }
+        }
+        else {
+            alert("Please select option.");
+        }
+
+    });
+
+    $(".Leftmenu").bind("click", function () {
+        var $form = $(this).closest("form");
+        var currenturl = window.location.href.toLowerCase();
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = ""; //txtDesignerEmail
+        var DesignerEmail = "";
+        var OrderStage = this.id;
+
+        var OrderNumber = "";
+        var url;
+
+        if (currenturl.indexOf("order/edit") != -1 || currenturl.indexOf("order/item") != -1) {
+            var finalstring = currenturl.split("order/");
+            window.location.href = finalstring[0] + "order/?page=" + page + "&OrderStage=" + OrderStage;
+        }
+        else {
+            
+            url = currenturl +"?page=" + page +  "&OrderStage=" + OrderStage + "";
+
+
+            $.get(url).success(function (data) {
+               
+                var container = '#' + $(gridParent).attr('id');
+                var table = $('<div/>').html(data).find(container).html()
+                $(container).html(table);
+            });
+        }
+
+
+
+
+
+
+    });
+
+
+
+</script>

@@ -1,0 +1,517 @@
+﻿<style>
+    .radiobox input
+    {
+        float: left;
+        width: 40px;
+    }
+
+    .radiobox label
+    {
+        float: left;
+        font-size: 10px !important;
+    }
+
+    .radiobox h2
+    {
+        font-size: 15px;
+        float: left;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+        width: 17%;
+        color: #000;
+    }
+    .sumit-bttn {margin:10px 0px 0 -12px!important; padding: 0; float:left;}
+    .orignal-form .panel-body { min-height:370px; }
+    .original-orderdd dl.item-options dd{width: 100%;}
+    .original-orderdd dl.item-options dt{width: 100%;}
+    .trheader
+    {
+        background-color: #eaeaea;
+    }
+</style>
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+
+@model pEasyPrint.Areas.Admin.Models.OrderModel
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int userid = WebSecurity.CurrentUserId;
+    pEasyPrint.pEasyPrintEntities _context = new pEasyPrint.pEasyPrintEntities();
+    pEasyPrint.tblContentWriter obj = _context.tblContentWriters.Where(i => i.PkContentWritterId == userid).FirstOrDefault();
+}
+
+
+
+<div class="container-fluid content-center">
+    <div class="row">
+        <div class=" grid_3  left-sidebar" style="width: 18.667%">
+            @Html.Partial("_LeftMenu", Model)
+        </div>
+        <div style="width: 81%; padding: 1px; float: left">
+
+            <div class="grid_12">
+                @Html.Partial("_ContentWriterTopMenu")
+            </div>
+
+            <div class="breadcrumbs">
+                <div class="center_align">
+                    <ul>
+                        <li class="category287"><strong>@Html.ActionLink("DashBoard", "Index", "Order")      </strong><span>
+                            <img src="/../images/breadcrumbs_divider.png"></span></li>
+                        <li class="category287"><strong>@Html.ActionLink("Order Details", "Index", "order")      </strong><span>
+                            <img src="/../images/breadcrumbs_divider.png" style="height: 35px;"></span></li>
+
+                        <li class="category287"><strong>@Html.ActionLink("Item Details", "item", "order", null, new { id = Model.GetOrderItems.ElementAt(0).ID })      </strong></li>
+
+
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-12 ">
+                <div class="row" style="margin-top: 10px">
+                     <div class="col-md-6 boxgrid orignal-form">
+                            <div class="panel  panel-default">
+                                <div class="panel-heading">Original Order Info</div>
+                                <div class="panel-body">
+                                    <div class="row form-group">
+
+                                        <div class="col-sm-12">
+
+
+                                            <dl class="item-options">
+                                                <dt>Size</dt>
+                                                <dd>@Model.GetOrderItems.ElementAt(0).size                           </dd>
+                                                <dt>Paper</dt>
+                                                <dd>@Model.GetOrderItems.ElementAt(0).paper                            </dd>
+                                                <dt>Card Color</dt>
+                                                <dd>@Model.GetOrderItems.ElementAt(0).color                          </dd>
+                                                <dt>Quantity</dt>
+                                                <dd>@Model.GetOrderItems.ElementAt(0).quantity                            </dd>
+                                                <dt>Printing Turnaround Time</dt>
+                                                <dd>@Model.GetOrderItems.ElementAt(0).turnaround                            </dd>
+
+
+                                            </dl>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+                    <div class="col-md-6 boxgrid">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading">Order # @Model.OrderNumber</div>
+                            <div class="panel-body">
+
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-12 control-label">Project Name</label>
+                                    <div class="col-sm-12">
+                                        @Html.HiddenFor(m => m.GetOrderItems.ElementAt(0).ID)
+                                        @Model.ProjectName
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-12 control-label">Order Date</label>
+                                    <div class="col-sm-12">
+                                        @Model.GetOrderItems.ElementAt(0).CreatedOn
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-12 control-label">Order Accepted</label>
+                                    <div class="col-sm-12">
+                                        @if (Model.GetOrderItems.ElementAt(0).IsContentWriterAccepted == true)
+                                        {
+
+                                            <div>Yes</div>
+                                        }
+                                        else
+                                        {
+                                        
+                                            <div>No</div>
+
+                                      
+                                        }
+
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-12 control-label">Order Stage</label>
+                                    <div class="col-sm-12">
+
+                                        @Model.GetOrderItems.ElementAt(0).StageName
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-12 control-label">Job Staus</label>
+                                    <div class="col-sm-12">
+
+                                        @if (Model.GetOrderItems.ElementAt(0).IsContentWriterJobClosed == false)
+                                        {
+
+                                            if (Model.GetOrderItems.ElementAt(0).IsContentWriterAccepted == true)
+                                            { 
+                                            <div style="width: 100px">
+                                                <h5>Open</h5>
+                                            </div>  <div id="Closethejob" style="cursor: pointer; float: left">
+                                                <h5>Close This Job</h5>
+                                            </div>
+                                            <br /> <br />
+                                            }
+                                            else if (Model.GetOrderItems.ElementAt(0).IsContentWriterAccepted == false)
+                                            { 
+                                            <div>Rejected</div>  }
+
+                                            else
+                                            {
+                                            <div style="width: 100px">
+                                                <h5>No Status</h5>
+                                            </div> 
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div style="width: 100px">
+                                                <h5>Closed</h5>
+                                            </div> 
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-12 control-label">Item Name</label>
+                                    <div class="col-sm-12">
+
+                                        @Model.GetOrderItems.ElementAt(0).ItemName
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div></div>
+                 <div class="col-md-12" style="padding: 0;">
+
+                    <div class="col-md-6" id="AddproofDiv" style="padding: 0 14px 0 0;">
+                        @using (Html.BeginForm("UploadDraft", "Order", FormMethod.Post, new { Id = "main_graphics", @class = "", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                        {
+                            <input type="hidden" name="hdnOrderNumber" id="hdnOrderNumber" value="@Model.GetOrderItems.ElementAt(0).ID" />
+
+                            <input type="hidden" name="hdnPkOrderID" id="hdnPkOrderID" value="@Model.GetOrderItems.ElementAt(0).ID" />
+                         
+   
+                            <div class="panel panel-default">
+                                <div class="panel-heading" data-toggle="collapse" data-target="#toggle-example">Upload Draft</div>
+                                <div class="panel-body" id="toggle-example">
+
+                                    <div class="col-sm-12">
+                                                        <div id="content">
+                                                    <div>
+                                                        <input type="file" class="col-sm-7" name="files" onchange="return checkFile(this);" id="file" multiple />
+
+
+                                                    </div>
+                                                </div>
+                                                     <div class="col-md-12">
+                                                    <h5>Only txt and document files is allow to upload.</h5>
+                                                </div>
+                                             <div class="add-more" style="float: left;width: 100%;">
+                                                <input type="button" class="btn-success add-more-succ" name="files" id="addmorefile" value="Add Morefile" onclick="addRow()" style="margin-top: 5px; float: left;margin-left: 0;" />
+                                       </div>
+                                        <div class="col-sm-12 sumit-bttn">
+                                                @{ 
+                            if (obj.IsActive == true)
+                            {
+                                if (Model.GetOrderItems.ElementAt(0).IsContentWriterAccepted == true)
+                                {
+                                    if (Model.GetOrderItems.ElementAt(0).IsContentWriterJobClosed != true)
+                                    { 
+                                                    <input type="submit" style="margin: 0 0 0 12px;" class="btn-success add-more-succ" value="Submit">
+                                    }
+                                    else
+                                    {
+                                                    <input type="submit" style="margin: 0 0 0 12px;" class="btn-success add-more-succ" value="Submit" disabled="disabled">
+                                    }
+
+                                }
+                                else
+                                {
+                                                    <input type="submit" style="margin: 0 0 0 12px;" class="btn-success add-more-succ" value="Submit" disabled="disabled">
+                                }
+                            }
+                                                }
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        
+                       
+                    
+                       
+                        }
+                    </div>
+
+                       <div class="col-md-6 boxgrid" style="padding: 0 0 0 14px;">
+                            <div class="panel  panel-default">
+                                <div class="panel-heading">Accept</div>
+                                <div class="panel-body">
+                                    <div class="row form-group">
+
+                                        <label for="inputPassword3" class="col-sm-12 control-label">Admin Comment</label>
+                                        <div class="col-sm-12">
+                                            @Model.GetOrderItems.ElementAt(0).AdminCommentforContent
+                                        </div>
+
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-sm-12">
+                                            YES @Html.RadioButtonFor(m => m.GetOrderItems.ElementAt(0).IsContentWriterAccepted, true, new { id = "active", @style = "height: 13px;margin-top: 0px; width:20px; " })
+                                            NO @Html.RadioButtonFor(m => m.GetOrderItems.ElementAt(0).IsContentWriterAccepted, false, new { id = "not-active", @style = "width:70px;height: 13px;margin-top: 0px;width:20px; " })
+                                        </div>
+                                    </div>
+
+                                    <div class="row form-group">
+
+                                        @{        
+                                            if (obj.IsActive == true)
+                                            {
+                                                if (Model.GetOrderItems.ElementAt(0).IsContentWriterJobClosed == true || Model.GetOrderItems.ElementAt(0).IsContentWriterAccepted == true)
+                                                { 
+                                            <input type="button" class="btn btn-default" value="Submit" id="btnIsAccepted" style="margin-top: 15px; margin-left: 2%" disabled="disabled" />
+                                  
+                                                }
+                                                else
+                                                {
+                                            <input type="button" class="btn btn-default" value="Submit" id="btnIsAccepted" style="margin-top: 15px; margin-left: 2%" />
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                            <label class="btn btn-danger">Your accout is disabled please Contact Tom</label>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+
+
+                    <div class="col-md-12" style="padding: 0;">
+
+                        <div class="col-md-12 boxgrid" style="padding: 0;">
+                            <div class="panel  panel-default">
+                                <div class="panel-heading" data-target="#Previouscontent">Down Load Previous Content</div>
+                                <div class="panel-body" id="Previouscontent">
+
+                                    <div class="row form-group">
+                                        @{
+                            
+                                            if (obj.IsActive == true)
+                                            {
+                                            <div class="col-sm-12">
+
+
+
+                                                @{
+                                                char[] splitedcBy = new char[] { ',' };
+                                                char[] splitedcBy2 = new char[] { '_' };
+                                                var cAllFiles = @Model.ContentFile;
+                                    
+                                                }
+                                                @{ if (cAllFiles != null)
+                                                   {
+                                                       var csplitedfile = cAllFiles.Split(splitedcBy);
+
+                                                       for (int j = 1; j < csplitedfile.Count(); j++)
+                                                       {
+                                                           var imgpath = "/../Images/proofUpload/" + csplitedfile.ElementAt(j);
+                                                           var filenamw = csplitedfile.ElementAt(j).Split(splitedcBy2);
+                              
+                                                    @Html.ActionLink(filenamw[2], "DownloadContentFiles", new { FileName = csplitedfile.ElementAt(j).ToString() })                                                                   
+                                                       }
+                                                   }
+                                                }
+
+
+
+
+
+
+                                                @*@if(!string.IsNullOrEmpty(@Model.ContentFile))
+                                            {
+                                                
+                                             @Html.ActionLink("Download", "DownloadContentFiles", new { FileName = @Model.ContentFile.ToString() }) 
+                                            } 
+                                            else
+                                            {
+                                               <div><h5> No files Uploaded yet for this Order</h5></div>
+                                            }*@
+
+                                            </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="row form-group">
+
+
+                                        <div class="col-sm-12">
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        
+
+
+
+
+                    </div>
+
+                    
+
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+
+    function checkFile(e) {
+
+
+        var file_list = e.files;
+
+        for (var i = 0, file; file = file_list[i]; i++) {
+
+            var sFileName = file.name;
+            var sFileExtension = sFileName.split('.')[sFileName.split('.').length - 1].toLowerCase();
+            if (sFileExtension == "txt" || sFileExtension == "text" || sFileExtension == "doc" || sFileExtension == "docx") {
+                return true;
+            }
+            else {
+                toastr.success("Only text and doc files are uploaded.");
+                removeRow(e);
+                return false;
+
+            }
+        }
+    }
+
+
+
+    function addRow() {
+        var div = document.createElement('div');
+
+        div.className = 'addmorefile';
+
+
+        div.innerHTML = '<input type="file" class="col-sm-7" onchange="return checkFile(this);" name="files"  style="float:left;margin-top:4px" />\
+        \
+        \
+        <input style="float: left; margin-top: 2px; margin-left: 10px" type="button" class="btn-danger" type="button" value="Remove" onclick="removeRow(this)">';
+
+        document.getElementById('content').appendChild(div);
+    }
+
+    function removeRow(input) {
+        document.getElementById('content').removeChild(input.parentNode);
+    }
+
+
+    $("#Closethejob").bind("click", function () {
+        var result = confirm("Want to close this job?");
+        if (result == true) {
+            var pkOrderId = $("#ID").val();
+            var IsAccepted = document.getElementById('active').checked;//$("#IsAccepted").val();
+            var currenturl = window.location.href.toLowerCase();
+            $.ajax({
+                url: '@Url.Action("CloseContentWriterJob", "Order")',
+
+                type: "POST",
+                data: { OrderId: pkOrderId, IsAccepted: IsAccepted },
+
+
+                success: function (result) {
+                    toastr.success("Saved Succesfully");
+
+                    var finalstring = currenturl.split("item/");
+                    window.location.href = finalstring[0];
+
+                }
+
+            });
+        }
+    });
+    $("#btnIsAccepted").bind("click", function () {
+
+        var pkOrderId = $("#ID").val();
+        var IsAccepted = document.getElementById('active').checked;//$("#IsAccepted").val();
+
+        $.ajax({
+            url: '@Url.Action("AcceptOrderByContentWritter", "Order")',
+
+            type: "POST",
+            data: { OrderId: pkOrderId, IsAccepted: IsAccepted },
+
+
+            success: function (result) {
+                toastr.success("Saved Succesfully");
+                location.reload();
+
+            }
+
+        });
+    });
+
+    $("#btnUpdateStage").bind("click", function () {
+
+        var OrderNumber = $("#OrderNumber").val();
+        var OrderStage = $("#ddlStageList").val();
+
+
+
+        $.ajax({
+            url: '@Url.Action("UpdateOrderStage", "Project")',
+
+            type: "POST",
+            data: { OrderNumber: OrderNumber, OrderStage: OrderStage },
+
+
+            success: function (result) {
+                toastr.success("Saved Succesfully");
+
+            }
+        });
+    });
+</script>

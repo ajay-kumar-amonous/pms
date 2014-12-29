@@ -1,0 +1,409 @@
+﻿
+<style>
+    .radiobox input {
+        float: left;
+        width: 40px;
+    }
+
+    .radiobox label {
+        float: left;
+        font-size: 10px !important;
+    }
+
+    .radiobox h2 {
+        font-size: 15px;
+        float: left;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+        width: 17%;
+        color: #000;
+    }
+
+    .trheader {
+        background-color: #eaeaea;
+    }
+</style>
+@model  IEnumerable<pEasyPrint.Areas.Designer.Models.OrderModel>
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@using pEasyPrint.Models;
+@{
+    
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    
+         
+    
+}
+
+
+
+
+
+<div class="container-fluid content-center">
+    @if (Model.FirstOrDefault() != null && Model.ElementAt(0).GetOrderItems.Count()>0)
+    {
+    <div class="row">
+        <div class=" grid_3  left-sidebar" style="width: 18.667%">
+            @Html.Partial("_LeftMenu", Model.FirstOrDefault())
+        </div>
+        <div style="width: 81%; padding: 1px; float: left">
+
+            <div class="grid_12" style="border-bottom:none" >
+               @Html.Partial("_DesignerTopMenu")
+                     
+          </div>
+
+
+            <div class="breadcrumbs">
+                    <div class="center_align">
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("DashBoard", "Index", "Project")      </strong><span><img src="/../images/breadcrumbs_divider.png"></span></li> 
+                                   <li class="category287"><strong>@Html.ActionLink("Order Details", "Edit", "Project", new { id= Encdy.Encode(Model.ElementAt(0).pkOrderId)}, null)      </strong><span><img src="/../images/breadcrumbs_divider.png" style="height:35px;"></span></li> 
+                      
+                                      
+
+
+                        </ul>
+                    </div>
+                </div>
+            
+            @Html.HiddenFor(m => m.ElementAt(0).pkOrderId)
+            
+             <div class="col-md-12" style="margin-bottom:5px;">
+            <div class="panel  panel-default">
+                     <div class="panel-heading">Order items
+                         @if(Model.ElementAt(0).IsAcceptFullOrder)
+                         {
+                          <div id="AcceptFullOrder"style="float:right; cursor:pointer; display:none">Accept full Order</div>
+                          }
+                         </div>
+                       <div class="panel-body">
+                        
+                     @Html.Grid(Model.ElementAt(0).GetOrderItems).Columns(col =>
+                {
+                    // col.For(p => p.pkOrderId  ).Named("Shop Name").Sortable(false);
+                    col.For(p => p.ProjectType).Named("Project Type").Sortable(false);
+                    col.For(p => p.ItemName).Named("Item Name").Sortable(false);
+                    col.For(p => p.CreatedOn).Named("Date").Sortable(false);
+                    col.For(p => p.IsItemAccepted == null ? "No Status" : p.IsItemAccepted == true?"Yes":"Rejected").Named("Accepted").Sortable(false);
+                   // col.For(p => p.IsItemStatus == true ? "Yes" : "No").Named("Item Status").Sortable(false);
+                    
+                    col.For(p => p.DesignerName).Named("Designer").Sortable(false);
+                    col.For(p => p.ContentWriterName).Named("Content Writer").Sortable(false);
+
+                    col.For(p => Html.ActionLink(" ", "item", new { id = Encdy.Encode(p.ID) }, new { @class = "btn btn-mini disable-on-click fa fa-pencil" })).Named("Details").Sortable(false);
+                    //col.For(p => Html.ActionLink(" ", "item", new { id = p.ID }, new { @class = "btn btn-mini disable-on-click fa fa-pencil" })).Named("Details").Sortable(false);
+
+                   }).Attributes(@class => "records_list table table-bordered table-hover table-responsive")
+                        
+                    </div>
+                    </div>
+                 </div>
+
+            
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6 boxgrid">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading">Order # @Model.ElementAt(0).OrderNumber</div>
+                            <div class="panel-body">
+
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-5 control-label">Order Name</label>
+                                    <div class="col-sm-7">
+                                   
+                                        @Model.ElementAt(0).GetOrderItems.ElementAt(0).ProjectName
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-5 control-label">Order Date</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).OrderDate
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-5 control-label">Order Stage</label>
+                                    <div class="col-sm-7">
+                                         @Model.ElementAt(0).OrderStage
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                 <div class="col-md-6 boxgrid">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading">Customer Information</div>
+                            <div class="panel-body">
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-5 control-label">Custumer Name</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).ClientName
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-5 control-label">Email</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).Email
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-5 control-label">Phone</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).Phone
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+ 
+
+                   
+                   
+                </div>
+                <div class="col-md-12 collapse" id="AddproofDiv">
+                    @using (Html.BeginForm("FileUpload", "Project", FormMethod.Post, new { Id = "main_graphics", @class = "", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                    {
+                        <input type="hidden" name="hdnOrderNumber" id="hdnOrderNumber" value="@Model.ElementAt(0).OrderNumber" />
+
+                            <input type="hidden" name="hdnPkOrderID" id="hdnPkOrderID" value="@Model.ElementAt(0).pkOrderId" />
+                         <div class="panel panel-default">
+                                <div class="panel-heading" data-toggle="collapse" data-target="#toggle-example">Add Proof</div>
+                              <div class="panel-body" id="toggle-example">
+
+                                  <table class="table table-hover table-bordered" style="width: 99%">
+
+                                <tr style="width: 100%">
+                                    <td colspan="2">
+                                        <input type="file" name="files" id="file" multiple />
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2">Front Comment:
+                                        <input type="text" name="DesignerFrontComment" id="DesignerFrontComment" />
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2">Back Comment:
+                                        <input type="text" name="DesignerBackComment" id="DesignerBackComment" />
+                                    </td>
+
+                                </tr>
+
+
+
+                                <tr>
+                                    <td>
+                                        <input type="submit" class="btn btn-default" value="Submit"></td>
+
+                                </tr>
+
+                            </table>
+                                  </div>
+                             </div>
+                        
+                        
+                       
+                       
+                    }
+                </div>
+                @if (Model.ElementAt(0).OrderPrrof.Count() > 0)
+                {
+                    <div class="col-md-12" id="prooflog">
+                         <div class="panel  panel-default">
+                                <div class="panel-heading"  data-toggle="collapse" data-target="#prooflogdiv">Proof Log</div>
+                             <div class="panel-body" id="prooflogdiv">
+                                          <div class="row form-group">
+                                    
+                                           <div class="col-sm-12" data-toggle="collapse">
+                                              
+                                           @for (int i = 0; i < Model.ElementAt(0).OrderPrrof.Count(); i++)
+                                           {
+
+                                               var Proofno = i + 1;
+                                               var id = "tblControl" + @Proofno;
+                                              <div class="panel  panel-default">
+                                                  <div class="panel-heading"style="font-weight:bold" data-toggle="collapse" data-target="#@id" >Proof @Proofno</div>
+                                                  <div class="panel-body collapse" id="@id">
+                                                    
+                                                      <div class="row form-group">
+                                                          <div class="col-sm-2">
+                                                            Designer Files :
+                                                           </div>
+                                                          <div class="col-sm-10">
+                                                             @{
+                                               char[] splitedBy = new char[] { ',' };
+                                               var AllFiles = @Model.ElementAt(0).OrderPrrof.ElementAt(i).DesignerFiles;
+                                               var splitedfile = AllFiles.Split(splitedBy);
+                                    
+                                   
+                                   
+                                                            }
+
+                                                            @for (int j = 1; j < splitedfile.Count(); j++)
+                                                            {
+                                                                var imgpath = "/../Images/proofUpload/" + splitedfile.ElementAt(j); 
+                              
+                                
+                                                                <img src="@imgpath"  style="max-height:200px; max-width:300px"/>
+                                                            }
+                                                           </div>
+                                                        </div>
+                                                         <div class="row form-group">
+                                                           <div class="col-sm-2">
+                                                               Designer Front Comments :
+                                                            </div>
+                                                           <div class="col-sm-10">
+                                                          @Model.ElementAt(0).OrderPrrof.ElementAt(i).FrontComments
+                                                       </div>
+                                                      </div>
+                                                      <div class="row form-group">
+                                                          <div class="col-sm-2">
+                                                            Designer Back Comments :
+                                                          </div>
+                                                          <div class="col-sm-10">
+                                                            @Model.ElementAt(0).OrderPrrof.ElementAt(i).BackComments
+                                                          </div>
+                                                      </div>
+                                                    <div class="row form-group">
+                                                        <div class="col-sm-2">
+                                                            Customer Files :
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                           
+                                                              @{
+                                                            char[] splitedcBy = new char[] { ',' };
+                                                            var cAllFiles = @Model.ElementAt(0).OrderPrrof.ElementAt(i).CustomerFiles;
+                                    
+                                                               }
+                                                            @{ if (cAllFiles != null)
+                                                               {
+                                                                   var csplitedfile = cAllFiles.Split(splitedcBy);
+
+                                                                   for (int j = 0; j < csplitedfile.Count(); j++)
+                                                                   {
+                                                                       var imgpath = "/../Images/proofUpload/" + csplitedfile.ElementAt(j); 
+                              
+                                                                <img id="@csplitedfile.ElementAt(j)"  src="@imgpath"  style="max-height:200px; max-width:300px"/>
+                                                                @Html.ActionLink("Download", "DownloadFiles", new { ImageName = csplitedfile.ElementAt(j).ToString() })                                                                   
+                                                                   }
+                                                               }
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                      <div class="row form-group">
+                                                  
+                                                          <div class="col-sm-2">
+                                                              Customer Back Comment:
+                                                          </div>
+                                                          <div class="col-sm-10">
+                                                              
+                                                              @Model.ElementAt(0).OrderPrrof.ElementAt(i).CustomerBackComment
+                                                          </div>
+                                                      
+                                                          </div>
+                                                      <div class= "row form-group">
+                                                          
+                                                          <div class="col-sm-2">
+                                                              Customer Front Comment :
+                                                          </div>
+                                                          <div class="col-sm-10">
+                                                             
+                                                              @Model.ElementAt(0).OrderPrrof.ElementAt(i).CustomerFrontComment
+                                                          </div>
+                                                        </div>
+                                                    
+                                                 </div>
+                                            </div>
+                                       
+                                           }
+                                         
+                                    </div>
+                                      
+                                </div>
+                                    
+                               
+
+
+                          
+
+                                    </div>
+
+
+                                </div>
+
+                             </div>
+
+                        
+                    
+
+                     
+
+                }
+
+ </div>
+            
+
+
+        </div>
+    </div>
+    }
+</div>
+
+<script>
+    
+    $("#AcceptFullOrder").bind("click", function () {
+     
+        var pkOrderId = $("#pkOrderId").val();
+
+        $.ajax({
+            url: '@Url.Action("AcceptFullOrder", "Project")',
+
+            type: "POST",
+            data: { id: pkOrderId },
+            success: function (result) {
+
+                toastr.success("Saved Succesfully");
+
+            }
+
+
+        });
+    });
+   
+
+    $("#btnUpdateStage").bind("click", function () {
+
+        var OrderNumber = $("#pkOrderId").val();
+        var OrderStage = $("#ddlStageList").val();
+
+
+
+        $.ajax({
+            url: '@Url.Action("UpdateOrderStage", "Project")',
+
+            type: "POST",
+            data: { OrderNumber: OrderNumber, OrderStage: OrderStage },
+
+
+            success: function (result) {
+                toastr.success("Saved Succesfully");
+
+            }
+        });
+    });
+</script>

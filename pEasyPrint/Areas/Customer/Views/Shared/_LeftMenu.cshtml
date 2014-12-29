@@ -1,0 +1,108 @@
+﻿@model pEasyPrint.Areas.Designer.Models.OrderModel      
+<style>
+
+    .Leftmenu {
+     cursor:pointer;
+    }
+</style>
+<div class="left-sidebar">
+    <div class="service-div">
+        <h2>Designer Information</h2>
+        <div id="industry-group">
+            <p  class="Leftmenu" id="-1">Total Earnings(@Model.TotalEarnings)</p>
+            <p  class="Leftmenu" id="-2">Earning for this months(@Model.MonthEarnings)</p>
+            <p  class="Leftmenu" id="1">New Orders(@Model.NewOrderCount)</p>
+
+
+            <p class="Leftmenu" id="2">Order In Design Stage (@Model.DesignStagerCount)</p>
+            <p  class="Leftmenu" id="3">Proof Stage (@Model.ProofStageCount)</p>
+            <p  class="Leftmenu" id="4">Approved (@Model.ApprovedCount)</p>
+            <p  class="Leftmenu" id="5">Printings (@Model.PrintingCount)</p>
+            <p  class="Leftmenu" id="6">Completed (@Model.CompletedCount)</p>
+
+
+           
+        </div>
+       
+            <h2>Search Order</h2>
+            
+             <div id="industry-group1"  style="padding:12px">
+                               @if(Model.ddlOrderList != null)
+                               {
+                                   @Html.DropDownListFor(m => m.pkOrderId, new SelectList(Model.ddlOrderList, "pkOrderId", "OrderNumber", Model.pkOrderId),  "----- Select -----",new {@Id="ddlOrderList" })
+               
+                               }
+                           
+                           <input id="txtOrderEmail" name="email" type="text" class="email" placeholder="Email Address" style="margin-top:5px;" />
+                           <input id="btnDesignerOrdetSearch" name="Submit" type="button" value="Submit" style="margin-top:5px; margin:5px 5px 5px 45px"  />
+                          </div> 
+            
+                
+    </div>
+</div>
+<script>
+   // var gridParent = $("#mvcGrid");
+    $("#btnDesignerOrdetSearch").bind("click", function () {
+        var $form = $(this).closest("form");
+        var currenturl = window.location.href.toLowerCase();;
+
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = "";
+        var OrderNumber = $("#ddlOrderList").val();//txtOrderEmail
+        var OrderEmail = $("#txtOrderEmail").val();//
+        if (currenturl.indexOf("project/edit") != -1) {
+            var finalstring = currenturl.split("edit/");
+            window.location.href = finalstring[0] + "edit/" + OrderNumber;
+        }
+        else {
+            window.location.href = currenturl + "/edit/" + OrderNumber;
+            
+
+
+        }
+        $("#txtOrderEmail").val("");
+
+    });
+
+    $(".Leftmenu").bind("click", function () {
+        var $form = $(this).closest("form");
+        var currenturl = window.location.href.toLowerCase();
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = ""; //txtDesignerEmail
+        var DesignerEmail = "";
+        var OrderStage = this.id;
+
+        var OrderNumber = "";
+        var url;
+
+        if (currenturl.indexOf("project/edit") != -1) {
+            var finalstring = currenturl.split("edit/");
+            window.location.href = finalstring[0] + "?page=" + page + "&OrderStage=" + OrderStage;
+        }
+        else {
+            
+            url = "/Designer/Project?page=" + page +  "&OrderStage=" + OrderStage + "";
+
+
+            $.get(url).success(function (data) {
+               
+                var container = '#' + $(gridParent).attr('id');
+                var table = $('<div/>').html(data).find(container).html()
+                $(container).html(table);
+            });
+        }
+
+
+
+
+
+
+    });
+
+
+
+</script>

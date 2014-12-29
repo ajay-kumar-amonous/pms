@@ -1,0 +1,45 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT  *  FROM [OS_FSM].[dbo].Station
+SELECT TOP 1 *  FROM [OS_FSM].[dbo].HoseSizes
+SELECT TOP 1 *  FROM [OS_FSM].[dbo].Hoses
+SELECT TOP 1 *  FROM [OS_FSM].[dbo].HoseInspections
+SELECT TOP 1 *  FROM [OS_FSM].[dbo].Products
+
+SELECT TOP 1 *  FROM [OS_FSM].[dbo].Coupling
+SELECT  *  FROM [OS_FSM].[dbo].Hoses WHERE HoseNotes='ManufacturerNOTE'
+
+delete [OS_FSM].[dbo].Hoses WHERE ID in(235,236)
+
+SELECT  *  FROM [OS_FSM].[dbo].Hoses 
+           INNER JOIN  [OS_FSM].[dbo].Station ON
+          [OS_FSM].[dbo].Station.StationId=[OS_FSM].[dbo].Hoses.StationAssignment
+		  INNER JOIN  [OS_FSM].[dbo].HoseSizes ON
+		  [OS_FSM].[dbo].HoseSizes.SizeId=[OS_FSM].[dbo].Hoses.HoseSizeID 
+
+
+-- for station 
+SELECT [OS_FSM].[dbo].Station.StationId ,[OS_FSM].[dbo].Station.StationText  FROM [OS_FSM].[dbo].Station 
+		 left outer join  [OS_FSM].[dbo].Hoses on
+		  [OS_FSM].[dbo].Hoses.StationAssignment=[OS_FSM].[dbo].Station.StationId 
+		  group by [OS_FSM].[dbo].Station.StationId ,[OS_FSM].[dbo].Station.StationText  
+
+
+
+
+-- for sizes list by sation id		  
+SELECT [OS_FSM].[dbo].HoseSizes.Size ,[OS_FSM].[dbo].Hoses.HoseNumber ,[OS_FSM].[dbo].Hoses.StationAssignment FROM [OS_FSM].[dbo].HoseSizes
+		 left outer join  [OS_FSM].[dbo].Hoses on
+		  [OS_FSM].[dbo].Hoses.HoseSizeID=[OS_FSM].[dbo].HoseSizes.SizeId left outer join [OS_FSM].[dbo].Station on
+		  [OS_FSM].[dbo].Station.StationId=[OS_FSM].[dbo].Hoses.StationAssignment
+		  where [OS_FSM].[dbo].Hoses.StationAssignment =1
+		  group by [OS_FSM].[dbo].HoseSizes.Size ,[OS_FSM].[dbo].Hoses.HoseNumber ,[OS_FSM].[dbo].Hoses.StationAssignment order by [OS_FSM].[dbo].Hoses.StationAssignment 
+
+
+-- for hose list by size id
+select [OS_FSM].[dbo].Hoses.HoseNumber, [OS_FSM].[dbo].Hoses.ID   from [OS_FSM].[dbo].Hoses
+		  left outer join  [OS_FSM].[dbo].HoseSizes on 
+		    [OS_FSM].[dbo].HoseSizes.SizeId= [OS_FSM].[dbo].Hoses.HoseSizeID 
+			inner join [OS_FSM].[dbo].Station on
+		  [OS_FSM].[dbo].Station.StationId=[OS_FSM].[dbo].Hoses.StationAssignment
+		  where [OS_FSM].[dbo].Hoses.HoseSizeID='4'
+		  group by [OS_FSM].[dbo].Hoses.HoseNumber, [OS_FSM].[dbo].Hoses.ID   order by [OS_FSM].[dbo].Hoses.HoseNumber

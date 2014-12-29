@@ -1,0 +1,19 @@
+update status icon  for costmarkuprange and rapnetimagererences
+
+put back button on top and rename it to return to dashboard
+
+dls.aspx shot total record show i.e 100/2000
+
+
+dls.aspx reanem menu item to rapnet diamond import
+
+ETL service start email change content
+
+fix dls upload for step  5
+
+in case of new diamond enter currnet date else no change
+
+
+on dls  try to add time comletion for each step
+
+etl to bulk upload

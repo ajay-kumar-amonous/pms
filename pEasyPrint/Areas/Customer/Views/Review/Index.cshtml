@@ -1,0 +1,26 @@
+﻿@model IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel>
+
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq
+@using pEasyPrint.Models;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Customer/Views/Shared/_Layout.cshtml";
+}
+
+<div id="mvcGrid" class="col-md-12" style="background-color: white; float: left;">
+    @Html.Grid(Model).Columns(col =>
+                {
+                    col.For(p => p.ProjectName).Named("Project Name").Sortable(false);
+                    col.For(p => p.OrderNumber).Named("Order Number").Sortable(false);
+                    col.For(p => p.OrderDate).Named("Date").Sortable(false);
+                    col.For(p => Html.ActionLink(" ", "Items", new { id = Encdy.Encode(p.pkOrderId) }, new { @class = "fa fa-pencil" })).Named("View Items").Sortable(false);
+                }).Attributes(@class => "records_list table table-bordered table-hover table-responsive")
+    <div class="index-nav" style="text-align: center">
+        @Html.Raw(Html.Pager((IPagination)Model))
+    </div>
+</div>

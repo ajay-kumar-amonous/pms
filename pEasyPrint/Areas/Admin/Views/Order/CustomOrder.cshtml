@@ -1,0 +1,487 @@
+﻿@model pEasyPrint.Models.OrderItemModel
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+<style>
+    #Sex {
+        height: 10px;
+    }
+
+    .adddiv label {
+        font-family: Arial;
+        font-size: 17px;
+        font-weight: normal;
+    }
+</style>
+<div class="container-fluid  content-center">
+    <div class="row adddiv">
+        <div class="grid_3  left-sidebar" style="width: 16.667%">
+            @* @Html.Partial("_AdminLeftMenu", Model))*@
+        </div>
+        <div class="grid_10">
+            <div class="grid_12" style="border-bottom: none; margin-left: 230px;">
+                @Html.Partial("_AdminTopMenu")
+
+            </div>
+            <div class="breadcrumbs">
+                <div class="center_align">
+                    <ul>
+                        <li class="category287"><strong>@Html.ActionLink("Order", "Index", "Order")      </strong><span>
+                            <img src="/../images/breadcrumbs_divider.png"></span></li>
+                        <li class="category287"><strong>Custome Order</strong></li>
+
+
+
+
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; color: red" class="error">@ViewBag.Adderror</div>
+            <div class="grid_12" style="margin-left: 20px">
+                @using (Html.BeginForm("CustomOrder", "Order", FormMethod.Post, new { @class = "form", enctype = "multipart/form-data" }))
+                {
+                  
+                    @Html.HiddenFor(m => m.ID)
+                    <div class="col-md-10 adddiv" style="background-color: white; margin-left: 20%;">
+                        <div class="table-responsive tabletr">
+                            <table class="table table-hover table-bordered">
+                                <tr style="background-color: #cccccc; align-content: center">
+                                    <td colspan="2">
+                                        <label for="DesignerFirstName">Add New Custome Order</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ClientName">Client Name</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ClientName)
+                                        @Html.ValidationMessageFor(m => m.ClientName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="BusinessName">Business Name</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.BusinessName)
+                                        @Html.ValidationMessageFor(m => m.BusinessName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Phone">Phone</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.Phone)
+                                        @Html.ValidationMessageFor(m => m.Phone)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Email">Email</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.Email)
+                                        @Html.ValidationMessageFor(m => m.Email)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ProjectName">Project Name</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ProjectName)
+                                        @Html.ValidationMessageFor(m => m.ProjectName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ItemName">Item Name</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ItemName)
+                                        @Html.ValidationMessageFor(m => m.ItemName)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="size">Size</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.size)
+                                        @Html.ValidationMessageFor(m => m.size)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="color">Color</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.color)
+                                        @Html.ValidationMessageFor(m => m.color)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="paper">Paper</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.paper)
+                                        @Html.ValidationMessageFor(m => m.paper)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="quantity">Quantity</label></td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.quantity, new SelectList(
+                  new List<Object>{ 
+                       new { value = 250 , text = "250"},
+                       new { value = 500 , text = "500"},
+                       new { value = 1000 , text = "1000"},
+                       new { value = 5000 , text = "5000"},
+                       new { value = 10000 , text = "10000"},
+                       new { value = 20000, text = "20000"},
+                       new { value = 30000, text = "30000"},
+                       new { value = 40000, text = "40000"},
+                       new { value = 50000 , text = "50000"},
+                       new { value = 60000, text = "60000"},
+                       new { value = 70000, text = "70000"},
+                       new { value = 80000, text = "80000"},
+                       new { value = 90000 , text = "90000"},
+                       new { value = 100000 , text = "100000"},
+                    },
+                  "value",
+                  "text",
+                   Model.quantity))
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="U/V coating">U/V coating</label>
+                                    </td>
+                                    <td style="height: 30px;">
+                                        <label for="Yes">Yes</label>
+                                        @Html.RadioButtonFor(m => m.UVCoating, "true", new { id = "Yes" })
+                                        <label for="No">No</label>
+                                        @Html.RadioButtonFor(m => m.UVCoating, "false", new { id = "No" })
+                                        @Html.ValidationMessageFor(m => m.UVCoating)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Panel">Panel</label></td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.Panel, new SelectList(
+                  new List<Object>{ 
+                       new { value = "Single Panel" , text = "Single Panel"},
+                       new { value = "Double Panel" , text = "Double Panel"},
+                    },
+                  "value",
+                  "text",
+                   Model.Panel))
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label for="Binding">Binding</label>
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.Binding)
+                                        @Html.ValidationMessageFor(m => m.Binding)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Cover">Cover</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.Cover)
+                                        @Html.ValidationMessageFor(m => m.Cover)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Cover">Logo Upload</label></td>
+                                    <td>
+                                        <input type="file" class="col-sm-6" name="files" id="CustomOrderLogo" style="height: 37px" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Cover">File 1</label></td>
+                                    <td>
+                                        <input type="file" class="col-sm-6" name="files" id="CustomFile1" style="height: 37px" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Cover">File 2</label></td>
+                                    <td>
+                                        <input type="file" class="col-sm-6" name="files" id="CustomFile2" style="height: 37px" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="General Instructions">General Instructions</label></td>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.generalInstruction, new { @rows = "5", @style = "width:100%" })
+                                        @Html.ValidationMessageFor(m => m.generalInstruction)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignInstructionFront">Design Instruction Front</label></td>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.DesignInstructionsFront, new { @rows = "5", @style = "width:100%" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ItemFrontComment">Text Front</label></td>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.ItemFrontComment, new { @rows = "5", @style = "width:100%" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesignInstructionBack">Design Instruction Back</label></td>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.DesignInstructionsBack, new { @rows = "5", @style = "width:100%" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ItemBackComment">Text Back</label></td>
+                                    <td>
+                                        @Html.TextAreaFor(m => m.ItemBackComment, new { @rows = "5", @style = "width:100%" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Address1">Address</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ShippingAddress1)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ShippingCountry">Country</label></td>
+                                    <td>
+                                       @Html.DropDownListFor(model => model.ShippingCountry, new SelectList(
+                  new List<Object>{ 
+                       new { value = "United States" , text = "United States"}                       
+                    },
+                  "value",
+                  "text",
+                   Model.ShippingCountry))
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ShippingState">State</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ShippingState)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ShippingCity">City</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ShippingCity)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="ShippingZip">Zip</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.ShippingZip)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center">
+                                        <input class="btn btn-success" type="Submit" value="Submit" id="btnCustomOrder" style="width: 168px" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    $("#AddedOn").datepicker();
+
+    //  $("#toDate").datepicker();
+
+    var gridParent = $("#mvcGrid");
+    $("#btnDesigner").bind("click", function () {
+        var $form = $(this).closest("form");
+
+        var _AddedOn = $("#AddedOn").val();
+        var _todate = $("#toDate").val();
+        var page = 1;
+
+
+        var url;
+        url = "/Admin/Order/Index?page=" + page + "&AddedOn=" + _AddedOn + "";
+
+        $.get(url).success(function (data) {
+            debugger;
+
+            var container = '#' + $(gridParent).attr('id');
+            var table = $('<div/>').html(data).find(container).html()
+            $(container).html(table);
+        });
+
+
+
+    });
+
+
+    // + "&todate=" + _todate
+    //Dropdownlist Selectedchange event   
+
+    $("#Country").change(function () {
+
+
+        $("#State").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetStatelistBycountryID",
+
+            data: { id: $("#Country").val() },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+                var count = 0;
+                $.each(data, function (i, city) {
+                    if (count == 0) {
+                        getcitylist(city.Value);
+                    }
+                    count++;
+
+                    $("#State").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    })
+    function getcitylist(id) {
+        $("#City").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetCitylistBystateID",
+
+            dataType: 'json',
+
+            data: { id: id },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+
+                $.each(data, function (i, city) {
+
+                    $("#City").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    }
+    $("#State").change(function () {
+
+        $("#City").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetCitylistBystateID",
+
+            dataType: 'json',
+
+            data: { id: $("#State").val() },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+
+                $.each(data, function (i, city) {
+
+                    $("#City").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    })
+
+
+    //$(document).ready(function () {
+    //    var txtaddedon = $('#hiddendate').val();
+    //    $("#AddedOn").val(txtaddedon);
+    //});
+
+
+</script>
+
+
+
+
+
+
+
+

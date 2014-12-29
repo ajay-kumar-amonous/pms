@@ -1,0 +1,50 @@
+﻿@model  IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel>
+
+
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script> 
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+
+
+    <section class="center-contain">
+
+       <div class="content-center">
+        <div class="grid_12">
+          <div class="grid_3  left-sidebar" style="width:16.667%">
+               @{
+                var model = Model.FirstOrDefault();
+             }
+              @if(model != null)
+              {
+                @Html.Partial("_AdminLeftMenu", model)
+              }
+                       </div>
+          <div class="grid_10 center-center">
+           <div class="grid_12" style="border-bottom:none" >
+               @Html.Partial("_AdminTopMenu")
+                     
+          </div>
+              <div class="breadcrumbs">
+                    <div class="center_align">
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("Chart", "Reports", "Order")      </strong><span><img src="/../images/breadcrumbs_divider.png"></span></li> 
+                          
+                                       
+
+
+                        </ul>
+                    </div>
+                </div>
+              </div>
+            </div>
+           </div>
+        </section>

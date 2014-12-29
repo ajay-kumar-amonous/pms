@@ -1,0 +1,186 @@
+﻿<style>
+    .radiobox input {
+        float: left;
+        width: 40px;
+    }
+
+    .radiobox label {
+        float: left;
+        font-size: 10px !important;
+    }
+
+    .radiobox h2 {
+        font-size: 15px;
+        float: left;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+        width: 17%;
+        color: #000;
+    }
+
+    .trheader {
+        background-color: #eaeaea;
+    }
+</style>
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+
+@model  IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel>
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="container-fluid content-center">
+    <div class="row">
+        <div class="grid_3 left-sidebar" style="width: 18.667%">
+            @Html.HiddenFor(m=>m.ElementAt(0).pkOrderId)
+            @Html.Partial("_LeftMenu", Model.FirstOrDefault())
+        </div>
+        <div style="width: 81%; padding: 1px; float: left">
+
+
+            <div class="grid_12">
+                @Html.Partial("_ContentWriterTopMenu")
+            </div>
+             <div class="breadcrumbs" >
+                    <div class="center_align" >
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("DashBoard", "Index", "Order")      </strong><span><img src="/../images/breadcrumbs_divider.png" style="height:35px;"></span></li> 
+                            <li class="category287"><strong>@Html.ActionLink("Order Details", "Edit", "order",null, new { Id=Model.ElementAt(0).pkOrderId})      </strong><span><img src="/../images/breadcrumbs_divider.png" style="height:35px;"></span></li> 
+                        </ul>
+                    </div>
+                </div>
+
+            <div class="col-md-12" style="background-color: white; padding: 10px; margin-bottom: 5px;">
+                <div class="panel  panel-default">
+                    <div class="panel-heading">Order items 
+
+                         @if(Model.ElementAt(0).IsAcceptFullOrder== true)
+                         {
+                          <div id="AcceptFullOrder"style="float:right; cursor:pointer; display:none">Accept full Order</div>
+                          }     
+
+                    </div>
+                    <div class="panel-body">
+
+                        @Html.Grid(Model.ElementAt(0).GetOrderItems).Columns(col =>
+                {
+                    // col.For(p => p.pkOrderId  ).Named("Shop Name").Sortable(false);
+
+                    col.For(p => p.ItemName).Named("Item Name").Sortable(false);
+                    col.For(p => p.CreatedOn).Named("Date").Sortable(false);
+                    col.For(p => p.IsContentWriterAccepted == null ? "No Status" : p.IsContentWriterAccepted == true ? "Yes" : "Rejected").Named("Accepted").Sortable(false);
+                    col.For(p => p.IsContentWriterJobClosed == null ? "No Status" : p.IsContentWriterJobClosed == true ? "Closed" : "Open").Named("Job Status").Sortable(false);
+
+                    //     col.For(p => p.IsItemStatus == true ? "Yes" : "No").Named("Item Status").Sortable(false);
+
+                    // col.For(p => p.DesignerName).Named("Designer").Sortable(false);
+                    // col.For(p => p.ContentWriterName).Named("Content Writer").Sortable(false);
+                    col.For(p => Html.ActionLink(" ", "item", new { id = p.ID }, new { @class = "btn btn-mini disable-on-click fa fa-pencil" })).Named("Details").Sortable(false);
+
+                }).Attributes(@class => "records_list table table-bordered table-hover table-responsive")
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                 <div class="col-md-6 boxgrid">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading">Order # @Model.ElementAt(0).OrderNumber</div>
+                            <div class="panel-body">
+
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-5 control-label">Order Name</label>
+                                    <div class="col-sm-7">
+                                   
+                                        @Model.ElementAt(0).ProjectName
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-5 control-label">Order Date</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).OrderDate
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputPassword3" class="col-sm-5 control-label">Order Stage</label>
+                                    <div class="col-sm-7">
+                                         @Model.ElementAt(0).OrderStatus
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                 <div class="col-md-6 boxgrid">
+                        <div class="panel  panel-default">
+                            <div class="panel-heading">Customer Information</div>
+                            <div class="panel-body">
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-5 control-label">Custumer Name</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).ClientName
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-5 control-label">Email</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).Email
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="inputEmail3" class="col-sm-5 control-label">Phone</label>
+                                    <div class="col-sm-7">
+                                        @Model.ElementAt(0).Phone
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+ 
+
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+<script>
+  
+   
+    $("#AcceptFullOrder").bind("click", function () {
+
+        var pkOrderId = $("#pkOrderId").val();
+        $.ajax({
+            url: '@Url.Action("AcceptFullOrder", "Order")',
+
+            type: "POST",
+            data: { id: pkOrderId },
+            success: function (result) {
+
+                toastr.success("Saved Succesfully");
+
+            }
+
+
+        });
+     });
+
+  
+    
+</script>

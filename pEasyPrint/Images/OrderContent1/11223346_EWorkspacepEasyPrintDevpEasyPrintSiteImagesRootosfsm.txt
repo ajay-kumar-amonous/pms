@@ -1,0 +1,3 @@
+Apply filter to grid
+add checklist to apparatus maintaines
+make one view of same related item

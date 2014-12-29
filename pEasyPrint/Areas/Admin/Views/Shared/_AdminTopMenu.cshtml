@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "_DesignerTopMenu";
+}
+
+<div id="cssmenu" class="nav-container" style="margin-top:-77px;margin-left:-26px"> 
+          <ul>
+              <li ><a href='/'><span>@Html.ActionLink("Dashboard", "Index", "AdminDashboard")</span></a></li>
+           
+             <li><a href='services.html' style="color:#FFFFFF;font-size:13px;padding-right:0px;"><span >@Html.ActionLink("Projects", "Index", "Order")</span></a></li>
+             <li><a href='projects.html'><span>@Html.ActionLink("Designers", "Index", "Designer")</span></a> </li>
+             <li><a href='news.html'><span>@Html.ActionLink("Content Writers", "Index", "ContentWriter")</span></a></li>
+               <li><a href='news.html'><span>@Html.ActionLink("Custom Order", "CustomOrder", "Order")</span></a></li>
+             <li><a ><span>@Html.ActionLink("Reports", "Reports", "Order")</span></a></li>
+           </ul>
+</div>

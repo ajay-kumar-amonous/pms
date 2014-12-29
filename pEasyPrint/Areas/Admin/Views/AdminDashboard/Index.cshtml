@@ -1,0 +1,50 @@
+﻿@model  IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel> 
+
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content  span12">
+    
+     <div class="container-fluid content-center"> 
+        
+     <div class="row adddiv">
+       <div class="grid_3  left-sidebar" style="width:16.667%">
+            
+           @{
+                var model = Model.FirstOrDefault();
+             }
+              @if(model != null)
+              {
+                @Html.Partial("_AdminLeftMenu", model)
+              }
+       </div>
+
+         <div class="col-md-9">
+             <div class="grid_12" style="border-bottom:none" >
+               @Html.Partial("_AdminTopMenu")
+                     
+          </div>
+              <div class="breadcrumbs">
+                    <div class="center_align">
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("Report Graph", "Index", "Admindashboard")      </strong><span><img src="/../images/breadcrumbs_divider.png"></span></li> 
+                          
+                                       
+
+
+                        </ul>
+                    </div>
+                </div>
+         
+         </div>
+         </div>
+   </div>
+  

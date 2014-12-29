@@ -1,0 +1,245 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Customer/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .trheader {
+    background-color:#eaeaea;
+    }
+    #tblControl1 > tbody {
+    width:100%;
+    }
+</style>
+<section class="center-contain">
+       <div class="content-center reviewdiv">
+    
+         
+         <div class="reviewcontain" style="float: left;background-color:#dcdcdc">
+     
+              <div class="col-md-12">
+                  <div style="text-align: center;background-color:#e6e7e7" class="trheader"  data-toggle="collapse" data-target="#OrderInfo"><h3>Custom Design Proofs</h3>
+
+                  <h4>    Happy Days! Here's what you've been waiting for.Please approve the design or</h4> 
+                     <h4>  give us feedback and we'll make the changes until you're  100% happy.</h4>
+                      
+                 </div> 
+                    <div style="background-color:#f2f2f2; padding:10px; margin-bottom:10PX; border-style:outset; border-width:5px;float:left;width:100%">
+                        <div class="col-md-6">  <h4>Project Name: jwek3ksk </h4></div> 
+                      <div class="text col-md-6" style="text-align:right">  <a href="url" class="request">Back To My Proofs</a></div>
+                        <div class="center"><img class='img-responsive' src="~/Images/bg_top.jpg"/></div>
+                        <div class="container-fluid containerfld">
+                            <div class="row">
+                                <div class="col-md-3 requestprf"><a href="url" class="request">Request PDF Proofs</a></div>
+                                 <div class="col-md-3 btnfrnt"><input  class="btn btn-default" type="Submit" value="Front" id="btnfrnt" style="background-color:#919191;color:white"  />
+                                  <input class="btn btn-default" type="Submit" value="Back" id="btnbck" style="background-color:#e7e7e7;color:black" />
+                                 </div>
+ 
+ 
+                               @* <div class="col-md-3 btnbck"></div>*@
+                                <div class="col-md-3 requestprf"><a href="url" class="request">Zoom in</a><a href="url" class="request">Zoom out</a></div>
+                                  <div class="col-md-3 btnaprvdsgn"><input  class="btn btn-default" type="Submit" value="I APPROVE DESIGN" id="btnfrnt1" style=" background-color:#8fb333;color:white"  /></div>
+                            </div>
+                        </div>
+                     </div> 
+                  <div style="text-align: center" class="wantchanges"><h3>WANT SOME CHANGES ?</h3>
+              <p>        Use this section only if you want changes to either  side of your design.Please tell us what changes you want in the appropriate box or otherwise check the 'No Changes'box for that particular side.</p>
+                  </div>
+                  <div class="top-frontdiv">
+                      <div class="container-fluid">
+                          <div class="row">
+                              <div class="col-md-4 frntside"><p>FRONT SIDE</p></div>
+                              <div class="col-md-2"><input type="checkbox" /> No Changes</div>
+                              <div class="col-md-4 frntside"> <p>BACK SIDE</p></div>
+                                 <div class="col-md-2"><input type="checkbox" /> No Changes</div>
+                          </div>
+                      </div>
+                      <div class="container-fluid">
+                          <div class="row">
+                            <div class="col-md-6 frnt"><img class='img-responsive' src="~/Images/bg_top.jpg" /></div>
+                              <div class="col-md-6 frnt"><img class='img-responsive' src="~/Images/bg_top.jpg"/></div> 
+                          </div>
+                      </div>
+                  
+                  <div class="container-fluid anythingfiles">
+                     <div class="row">
+                         <div class="col-md-4">
+                            <h4> ANYTHING FILES FOR US</h4>
+                             
+                                 <div><input class="browserfile"  type="file"/></div>
+                                 <div><input class="browserfile" type="file"/></div>
+                                 <div><input class="browserfile" type="file"/></div>
+                             
+                         </div>
+                         <div class="col-md-8 after">
+                         <h5>    After you submit your changes your designer working immidiately and you will be notified once the changes are done</h5>
+                             <div class="container-fluid">
+                                 <div class="row bttntwo">
+                                       <div class="col-md-3 btnsvltr"><input  class="btn btn-default" type="Submit" value="SAVE FOR LATER" id="btnsvltr" style="background-color:#f28b0c;border-radius:17px"  /></div>
+                                      <div class="col-md-3 btnsbmt1"><input  class="btn btn-default" type="Submit" value="SUBMIT CHANGES" id="btnsbmt1" style="background-color:#f28b0c;border-radius:17px"  /></div>
+                                  
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                  </div>
+                </div>
+              </div>   
+          
+         @*   <div class="col-md-12">
+
+                <div class="table-responsive"  >
+            <div class="col-md-12">
+                <div class="trheader"  data-toggle="collapse" data-target="#OrderInfo"><label for="OrderNumber">Original Order Info</label>  </div>
+                <div id="OrderInfo" style="min-height:170px; padding:20px; border:4px solid #eaeaea; margin-bottom:5px" >
+
+                    <p>Order Descrption Order Descrption  Order Descrption  Order Descrption Order Descrption Order Descrption </p>
+                </div>
+                <img src="~/Images/pic_mountain.jpg" />
+            </div>
+            </div>
+                 <div class="table-responsive col-md-12"  ><img src="~/Images/bg_top.jpg" />
+                 <table class="table table-hover table-bordered" style="width: 99%">
+                  @for (int i = 0; i < Model.ListOrderProofs.Count(); i++)
+                  {
+
+                      var Proofno = i + 1;
+                      var id = "tblControl" + @Proofno;
+                        <tr  class="trheader" style="font-weight:bold" data-toggle="collapse" data-target="#@id">
+                            <td colspan="2">
+                               Proof @Proofno
+                            </td>
+                            
+                            
+                        </tr>
+                  
+                        <tr>
+                            <td colspan="2" >
+                               <table id="@id"  class="collapse table table-hover table-bordered" style="width:99%" >
+                                   <tr><td>
+                               Designer Files :
+                            </td>
+                            <td>
+                                @{
+                      char[] splitedBy = new char[] { ',' };
+                      var AllFiles = @Model.ListOrderProofs.ElementAt(i).DesignerFiles;
+                      var splitedfile = AllFiles.Split(splitedBy);
+                                    
+                                   
+                                   
+                                   }
+                              
+                               @for (int j = 0; j < splitedfile.Count(); j++)
+                               {
+                                   var imgpath = "/../Images/proofUpload/" + splitedfile.ElementAt(j); 
+                              
+                                
+                                <img src="@imgpath"  style="max-height:200px; max-width:300px"/>
+                                    @Html.ActionLink("Download", "DownloadFiles", new { ImageName = splitedfile.ElementAt(j).ToString() })
+                               }
+
+                            </td></tr>
+
+                                    <tr>
+                            <td>
+                               Designer Front Comments :
+                            </td>
+                            <td>@Model.ListOrderProofs.ElementAt(i).FrontComments</td>
+                            
+                        </tr>
+                       <tr>
+                           <td>
+                               Designer Back Comments :
+                            </td>
+                            <td>@Model.ListOrderProofs.ElementAt(i).BackComments</td>
+                       </tr>
+                      <tr>
+                           <td>
+                               Upload Files :
+                            </td>
+                            <td>
+
+                               @using (Html.BeginForm("FileUpload", "Project", FormMethod.Post, new { Id = "main_graphics", @class = "well admin-form", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                                 {
+                                      <table  class="table table-hover table-bordered" style="width: 99%">
+                        
+                        <tr style="width:100%">
+                            <td colspan="2">
+                                <input type="hidden" name="hdnOrderNumber" id="hdnOrderNumber" value="@Model.ListOrderProofs.ElementAt(i).OrderNumber" />
+                                 <input type="hidden" name="hdnPkOrderID" id="hdnPkOrderID" value="@Model.OrderInfo.pkOrderId" />
+                                <input type="file" name="files" id="file" multiple /> 
+                </td>
+                            
+                        </tr>
+
+                       <tr>
+                            <td colspan="2">
+                              <input type="submit"  value="Submit">
+               </td>
+                            
+                        </tr>
+                                          </table>
+                                 }
+
+
+
+                            </td>
+                       </tr>
+                       <tr style="width:100%">
+                           <td colspan="2">
+                               @using (Html.BeginForm("AddComment", "Review", FormMethod.Post, new { Id = "main_graphics", @class = "well admin-form", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                                 {
+                                      <table  class="table table-hover table-bordered" style="width: 99%">
+                        
+                        <tr style="width:100%">
+                            <td>
+                               Add Back Comment:
+                            </td>
+                            <td><input type="text" id="addbackComment" /></td>
+                            
+                        </tr>
+<tr>
+
+    <td>
+                               Add Front Comment :
+                            </td>
+                            <td><input type="text" id="addfrontComment" /></td>
+</tr>
+                       <tr>
+                            <td colspan="2">
+                              <input type="submit"  value="AddComment">
+               </td>
+                            
+                        </tr>
+                                          </table>
+                                 }
+                           </td>
+                           
+                       </tr>
+                       <tr>
+                           
+                       </tr>
+
+                               </table>
+                            </td>
+                           
+                            
+                        </tr>
+
+                  
+                      
+                      
+                      
+                  }
+
+                    </table>
+                     </div>
+            </div>*@
+          
+
+
+          </div>
+         
+       </div>
+    </section>
+             
+

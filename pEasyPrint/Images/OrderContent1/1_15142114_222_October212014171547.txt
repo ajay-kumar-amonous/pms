@@ -1,0 +1,62 @@
+B - L - Update panel update resize the product window or changing the page
+
+L - Display CMS block on product detail page
+
+L - Add recently viewed on product detail on right side
+
+L - Related Products and New Products section from same category on product detail page.
+
+L - Update reloader Icon on pages
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+H - Stores Issue in admin. Aj 
+
+H - formatting on checkout page. Aj
+
+H - Update Language and currency. K
+
+H - Product Image. K
+ 
+H - Inner pages remove quickview etc K
+
+H - Format $Newsletter ( cart pages also have $placeholders) on home page on live K
+
+L - Remove Tell a friend - Update on live
+
+H - Google analytics on every page + ecomm transaction detail on thankyou page ( add trans details)
+
+H - My Account pages - R
+
+H - News Letter pages - R
+
+H - Speed Up search - R
+
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+
+B - H - Hide category page filter title if no filters are available
+
+
+
+
+
+
+H - comment Quickview, wishlish, quickview[DONE]
+
+H - Home page strike out price color [Done]
+
+H - Remove Product counter on product detail page[DONE]
+
+H - Manage Notification div from on list pages[DONE]
+
+H - Remove add to cart from home page[DONE]
+
+H - format error message on cart page. [DONE]
+
+H - Apply categry change - DONE
+
+H - cart detail on login page design [DONE]

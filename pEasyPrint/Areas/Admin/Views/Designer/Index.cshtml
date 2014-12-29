@@ -1,0 +1,90 @@
+﻿@model IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel>
+
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+     
+}
+
+
+<div class="container-fluid  content-center">
+    <div class="row">
+        <div class="grid_3 left-sidebar" style="width: 16.667%">
+
+            @{
+                var model = Model.FirstOrDefault();
+            }
+            @if (model != null)
+            {
+                @Html.Partial("_AdminLeftMenu", model)
+            }
+        </div>
+        <div id="mvcGrid1" class="col-md-10">
+            <div class="grid_12" style="border-bottom: none">
+                @Html.Partial("_AdminTopMenu")
+
+            </div>
+            <div class="breadcrumbs">
+                <div class="center_align">
+                    <ul>
+                        <li class="category287"><strong>@Html.ActionLink("Designers", "Index", "Designer")      </strong><span>
+                            <img src="/../images/breadcrumbs_divider.png"></span></li>
+
+
+
+                    </ul>
+                </div>
+            </div>
+            <div id="mvcGrid" class="col-md-12" style="background-color: white; float: left;">
+                <h4>@Html.ActionLink("Add Desigener", "Add", new object { }, new { @class = "btn btn-default" })  </h4>
+
+                @if (Model.Count() > 0 && Model != null)
+                {
+                    if (Model.ElementAt(0).DesignerId > 0)
+                    {
+
+                    @Html.Grid(Model).Columns(col =>
+                {
+                   
+                    col.For(p => p.DesignerFirstName + " " + p.DesigenerLastName).Named("Name").Sortable(false);
+                    col.For(p => p.Sex).Named("Sex").Sortable(false);
+                    col.For(p => p.DesignerExperience).Named("Experience").Sortable(false);
+                    col.For(p => p.DesignerAddress + "," + p.CityName + "," + p.StateName + "," + p.CountryName).Named("Address").Sortable(false);
+                    col.For(p => p.Mobile).Named("Mobile").Sortable(false);
+                    col.For(p => p.EmailId).Named("EmailId").Sortable(false);
+                    col.For(p => p.AddedOn).Named("AddedOn").Sortable(false);
+                    col.For(p => p.IsActive == true ? "Active" : "Deactive").Named("Status").Sortable(false);
+                    col.For(p => Html.ActionLink(" ", "Edit", new { id = p.DesignerId }, new { @class = "fa fa-pencil" })).Named("Edit").Sortable(false);
+                }).Attributes(@class => "records_list table table-bordered table-hover table-responsive")
+
+                    <div class="index-nav" style="text-align: center">
+                        @Html.Raw(Html.Pager((IPagination)Model))
+                    </div>
+                    }
+                    else
+                    {
+                            
+                    <div class="grid_12">
+                        <h3>No Desigener Found</h3>
+                    </div>
+                    }
+                }
+                else
+                {
+                    <div class="grid_12">
+                        <h3>No Designer Found</h3>
+                    </div>
+                }
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+

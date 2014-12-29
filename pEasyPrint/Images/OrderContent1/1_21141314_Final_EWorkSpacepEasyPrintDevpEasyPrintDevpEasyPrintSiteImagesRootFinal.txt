@@ -1,0 +1,69 @@
+declare @Name0 varchar(max) = 'polished anchor', @Sku0 varchar(max) = 'polished anchor', @Name1 varchar(max) = 'polished', @Sku1  varchar(max) = 'polished', @Name2 varchar(max) = 'anchor', @Sku2  varchar(max) = 'anchor';;
+
+with SearchResult as (
+
+SELECT ROW_NUMBER() over ( ORDER BY Name ASC) as rownum,  * FROM (
+
+SELECT DISTINCT Product.ProductID, Name, ShortDescription, LongDescription, UrlName, SlugUrl,     Sku, Model, ImageSecondary, SumStock, Weight, MinQuantity, MaxQuantity,     FixedShippingCost, ShippingCost, Manufacturer, PP.WholesalePrice, PP.Price,     PP.RetailPrice, Keywords, IsDownloadable, DownloadPath,     Product.IsEnabled, PP.WholesalePrice2, PP.WholesalePrice3,     PP.UseDefaultPrice, PP.UseDefaultRetailPrice, PP.UseDefaultWholeSalePrice, PP.UseDefaultWholeSalePrice2, PP.UseDefaultWholeSalePrice3,     IsGiftCertificate, IsFixedPrice, ManufacturerPartNumber, Upc, TaxClassID,     Product.Other1, Product.Other2, Product.Other3, Product.Other4, Product.Other5,     UseInventory, Product.DiscountGroupID As ProductDiscountGroupID,     D.DiscountGroupID As CategoryDiscountGroupID, IsAffiliate, IsCallForPrice, Brand, ReturnTime, IsProductKit, IsDynamicProductKitPrice, IsDynamicProductKitWeight, CreateDate,ViewCount,VendorID,     IsCustomPrice, DefaultPrice, MinimumPrice,     IsRecurring, RecurringInterval, RecurringIntervalUnit, RecurringNumberOfCycles,    RecurringNumberOfTrialCycles, RecurringTrialAmount,     M.MetaKeyword AS MetaKeyword, M.MetaDescription AS MetaDescription, M.UseDefaultMetaKeyword AS UseDefaultMetaKeyword, M.UseDefaultMetaDescription AS UseDefaultMetaDescription 
+
+FROM     
+(((((((Product LEFT JOIN ProductLocale L ON Product.ProductID = L.ProductID)     
+LEFT JOIN ProductCategory AS C ON Product.ProductID = C.ProductID )     
+INNER JOIN (SELECT ProductID, SUM( Stock ) AS SumStock FROM ProductStock     GROUP BY ProductID ) AS S 
+ON Product.ProductID = S.ProductID )
+
+INNER JOIN (SELECT * FROM ProductPrice WHERE StoreID = 1 ) as PP 
+ON Product.ProductID = PP.ProductID)     
+
+LEFT JOIN Category D ON C.CategoryID = D.CategoryID )
+LEFT JOIN ProductRecurring E ON E.ProductID = Product.ProductID)
+LEFT JOIN ProductCustomPrice CP ON Product.ProductID = CP.ProductID)
+LEFT JOIN (SELECT * FROM ProductMetaInformation     
+WHERE CultureID = 1 AND StoreID = 1) M 
+ON Product.ProductID = M.ProductID 
+WHERE L.CultureID = 1 
+AND Product.IsEnabled = 1 
+AND IsParentVisible = 1 
+AND D.RootID = 1  
+AND (
+
+Name LIKE '%'+ @Name0 + '%'
+OR Sku LIKE '%'+ @Sku0 + '%'
+
+OR (Name LIKE '%'+ @Name1 + '%'
+	and Name LIKE '%'+ @Name2 + '%')
+
+OR (Sku LIKE '%'+ @Sku1 + '%'
+	and  Sku LIKE '%'+ @Sku2 + '%')
+
+) ) AS Product )
+
+
+select  keyword, keyIndex, characterIndex, * from
+SearchResult
+inner join (
+
+	select @Name0 keyword, 0 keyIndex,  charindex(@Name0, Name) as characterIndex, productID from SearchResult where charindex(@Name0, Name) > 0
+	union all
+	select @Sku0  keyword,  0 keyIndex, charindex(@Sku0, Sku) as characterIndex , productID from SearchResult where charindex(@Sku0, Sku) > 0
+	union all 
+	select @Name1 keyword, 1 keyIndex, charindex(@Name1, Name) as characterIndex, productID from SearchResult where charindex(@Name1, Name) > 0
+	union all 
+	select @Sku1  keyword, 1 keyIndex, charindex(@Sku1, Sku) as characterIndex, productID from SearchResult where charindex(@Sku1, Sku) > 0
+	union all 
+	select @Name2 keyword, 2 keyIndex, charindex(@Name2, Name) as characterIndex,productID from SearchResult where charindex(@Name2, Name) > 0
+	union all 
+	select @Sku2  keyword, 2 keyIndex, charindex(@Sku2, Sku) as characterIndex, productID from SearchResult where charindex(@Sku2, Sku) > 0
+
+) as t
+on t.ProductID = SearchResult.ProductID
+
+where rownum between 1 and 100
+
+order by t.keyIndex, t.characterIndex asc
+
+
+
+
+
+

@@ -1,0 +1,1228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="pEasyPrintModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="pEasyPrintModelStoreContainer">
+          <EntitySet Name="MstOrderStatus" EntityType="pEasyPrintModel.Store.MstOrderStatus" store:Type="Tables" store:Schema="dbo" store:Name="MstOrderStatus">
+            <DefiningQuery>SELECT 
+      [MstOrderStatus].[StatusID] AS [StatusID], 
+      [MstOrderStatus].[StatusName] AS [StatusName]
+      FROM [dbo].[MstOrderStatus] AS [MstOrderStatus]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="OrderAssignment" EntityType="pEasyPrintModel.Store.OrderAssignment" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblCity" EntityType="pEasyPrintModel.Store.tblCity" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblContentWriter" EntityType="pEasyPrintModel.Store.tblContentWriter" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblCountry" EntityType="pEasyPrintModel.Store.tblCountry" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblCustomerOrderReview" EntityType="pEasyPrintModel.Store.tblCustomerOrderReview" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblDesigner" EntityType="pEasyPrintModel.Store.tblDesigner" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblOrder" EntityType="pEasyPrintModel.Store.tblOrder" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblOrderContent" EntityType="pEasyPrintModel.Store.tblOrderContent" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblOrderItem" EntityType="pEasyPrintModel.Store.tblOrderItem" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblOrderProof" EntityType="pEasyPrintModel.Store.tblOrderProof" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblOrderStages" EntityType="pEasyPrintModel.Store.tblOrderStages" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblShippingAddress" EntityType="pEasyPrintModel.Store.tblShippingAddress" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="tblState" EntityType="pEasyPrintModel.Store.tblState" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UserProfile" EntityType="pEasyPrintModel.Store.UserProfile" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_Membership" EntityType="pEasyPrintModel.Store.webpages_Membership" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_OAuthMembership" EntityType="pEasyPrintModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_Roles" EntityType="pEasyPrintModel.Store.webpages_Roles" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_UsersInRoles" EntityType="pEasyPrintModel.Store.webpages_UsersInRoles" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="fk_RoleId" Association="pEasyPrintModel.Store.fk_RoleId">
+            <End Role="webpages_Roles" EntitySet="webpages_Roles" />
+            <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblCity1_tblState1" Association="pEasyPrintModel.Store.FK_tblCity1_tblState1">
+            <End Role="tblState" EntitySet="tblState" />
+            <End Role="tblCity" EntitySet="tblCity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblState1_tblCountry1" Association="pEasyPrintModel.Store.FK_tblState1_tblCountry1">
+            <End Role="tblCountry" EntitySet="tblCountry" />
+            <End Role="tblState" EntitySet="tblState" />
+          </AssociationSet>
+          <AssociationSet Name="fk_UserId" Association="pEasyPrintModel.Store.fk_UserId">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
+          </AssociationSet>
+        </EntityContainer>
+        <!--Errors Found During Generation:
+      warning 6002: The table/view 'pEasyPrint_Dev.dbo.MstOrderStatus' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.
+      -->
+        <EntityType Name="MstOrderStatus">
+          <Key>
+            <PropertyRef Name="StatusID" />
+          </Key>
+          <Property Name="StatusID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="StatusName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="OrderAssignment">
+          <Key>
+            <PropertyRef Name="OrderAssignmentID" />
+          </Key>
+          <Property Name="OrderAssignmentID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="OrderNumber" Type="varchar" MaxLength="50" />
+          <Property Name="DesignerID" Type="int" />
+          <Property Name="AssignDate" Type="datetime" />
+          <Property Name="AcceptRejectDate" Type="datetime" />
+          <Property Name="RejectReason" Type="varchar" MaxLength="50" />
+          <Property Name="AssignedBy" Type="varchar" MaxLength="50" />
+          <Property Name="TotalEarnings" Type="int" />
+          <Property Name="IsDesignStage" Type="bit" Nullable="false" />
+          <Property Name="IsProofStage" Type="bit" Nullable="false" />
+          <Property Name="IsApproved" Type="bit" Nullable="false" />
+          <Property Name="IsPrinting" Type="bit" Nullable="false" />
+          <Property Name="IsCompleted" Type="bit" Nullable="false" />
+          <Property Name="Comments" Type="varchar" MaxLength="250" />
+          <Property Name="OrderStage" Type="int" />
+        </EntityType>
+        <EntityType Name="tblCity">
+          <Key>
+            <PropertyRef Name="PkCityId" />
+          </Key>
+          <Property Name="PkCityId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CityName" Type="varchar" MaxLength="50" />
+          <Property Name="FkStateId" Type="int" />
+        </EntityType>
+        <EntityType Name="tblContentWriter">
+          <Key>
+            <PropertyRef Name="PkContentWritterId" />
+          </Key>
+          <Property Name="PkContentWritterId" Type="int" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="Sex" Type="varchar" MaxLength="50" />
+          <Property Name="Experience" Type="int" />
+          <Property Name="Address" Type="nvarchar" MaxLength="50" />
+          <Property Name="City" Type="int" />
+          <Property Name="State" Type="int" />
+          <Property Name="Country" Type="int" />
+          <Property Name="Zip" Type="int" />
+          <Property Name="Mobile" Type="varchar" MaxLength="50" />
+          <Property Name="Landline" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="50" />
+          <Property Name="AddedOn" Type="date" />
+          <Property Name="AddedBy" Type="varchar" MaxLength="50" />
+          <Property Name="HoursAvailable" Type="varchar" MaxLength="50" />
+          <Property Name="HoursAvailableFrom" Type="varchar" MaxLength="50" />
+          <Property Name="HoursAvailableTo" Type="varchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Photo" Type="nvarchar" MaxLength="50" />
+          <Property Name="skypeId" Type="varchar" MaxLength="100" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="50" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblCountry">
+          <Key>
+            <PropertyRef Name="PkCountryId" />
+          </Key>
+          <Property Name="PkCountryId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="CountryName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblCustomerOrderReview">
+          <Key>
+            <PropertyRef Name="pkCustomerReview" />
+          </Key>
+          <Property Name="pkCustomerReview" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="FrontComment" Type="varchar" MaxLength="250" />
+          <Property Name="BackComment" Type="varchar" MaxLength="250" />
+          <Property Name="CustomerUpload" Type="varchar" MaxLength="250" />
+          <Property Name="OrderNumber" Type="int" />
+          <Property Name="ReviewDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblDesigner">
+          <Key>
+            <PropertyRef Name="PkDesignerId" />
+          </Key>
+          <Property Name="PkDesignerId" Type="int" Nullable="false" />
+          <Property Name="DesignerFirstName" Type="varchar" MaxLength="50" />
+          <Property Name="DesigenerLastName" Type="varchar" MaxLength="50" />
+          <Property Name="Sex" Type="varchar" MaxLength="50" />
+          <Property Name="DesignerExperience" Type="int" />
+          <Property Name="DesignerAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="City" Type="int" />
+          <Property Name="State" Type="int" />
+          <Property Name="Country" Type="int" />
+          <Property Name="Zip" Type="int" />
+          <Property Name="Mobile" Type="varchar" MaxLength="50" />
+          <Property Name="Landline" Type="int" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="50" />
+          <Property Name="AddedOn" Type="date" />
+          <Property Name="AddedBy" Type="varchar" MaxLength="50" />
+          <Property Name="HoursAvailable" Type="varchar" MaxLength="50" />
+          <Property Name="HoursAvailableFrom" Type="varchar" MaxLength="50" />
+          <Property Name="HoursAvailableTo" Type="varchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Photo" Type="nvarchar" MaxLength="50" />
+          <Property Name="skypeId" Type="varchar" MaxLength="100" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="50" />
+          <Property Name="StateName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountryName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblOrder">
+          <Key>
+            <PropertyRef Name="pkOrderId" />
+          </Key>
+          <Property Name="pkOrderId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="OrderNumber" Type="varchar" MaxLength="50" />
+          <Property Name="ProjectName" Type="varchar" MaxLength="50" />
+          <Property Name="ClientName" Type="varchar" MaxLength="50" />
+          <Property Name="ProjectType" Type="varchar" MaxLength="50" />
+          <Property Name="Phone" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="IsStatus" Type="bit" />
+          <Property Name="IsRejected" Type="bit" />
+          <Property Name="IsAccepted" Type="bit" />
+          <Property Name="OrderDate" Type="varchar" MaxLength="50" />
+          <Property Name="DesignerId" Type="int" />
+          <Property Name="fkContentWritterId" Type="int" />
+          <Property Name="IsContentAssign" Type="bit" />
+          <Property Name="IsCustomeOrder" Type="bit" />
+          <Property Name="BusinessName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblOrderContent">
+          <Key>
+            <PropertyRef Name="PkOrderContent" />
+          </Key>
+          <Property Name="PkOrderContent" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Files" Type="varchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="OrderNumber" Type="int" />
+        </EntityType>
+        <EntityType Name="tblOrderItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+          <Property Name="ItemName" Type="varchar" MaxLength="50" />
+          <Property Name="Sku" Type="varchar" MaxLength="50" />
+          <Property Name="CreatedOn" Type="varchar" MaxLength="50" />
+          <Property Name="DesignerId" Type="int" />
+          <Property Name="fkContentWritterId" Type="int" />
+          <Property Name="ProjectName" Type="varchar" MaxLength="50" />
+          <Property Name="ClientName" Type="varchar" MaxLength="50" />
+          <Property Name="ProjectType" Type="varchar" MaxLength="50" />
+          <Property Name="Phone" Type="varchar" MaxLength="50" />
+          <Property Name="AdminAssignFile" Type="varchar(max)" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="IsItemStatus" Type="bit" />
+          <Property Name="IsItemRejected" Type="bit" />
+          <Property Name="IsItemAccepted" Type="bit" />
+          <Property Name="IsContentAssign" Type="bit" />
+          <Property Name="IsContentWriterAccepted" Type="bit" />
+          <Property Name="IsProofApproved" Type="bit" />
+          <Property Name="IsContentWriterJobClosed" Type="bit" />
+          <Property Name="ItemFrontComment" Type="varchar" MaxLength="200" />
+          <Property Name="AssignDate" Type="datetime" />
+          <Property Name="CustomerUploadedFiles" Type="varchar(max)" />
+          <Property Name="ItemBackComment" Type="varchar" MaxLength="200" />
+          <Property Name="product" Type="varchar" MaxLength="50" />
+          <Property Name="qty" Type="varchar" MaxLength="50" />
+          <Property Name="zipcode" Type="varchar" MaxLength="50" />
+          <Property Name="color" Type="varchar" MaxLength="50" />
+          <Property Name="quantity" Type="varchar" MaxLength="50" />
+          <Property Name="paper" Type="varchar" MaxLength="50" />
+          <Property Name="size" Type="varchar" MaxLength="50" />
+          <Property Name="turnaround" Type="varchar" MaxLength="50" />
+          <Property Name="country" Type="varchar" MaxLength="50" />
+          <Property Name="folding" Type="varchar" MaxLength="50" />
+          <Property Name="agree" Type="varchar" MaxLength="50" />
+          <Property Name="uenc" Type="varchar" MaxLength="50" />
+          <Property Name="JobType" Type="varchar" MaxLength="50" />
+          <Property Name="AdminCommentForContent" Type="varchar(max)" />
+          <Property Name="OrderStage" Type="int" />
+          <Property Name="Comments" Type="varchar(max)" />
+          <Property Name="IsDesignerJobClosed" Type="bit" />
+          <Property Name="IsContentRequset" Type="bit" />
+          <Property Name="fileupload1" Type="varchar(max)" />
+          <Property Name="fileupload2" Type="varchar(max)" />
+          <Property Name="fileupload3" Type="varchar(max)" />
+          <Property Name="fileupload4" Type="varchar(max)" />
+          <Property Name="fileupload5" Type="varchar(max)" />
+          <Property Name="front" Type="varchar(max)" />
+          <Property Name="Back" Type="varchar(max)" />
+          <Property Name="PrintingPrice" Type="varchar" MaxLength="50" />
+          <Property Name="DesignService" Type="varchar" MaxLength="50" />
+          <Property Name="TotalPrice" Type="varchar" MaxLength="50" />
+          <Property Name="generalInstruction" Type="varchar" MaxLength="400" />
+          <Property Name="TemplateFile" Type="varchar" MaxLength="200" />
+          <Property Name="DesignInstructionsBack" Type="varchar" MaxLength="400" />
+          <Property Name="DesignInstructionsFront" Type="varchar" MaxLength="400" />
+          <Property Name="CustEmail" Type="varchar" MaxLength="400" />
+          <Property Name="CategoryName" Type="varchar(max)" />
+          <Property Name="Binding" Type="varchar(max)" />
+          <Property Name="CardColor" Type="varchar(max)" />
+          <Property Name="Cover" Type="varchar(max)" />
+          <Property Name="FileDeliveryMethod" Type="varchar(max)" />
+          <Property Name="Finish" Type="varchar(max)" />
+          <Property Name="GeneralInstructions" Type="varchar(max)" />
+          <Property Name="GlossUVCoating" Type="varchar(max)" />
+          <Property Name="Grommet" Type="varchar(max)" />
+          <Property Name="Hem" Type="varchar(max)" />
+          <Property Name="HoleDrilling" Type="varchar(max)" />
+          <Property Name="HolePosition" Type="varchar(max)" />
+          <Property Name="H-Stakes" Type="varchar(max)" />
+          <Property Name="Material" Type="varchar(max)" />
+          <Property Name="NumberingColor" Type="varchar(max)" />
+          <Property Name="NumberingPosition" Type="varchar(max)" />
+          <Property Name="PageOrientation" Type="varchar(max)" />
+          <Property Name="Pages" Type="varchar(max)" />
+          <Property Name="Panel" Type="varchar(max)" />
+          <Property Name="Perforation/Numbering" Type="varchar(max)" />
+          <Property Name="Pocket" Type="varchar(max)" />
+          <Property Name="PolePocket" Type="varchar(max)" />
+          <Property Name="PrintingTurnaroundTime" Type="varchar(max)" />
+          <Property Name="RoundCorners" Type="varchar(max)" />
+          <Property Name="Shape" Type="varchar(max)" />
+          <Property Name="Sheets" Type="varchar(max)" />
+          <Property Name="Subtotal" Type="varchar(max)" />
+          <Property Name="Tray" Type="varchar(max)" />
+          <Property Name="UVCoating" Type="varchar(max)" />
+          <Property Name="WindPosition" Type="varchar(max)" />
+          <Property Name="Windslit" Type="varchar(max)" />
+          <Property Name="WithWindow" Type="varchar(max)" />
+          <Property Name="DownloadUrl" Type="varchar(max)" />
+          <Property Name="DownloadUrl2" Type="varchar(max)" />
+          <Property Name="DownloadUrl3" Type="varchar(max)" />
+          <Property Name="DownloadUrl4" Type="varchar(max)" />
+          <Property Name="CustomFile1" Type="varchar(max)" />
+          <Property Name="CustomFile2" Type="varchar(max)" />
+          <Property Name="CustomFile3" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="tblOrderProof">
+          <Key>
+            <PropertyRef Name="PkOrderProofId" />
+          </Key>
+          <Property Name="PkOrderProofId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="FrontComments" Type="varchar" MaxLength="250" />
+          <Property Name="BackComments" Type="varchar" MaxLength="250" />
+          <Property Name="DesignerBackFiles" Type="varchar(max)" />
+          <Property Name="DesignerFiles" Type="varchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="OrderNumber" Type="int" />
+          <Property Name="CustomerFrontComment" Type="varchar" MaxLength="250" />
+          <Property Name="CustomerBackComment" Type="varchar" MaxLength="250" />
+          <Property Name="AdminBackComment" Type="varchar" MaxLength="250" />
+          <Property Name="AdminFrontComment" Type="varchar" MaxLength="250" />
+          <Property Name="CustomerBackFiles" Type="varchar(max)" />
+          <Property Name="CustomerFiles" Type="varchar(max)" />
+          <Property Name="CustomerCommentTime" Type="datetime" />
+          <Property Name="IsProofSelected" Type="bit" />
+          <Property Name="IsCustomerApproved" Type="bit" />
+          <Property Name="IsAdminApproved" Type="bit" />
+          <Property Name="ParentProofId" Type="int" />
+          <Property Name="RejectedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tblOrderStages">
+          <Key>
+            <PropertyRef Name="PkStageId" />
+          </Key>
+          <Property Name="PkStageId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="StageName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="tblShippingAddress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="OrderID" Type="int" />
+          <Property Name="City" Type="varchar" MaxLength="50" />
+          <Property Name="State" Type="varchar" MaxLength="50" />
+          <Property Name="Country" Type="varchar" MaxLength="50" />
+          <Property Name="Zip" Type="varchar" MaxLength="50" />
+          <Property Name="Address" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="tblState">
+          <Key>
+            <PropertyRef Name="PkStateId" />
+          </Key>
+          <Property Name="PkStateId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="StateName" Type="varchar" MaxLength="50" />
+          <Property Name="FkCountryId" Type="int" />
+        </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="56" />
+        </EntityType>
+        <EntityType Name="webpages_Membership">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="ConfirmationToken" Type="nvarchar" MaxLength="128" />
+          <Property Name="IsConfirmed" Type="bit" />
+          <Property Name="LastPasswordFailureDate" Type="datetime" />
+          <Property Name="PasswordFailuresSinceLastSuccess" Type="int" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" Nullable="false" MaxLength="128" />
+          <Property Name="PasswordChangedDate" Type="datetime" />
+          <Property Name="PasswordSalt" Type="nvarchar" Nullable="false" MaxLength="128" />
+          <Property Name="PasswordVerificationToken" Type="nvarchar" MaxLength="128" />
+          <Property Name="PasswordVerificationTokenExpirationDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="webpages_OAuthMembership">
+          <Key>
+            <PropertyRef Name="Provider" />
+            <PropertyRef Name="ProviderUserId" />
+          </Key>
+          <Property Name="Provider" Type="nvarchar" Nullable="false" MaxLength="30" />
+          <Property Name="ProviderUserId" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="webpages_Roles">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="nvarchar" Nullable="false" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="webpages_UsersInRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_RoleId">
+          <End Role="webpages_Roles" Type="pEasyPrintModel.Store.webpages_Roles" Multiplicity="1" />
+          <End Role="webpages_UsersInRoles" Type="pEasyPrintModel.Store.webpages_UsersInRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="webpages_Roles">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="webpages_UsersInRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblCity1_tblState1">
+          <End Role="tblState" Type="pEasyPrintModel.Store.tblState" Multiplicity="0..1" />
+          <End Role="tblCity" Type="pEasyPrintModel.Store.tblCity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblState">
+              <PropertyRef Name="PkStateId" />
+            </Principal>
+            <Dependent Role="tblCity">
+              <PropertyRef Name="FkStateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblState1_tblCountry1">
+          <End Role="tblCountry" Type="pEasyPrintModel.Store.tblCountry" Multiplicity="0..1" />
+          <End Role="tblState" Type="pEasyPrintModel.Store.tblState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCountry">
+              <PropertyRef Name="PkCountryId" />
+            </Principal>
+            <Dependent Role="tblState">
+              <PropertyRef Name="FkCountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_UserId">
+          <End Role="UserProfile" Type="pEasyPrintModel.Store.UserProfile" Multiplicity="1" />
+          <End Role="webpages_UsersInRoles" Type="pEasyPrintModel.Store.webpages_UsersInRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="webpages_UsersInRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="pEasyPrintModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="pEasyPrintEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="MstOrderStatus" EntityType="pEasyPrintModel.MstOrderStatu" />
+          <EntitySet Name="tblCities" EntityType="pEasyPrintModel.tblCity" />
+          <EntitySet Name="tblCountries" EntityType="pEasyPrintModel.tblCountry" />
+          <EntitySet Name="tblCustomerOrderReviews" EntityType="pEasyPrintModel.tblCustomerOrderReview" />
+          <EntitySet Name="tblOrderStages" EntityType="pEasyPrintModel.tblOrderStage" />
+          <EntitySet Name="tblStates" EntityType="pEasyPrintModel.tblState" />
+          <EntitySet Name="webpages_Membership" EntityType="pEasyPrintModel.webpages_Membership" />
+          <EntitySet Name="webpages_OAuthMembership" EntityType="pEasyPrintModel.webpages_OAuthMembership" />
+          <EntitySet Name="webpages_Roles" EntityType="pEasyPrintModel.webpages_Roles" />
+          <AssociationSet Name="FK_tblCity1_tblState1" Association="pEasyPrintModel.FK_tblCity1_tblState1">
+            <End Role="tblState" EntitySet="tblStates" />
+            <End Role="tblCity" EntitySet="tblCities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblState1_tblCountry1" Association="pEasyPrintModel.FK_tblState1_tblCountry1">
+            <End Role="tblCountry" EntitySet="tblCountries" />
+            <End Role="tblState" EntitySet="tblStates" />
+          </AssociationSet>
+          <EntitySet Name="tblOrderContents" EntityType="pEasyPrintModel.tblOrderContent" />
+          <EntitySet Name="OrderAssignments" EntityType="pEasyPrintModel.OrderAssignment" />
+          <EntitySet Name="UserProfiles" EntityType="pEasyPrintModel.UserProfile" />
+          <AssociationSet Name="webpages_UsersInRoles" Association="pEasyPrintModel.webpages_UsersInRoles">
+            <End Role="webpages_Roles" EntitySet="webpages_Roles" />
+            <End Role="UserProfile" EntitySet="UserProfiles" />
+          </AssociationSet>
+          <EntitySet Name="tblOrderProofs" EntityType="pEasyPrintModel.tblOrderProof" />
+          <EntitySet Name="tblContentWriters" EntityType="pEasyPrintModel.tblContentWriter" />
+          <EntitySet Name="tblDesigners" EntityType="pEasyPrintModel.tblDesigner" />
+          <EntitySet Name="tblOrders" EntityType="pEasyPrintModel.tblOrder" />
+          <EntitySet Name="tblOrderItems" EntityType="pEasyPrintModel.tblOrderItem" />
+          <EntitySet Name="tblShippingAddresses" EntityType="pEasyPrintModel.tblShippingAddress" />
+        </EntityContainer>
+        <EntityType Name="MstOrderStatu">
+          <Key>
+            <PropertyRef Name="StatusID" />
+          </Key>
+          <Property Name="StatusID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="StatusName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="tblCity">
+          <Key>
+            <PropertyRef Name="PkCityId" />
+          </Key>
+          <Property Name="PkCityId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="CityName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="FkStateId" Type="Int32" />
+          <NavigationProperty Name="tblState" Relationship="pEasyPrintModel.FK_tblCity1_tblState1" FromRole="tblCity" ToRole="tblState" />
+        </EntityType>
+        <EntityType Name="tblCountry">
+          <Key>
+            <PropertyRef Name="PkCountryId" />
+          </Key>
+          <Property Name="PkCountryId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="CountryName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="tblStates" Relationship="pEasyPrintModel.FK_tblState1_tblCountry1" FromRole="tblCountry" ToRole="tblState" />
+        </EntityType>
+        <EntityType Name="tblCustomerOrderReview">
+          <Key>
+            <PropertyRef Name="pkCustomerReview" />
+          </Key>
+          <Property Name="pkCustomerReview" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="FrontComment" Type="String" MaxLength="250" Unicode="false" FixedLength="false" />
+          <Property Name="BackComment" Type="String" MaxLength="250" Unicode="false" FixedLength="false" />
+          <Property Name="CustomerUpload" Type="String" MaxLength="250" Unicode="false" FixedLength="false" />
+          <Property Name="OrderNumber" Type="Int32" />
+          <Property Name="ReviewDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tblOrderStage">
+          <Key>
+            <PropertyRef Name="PkStageId" />
+          </Key>
+          <Property Name="PkStageId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="StageName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="tblState">
+          <Key>
+            <PropertyRef Name="PkStateId" />
+          </Key>
+          <Property Name="PkStateId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="StateName" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="FkCountryId" Type="Int32" />
+          <NavigationProperty Name="tblCities" Relationship="pEasyPrintModel.FK_tblCity1_tblState1" FromRole="tblState" ToRole="tblCity" />
+          <NavigationProperty Name="tblCountry" Relationship="pEasyPrintModel.FK_tblState1_tblCountry1" FromRole="tblState" ToRole="tblCountry" />
+        </EntityType>
+        <EntityType Name="webpages_Membership">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="ConfirmationToken" Type="String" MaxLength="128" Unicode="true" FixedLength="false" />
+          <Property Name="IsConfirmed" Type="Boolean" />
+          <Property Name="LastPasswordFailureDate" Type="DateTime" Precision="3" />
+          <Property Name="PasswordFailuresSinceLastSuccess" Type="Int32" Nullable="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" Unicode="true" FixedLength="false" />
+          <Property Name="PasswordChangedDate" Type="DateTime" Precision="3" />
+          <Property Name="PasswordSalt" Type="String" Nullable="false" MaxLength="128" Unicode="true" FixedLength="false" />
+          <Property Name="PasswordVerificationToken" Type="String" MaxLength="128" Unicode="true" FixedLength="false" />
+          <Property Name="PasswordVerificationTokenExpirationDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="webpages_OAuthMembership">
+          <Key>
+            <PropertyRef Name="Provider" />
+            <PropertyRef Name="ProviderUserId" />
+          </Key>
+          <Property Name="Provider" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+          <Property Name="ProviderUserId" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="webpages_Roles">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="UserProfiles" Relationship="pEasyPrintModel.webpages_UsersInRoles" FromRole="webpages_Roles" ToRole="UserProfile" />
+        </EntityType>
+        <Association Name="FK_tblCity1_tblState1">
+          <End Role="tblState" Type="pEasyPrintModel.tblState" Multiplicity="0..1" />
+          <End Role="tblCity" Type="pEasyPrintModel.tblCity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblState">
+              <PropertyRef Name="PkStateId" />
+            </Principal>
+            <Dependent Role="tblCity">
+              <PropertyRef Name="FkStateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tblState1_tblCountry1">
+          <End Role="tblCountry" Type="pEasyPrintModel.tblCountry" Multiplicity="0..1" />
+          <End Role="tblState" Type="pEasyPrintModel.tblState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblCountry">
+              <PropertyRef Name="PkCountryId" />
+            </Principal>
+            <Dependent Role="tblState">
+              <PropertyRef Name="FkCountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tblOrderContent">
+          <Key>
+            <PropertyRef Name="PkOrderContent" />
+          </Key>
+          <Property Type="Int32" Name="PkOrderContent" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Files" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="CreatedDate" Precision="3" />
+          <Property Type="Int32" Name="OrderNumber" />
+        </EntityType>
+        <EntityType Name="OrderAssignment">
+          <Key>
+            <PropertyRef Name="OrderAssignmentID" />
+          </Key>
+          <Property Type="Int32" Name="OrderAssignmentID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="OrderNumber" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="DesignerID" />
+          <Property Type="DateTime" Name="AssignDate" Precision="3" />
+          <Property Type="DateTime" Name="AcceptRejectDate" Precision="3" />
+          <Property Type="String" Name="RejectReason" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="AssignedBy" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="TotalEarnings" />
+          <Property Type="Boolean" Name="IsDesignStage" Nullable="false" />
+          <Property Type="Boolean" Name="IsProofStage" Nullable="false" />
+          <Property Type="Boolean" Name="IsApproved" Nullable="false" />
+          <Property Type="Boolean" Name="IsPrinting" Nullable="false" />
+          <Property Type="Boolean" Name="IsCompleted" Nullable="false" />
+          <Property Type="String" Name="Comments" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="OrderStage" />
+        </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Type="Int32" Name="UserId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="UserName" Nullable="false" MaxLength="56" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="webpages_Roles" Relationship="pEasyPrintModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
+        </EntityType>
+        <Association Name="webpages_UsersInRoles">
+          <End Type="pEasyPrintModel.webpages_Roles" Role="webpages_Roles" Multiplicity="*" />
+          <End Type="pEasyPrintModel.UserProfile" Role="UserProfile" Multiplicity="*" />
+        </Association>
+        <EntityType Name="tblOrderProof">
+          <Key>
+            <PropertyRef Name="PkOrderProofId" />
+          </Key>
+          <Property Type="Int32" Name="PkOrderProofId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="FrontComments" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="BackComments" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DesignerBackFiles" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DesignerFiles" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="CreatedDate" Precision="3" />
+          <Property Type="Int32" Name="OrderNumber" />
+          <Property Type="String" Name="CustomerFrontComment" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustomerBackComment" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="AdminBackComment" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="AdminFrontComment" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustomerBackFiles" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustomerFiles" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="CustomerCommentTime" Precision="3" />
+          <Property Type="Boolean" Name="IsProofSelected" />
+          <Property Type="Boolean" Name="IsCustomerApproved" />
+          <Property Type="Boolean" Name="IsAdminApproved" />
+          <Property Type="Int32" Name="ParentProofId" />
+          <Property Type="DateTime" Name="RejectedDate" Precision="3" />
+        </EntityType>
+        <EntityType Name="tblContentWriter">
+          <Key>
+            <PropertyRef Name="PkContentWritterId" />
+          </Key>
+          <Property Type="Int32" Name="PkContentWritterId" Nullable="false" />
+          <Property Type="String" Name="FirstName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="LastName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Sex" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="Experience" />
+          <Property Type="String" Name="Address" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="City" />
+          <Property Type="Int32" Name="State" />
+          <Property Type="Int32" Name="Country" />
+          <Property Type="Int32" Name="Zip" />
+          <Property Type="String" Name="Mobile" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="Landline" />
+          <Property Type="String" Name="EmailId" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="AddedOn" Precision="0" />
+          <Property Type="String" Name="AddedBy" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HoursAvailable" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HoursAvailableFrom" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HoursAvailableTo" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Boolean" Name="IsActive" />
+          <Property Type="String" Name="Photo" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="skypeId" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CityName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="StateName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CountryName" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tblDesigner">
+          <Key>
+            <PropertyRef Name="PkDesignerId" />
+          </Key>
+          <Property Type="Int32" Name="PkDesignerId" Nullable="false" />
+          <Property Type="String" Name="DesignerFirstName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DesigenerLastName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Sex" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="DesignerExperience" />
+          <Property Type="String" Name="DesignerAddress" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="City" />
+          <Property Type="Int32" Name="State" />
+          <Property Type="Int32" Name="Country" />
+          <Property Type="Int32" Name="Zip" />
+          <Property Type="String" Name="Mobile" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="Landline" />
+          <Property Type="String" Name="EmailId" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="AddedOn" Precision="0" />
+          <Property Type="String" Name="AddedBy" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HoursAvailable" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HoursAvailableFrom" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HoursAvailableTo" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Boolean" Name="IsActive" />
+          <Property Type="String" Name="Photo" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="skypeId" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CityName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="StateName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CountryName" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tblOrder">
+          <Key>
+            <PropertyRef Name="pkOrderId" />
+          </Key>
+          <Property Type="Int32" Name="pkOrderId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="OrderNumber" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ProjectName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ClientName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ProjectType" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Phone" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Email" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Boolean" Name="IsStatus" />
+          <Property Type="Boolean" Name="IsRejected" />
+          <Property Type="Boolean" Name="IsAccepted" />
+          <Property Type="String" Name="OrderDate" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="DesignerId" />
+          <Property Type="Int32" Name="fkContentWritterId" />
+          <Property Type="Boolean" Name="IsContentAssign" />
+          <Property Type="Boolean" Name="IsCustomeOrder" />
+          <Property Type="String" Name="BusinessName" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tblOrderItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="OrderID" Nullable="false" />
+          <Property Type="String" Name="ItemName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Sku" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CreatedOn" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="DesignerId" />
+          <Property Type="Int32" Name="fkContentWritterId" />
+          <Property Type="String" Name="ProjectName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ClientName" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ProjectType" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Phone" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="AdminAssignFile" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Email" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Boolean" Name="IsItemStatus" />
+          <Property Type="Boolean" Name="IsItemRejected" />
+          <Property Type="Boolean" Name="IsItemAccepted" />
+          <Property Type="Boolean" Name="IsContentAssign" />
+          <Property Type="Boolean" Name="IsContentWriterAccepted" />
+          <Property Type="Boolean" Name="IsProofApproved" />
+          <Property Type="Boolean" Name="IsContentWriterJobClosed" />
+          <Property Type="String" Name="ItemFrontComment" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="AssignDate" Precision="3" />
+          <Property Type="String" Name="CustomerUploadedFiles" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="ItemBackComment" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="product" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="qty" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="zipcode" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="color" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="quantity" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="paper" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="size" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="turnaround" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="country" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="folding" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="agree" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="uenc" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="JobType" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="AdminCommentForContent" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="OrderStage" />
+          <Property Type="String" Name="Comments" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="Boolean" Name="IsDesignerJobClosed" />
+          <Property Type="Boolean" Name="IsContentRequset" />
+          <Property Type="String" Name="fileupload1" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="fileupload2" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="fileupload3" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="fileupload4" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="fileupload5" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="front" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Back" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="PrintingPrice" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DesignService" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="TotalPrice" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="generalInstruction" MaxLength="400" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="TemplateFile" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DesignInstructionsBack" MaxLength="400" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DesignInstructionsFront" MaxLength="400" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustEmail" MaxLength="400" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CategoryName" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Binding" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CardColor" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Cover" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="FileDeliveryMethod" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Finish" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="GeneralInstructions" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="GlossUVCoating" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Grommet" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Hem" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HoleDrilling" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="HolePosition" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="H_Stakes" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Material" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="NumberingColor" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="NumberingPosition" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="PageOrientation" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Pages" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Panel" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Perforation_Numbering" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Pocket" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="PolePocket" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="PrintingTurnaroundTime" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="RoundCorners" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Shape" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Sheets" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Subtotal" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Tray" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="UVCoating" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="WindPosition" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Windslit" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="WithWindow" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DownloadUrl" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DownloadUrl2" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DownloadUrl3" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DownloadUrl4" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustomFile1" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustomFile2" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="CustomFile3" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tblShippingAddress">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="OrderID" />
+          <Property Type="String" Name="City" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="State" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Country" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Zip" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Address" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="pEasyPrintModelStoreContainer" CdmEntityContainer="pEasyPrintEntities">
+          <EntitySetMapping Name="MstOrderStatus">
+            <EntityTypeMapping TypeName="pEasyPrintModel.MstOrderStatu">
+              <MappingFragment StoreEntitySet="MstOrderStatus">
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblCities">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblCity">
+              <MappingFragment StoreEntitySet="tblCity">
+                <ScalarProperty Name="PkCityId" ColumnName="PkCityId" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="FkStateId" ColumnName="FkStateId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblCountries">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblCountry">
+              <MappingFragment StoreEntitySet="tblCountry">
+                <ScalarProperty Name="PkCountryId" ColumnName="PkCountryId" />
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblCustomerOrderReviews">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblCustomerOrderReview">
+              <MappingFragment StoreEntitySet="tblCustomerOrderReview">
+                <ScalarProperty Name="pkCustomerReview" ColumnName="pkCustomerReview" />
+                <ScalarProperty Name="FrontComment" ColumnName="FrontComment" />
+                <ScalarProperty Name="BackComment" ColumnName="BackComment" />
+                <ScalarProperty Name="CustomerUpload" ColumnName="CustomerUpload" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="ReviewDate" ColumnName="ReviewDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblOrderStages">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblOrderStage">
+              <MappingFragment StoreEntitySet="tblOrderStages">
+                <ScalarProperty Name="PkStageId" ColumnName="PkStageId" />
+                <ScalarProperty Name="StageName" ColumnName="StageName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblStates">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblState">
+              <MappingFragment StoreEntitySet="tblState">
+                <ScalarProperty Name="PkStateId" ColumnName="PkStateId" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="FkCountryId" ColumnName="FkCountryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="webpages_Membership">
+            <EntityTypeMapping TypeName="pEasyPrintModel.webpages_Membership">
+              <MappingFragment StoreEntitySet="webpages_Membership">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="ConfirmationToken" ColumnName="ConfirmationToken" />
+                <ScalarProperty Name="IsConfirmed" ColumnName="IsConfirmed" />
+                <ScalarProperty Name="LastPasswordFailureDate" ColumnName="LastPasswordFailureDate" />
+                <ScalarProperty Name="PasswordFailuresSinceLastSuccess" ColumnName="PasswordFailuresSinceLastSuccess" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="PasswordChangedDate" ColumnName="PasswordChangedDate" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="PasswordVerificationToken" ColumnName="PasswordVerificationToken" />
+                <ScalarProperty Name="PasswordVerificationTokenExpirationDate" ColumnName="PasswordVerificationTokenExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="webpages_OAuthMembership">
+            <EntityTypeMapping TypeName="pEasyPrintModel.webpages_OAuthMembership">
+              <MappingFragment StoreEntitySet="webpages_OAuthMembership">
+                <ScalarProperty Name="Provider" ColumnName="Provider" />
+                <ScalarProperty Name="ProviderUserId" ColumnName="ProviderUserId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="webpages_Roles">
+            <EntityTypeMapping TypeName="pEasyPrintModel.webpages_Roles">
+              <MappingFragment StoreEntitySet="webpages_Roles">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblOrderContents">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblOrderContent">
+              <MappingFragment StoreEntitySet="tblOrderContent">
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Files" ColumnName="Files" />
+                <ScalarProperty Name="PkOrderContent" ColumnName="PkOrderContent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderAssignments">
+            <EntityTypeMapping TypeName="pEasyPrintModel.OrderAssignment">
+              <MappingFragment StoreEntitySet="OrderAssignment">
+                <ScalarProperty Name="OrderStage" ColumnName="OrderStage" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="IsCompleted" ColumnName="IsCompleted" />
+                <ScalarProperty Name="IsPrinting" ColumnName="IsPrinting" />
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+                <ScalarProperty Name="IsProofStage" ColumnName="IsProofStage" />
+                <ScalarProperty Name="IsDesignStage" ColumnName="IsDesignStage" />
+                <ScalarProperty Name="TotalEarnings" ColumnName="TotalEarnings" />
+                <ScalarProperty Name="AssignedBy" ColumnName="AssignedBy" />
+                <ScalarProperty Name="RejectReason" ColumnName="RejectReason" />
+                <ScalarProperty Name="AcceptRejectDate" ColumnName="AcceptRejectDate" />
+                <ScalarProperty Name="AssignDate" ColumnName="AssignDate" />
+                <ScalarProperty Name="DesignerID" ColumnName="DesignerID" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="OrderAssignmentID" ColumnName="OrderAssignmentID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfiles">
+            <EntityTypeMapping TypeName="pEasyPrintModel.UserProfile">
+              <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="webpages_UsersInRoles" TypeName="pEasyPrintModel.webpages_UsersInRoles" StoreEntitySet="webpages_UsersInRoles">
+            <EndProperty Name="UserProfile">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="webpages_Roles">
+              <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="tblOrderProofs">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblOrderProof">
+              <MappingFragment StoreEntitySet="tblOrderProof">
+                <ScalarProperty Name="RejectedDate" ColumnName="RejectedDate" />
+                <ScalarProperty Name="ParentProofId" ColumnName="ParentProofId" />
+                <ScalarProperty Name="IsAdminApproved" ColumnName="IsAdminApproved" />
+                <ScalarProperty Name="IsCustomerApproved" ColumnName="IsCustomerApproved" />
+                <ScalarProperty Name="IsProofSelected" ColumnName="IsProofSelected" />
+                <ScalarProperty Name="CustomerCommentTime" ColumnName="CustomerCommentTime" />
+                <ScalarProperty Name="CustomerFiles" ColumnName="CustomerFiles" />
+                <ScalarProperty Name="CustomerBackFiles" ColumnName="CustomerBackFiles" />
+                <ScalarProperty Name="AdminFrontComment" ColumnName="AdminFrontComment" />
+                <ScalarProperty Name="AdminBackComment" ColumnName="AdminBackComment" />
+                <ScalarProperty Name="CustomerBackComment" ColumnName="CustomerBackComment" />
+                <ScalarProperty Name="CustomerFrontComment" ColumnName="CustomerFrontComment" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="DesignerFiles" ColumnName="DesignerFiles" />
+                <ScalarProperty Name="DesignerBackFiles" ColumnName="DesignerBackFiles" />
+                <ScalarProperty Name="BackComments" ColumnName="BackComments" />
+                <ScalarProperty Name="FrontComments" ColumnName="FrontComments" />
+                <ScalarProperty Name="PkOrderProofId" ColumnName="PkOrderProofId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblContentWriters">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblContentWriter">
+              <MappingFragment StoreEntitySet="tblContentWriter">
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="skypeId" ColumnName="skypeId" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="HoursAvailableTo" ColumnName="HoursAvailableTo" />
+                <ScalarProperty Name="HoursAvailableFrom" ColumnName="HoursAvailableFrom" />
+                <ScalarProperty Name="HoursAvailable" ColumnName="HoursAvailable" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Landline" ColumnName="Landline" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Experience" ColumnName="Experience" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="PkContentWritterId" ColumnName="PkContentWritterId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblDesigners">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblDesigner">
+              <MappingFragment StoreEntitySet="tblDesigner">
+                <ScalarProperty Name="CountryName" ColumnName="CountryName" />
+                <ScalarProperty Name="StateName" ColumnName="StateName" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="skypeId" ColumnName="skypeId" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="HoursAvailableTo" ColumnName="HoursAvailableTo" />
+                <ScalarProperty Name="HoursAvailableFrom" ColumnName="HoursAvailableFrom" />
+                <ScalarProperty Name="HoursAvailable" ColumnName="HoursAvailable" />
+                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
+                <ScalarProperty Name="AddedOn" ColumnName="AddedOn" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Landline" ColumnName="Landline" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="DesignerAddress" ColumnName="DesignerAddress" />
+                <ScalarProperty Name="DesignerExperience" ColumnName="DesignerExperience" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="DesigenerLastName" ColumnName="DesigenerLastName" />
+                <ScalarProperty Name="DesignerFirstName" ColumnName="DesignerFirstName" />
+                <ScalarProperty Name="PkDesignerId" ColumnName="PkDesignerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblOrders">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblOrder">
+              <MappingFragment StoreEntitySet="tblOrder">
+                <ScalarProperty Name="BusinessName" ColumnName="BusinessName" />
+                <ScalarProperty Name="IsCustomeOrder" ColumnName="IsCustomeOrder" />
+                <ScalarProperty Name="IsContentAssign" ColumnName="IsContentAssign" />
+                <ScalarProperty Name="fkContentWritterId" ColumnName="fkContentWritterId" />
+                <ScalarProperty Name="DesignerId" ColumnName="DesignerId" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="IsAccepted" ColumnName="IsAccepted" />
+                <ScalarProperty Name="IsRejected" ColumnName="IsRejected" />
+                <ScalarProperty Name="IsStatus" ColumnName="IsStatus" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="ProjectType" ColumnName="ProjectType" />
+                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+                <ScalarProperty Name="pkOrderId" ColumnName="pkOrderId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblOrderItems">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblOrderItem">
+              <MappingFragment StoreEntitySet="tblOrderItem">
+                <ScalarProperty Name="CustomFile3" ColumnName="CustomFile3" />
+                <ScalarProperty Name="CustomFile2" ColumnName="CustomFile2" />
+                <ScalarProperty Name="CustomFile1" ColumnName="CustomFile1" />
+                <ScalarProperty Name="DownloadUrl4" ColumnName="DownloadUrl4" />
+                <ScalarProperty Name="DownloadUrl3" ColumnName="DownloadUrl3" />
+                <ScalarProperty Name="DownloadUrl2" ColumnName="DownloadUrl2" />
+                <ScalarProperty Name="DownloadUrl" ColumnName="DownloadUrl" />
+                <ScalarProperty Name="WithWindow" ColumnName="WithWindow" />
+                <ScalarProperty Name="Windslit" ColumnName="Windslit" />
+                <ScalarProperty Name="WindPosition" ColumnName="WindPosition" />
+                <ScalarProperty Name="UVCoating" ColumnName="UVCoating" />
+                <ScalarProperty Name="Tray" ColumnName="Tray" />
+                <ScalarProperty Name="Subtotal" ColumnName="Subtotal" />
+                <ScalarProperty Name="Sheets" ColumnName="Sheets" />
+                <ScalarProperty Name="Shape" ColumnName="Shape" />
+                <ScalarProperty Name="RoundCorners" ColumnName="RoundCorners" />
+                <ScalarProperty Name="PrintingTurnaroundTime" ColumnName="PrintingTurnaroundTime" />
+                <ScalarProperty Name="PolePocket" ColumnName="PolePocket" />
+                <ScalarProperty Name="Pocket" ColumnName="Pocket" />
+                <ScalarProperty Name="Perforation_Numbering" ColumnName="Perforation/Numbering" />
+                <ScalarProperty Name="Panel" ColumnName="Panel" />
+                <ScalarProperty Name="Pages" ColumnName="Pages" />
+                <ScalarProperty Name="PageOrientation" ColumnName="PageOrientation" />
+                <ScalarProperty Name="NumberingPosition" ColumnName="NumberingPosition" />
+                <ScalarProperty Name="NumberingColor" ColumnName="NumberingColor" />
+                <ScalarProperty Name="Material" ColumnName="Material" />
+                <ScalarProperty Name="H_Stakes" ColumnName="H-Stakes" />
+                <ScalarProperty Name="HolePosition" ColumnName="HolePosition" />
+                <ScalarProperty Name="HoleDrilling" ColumnName="HoleDrilling" />
+                <ScalarProperty Name="Hem" ColumnName="Hem" />
+                <ScalarProperty Name="Grommet" ColumnName="Grommet" />
+                <ScalarProperty Name="GlossUVCoating" ColumnName="GlossUVCoating" />
+                <ScalarProperty Name="GeneralInstructions" ColumnName="GeneralInstructions" />
+                <ScalarProperty Name="Finish" ColumnName="Finish" />
+                <ScalarProperty Name="FileDeliveryMethod" ColumnName="FileDeliveryMethod" />
+                <ScalarProperty Name="Cover" ColumnName="Cover" />
+                <ScalarProperty Name="CardColor" ColumnName="CardColor" />
+                <ScalarProperty Name="Binding" ColumnName="Binding" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CustEmail" ColumnName="CustEmail" />
+                <ScalarProperty Name="DesignInstructionsFront" ColumnName="DesignInstructionsFront" />
+                <ScalarProperty Name="DesignInstructionsBack" ColumnName="DesignInstructionsBack" />
+                <ScalarProperty Name="TemplateFile" ColumnName="TemplateFile" />
+                <ScalarProperty Name="generalInstruction" ColumnName="generalInstruction" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="DesignService" ColumnName="DesignService" />
+                <ScalarProperty Name="PrintingPrice" ColumnName="PrintingPrice" />
+                <ScalarProperty Name="Back" ColumnName="Back" />
+                <ScalarProperty Name="front" ColumnName="front" />
+                <ScalarProperty Name="fileupload5" ColumnName="fileupload5" />
+                <ScalarProperty Name="fileupload4" ColumnName="fileupload4" />
+                <ScalarProperty Name="fileupload3" ColumnName="fileupload3" />
+                <ScalarProperty Name="fileupload2" ColumnName="fileupload2" />
+                <ScalarProperty Name="fileupload1" ColumnName="fileupload1" />
+                <ScalarProperty Name="IsContentRequset" ColumnName="IsContentRequset" />
+                <ScalarProperty Name="IsDesignerJobClosed" ColumnName="IsDesignerJobClosed" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="OrderStage" ColumnName="OrderStage" />
+                <ScalarProperty Name="AdminCommentForContent" ColumnName="AdminCommentForContent" />
+                <ScalarProperty Name="JobType" ColumnName="JobType" />
+                <ScalarProperty Name="uenc" ColumnName="uenc" />
+                <ScalarProperty Name="agree" ColumnName="agree" />
+                <ScalarProperty Name="folding" ColumnName="folding" />
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="turnaround" ColumnName="turnaround" />
+                <ScalarProperty Name="size" ColumnName="size" />
+                <ScalarProperty Name="paper" ColumnName="paper" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="color" ColumnName="color" />
+                <ScalarProperty Name="zipcode" ColumnName="zipcode" />
+                <ScalarProperty Name="qty" ColumnName="qty" />
+                <ScalarProperty Name="product" ColumnName="product" />
+                <ScalarProperty Name="ItemBackComment" ColumnName="ItemBackComment" />
+                <ScalarProperty Name="CustomerUploadedFiles" ColumnName="CustomerUploadedFiles" />
+                <ScalarProperty Name="AssignDate" ColumnName="AssignDate" />
+                <ScalarProperty Name="ItemFrontComment" ColumnName="ItemFrontComment" />
+                <ScalarProperty Name="IsContentWriterJobClosed" ColumnName="IsContentWriterJobClosed" />
+                <ScalarProperty Name="IsProofApproved" ColumnName="IsProofApproved" />
+                <ScalarProperty Name="IsContentWriterAccepted" ColumnName="IsContentWriterAccepted" />
+                <ScalarProperty Name="IsContentAssign" ColumnName="IsContentAssign" />
+                <ScalarProperty Name="IsItemAccepted" ColumnName="IsItemAccepted" />
+                <ScalarProperty Name="IsItemRejected" ColumnName="IsItemRejected" />
+                <ScalarProperty Name="IsItemStatus" ColumnName="IsItemStatus" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="AdminAssignFile" ColumnName="AdminAssignFile" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="ProjectType" ColumnName="ProjectType" />
+                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="fkContentWritterId" ColumnName="fkContentWritterId" />
+                <ScalarProperty Name="DesignerId" ColumnName="DesignerId" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblShippingAddresses">
+            <EntityTypeMapping TypeName="pEasyPrintModel.tblShippingAddress">
+              <MappingFragment StoreEntitySet="tblShippingAddress">
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Zip" ColumnName="Zip" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,258 @@
+﻿@model  IEnumerable<pEasyPrint.Areas.Admin.Models.OrderModel>
+
+
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+
+
+<section class="center-contain">
+
+    <div class="content-center">
+        <div class="grid_12">
+            <div class="grid_3  left-sidebar" style="width: 16.667%">
+                @{
+                    var model = Model.FirstOrDefault();
+                }
+                @if (model != null)
+                {
+                    @Html.Partial("_AdminLeftMenu", model)
+                }
+            </div>
+            <div class="grid_10 center-center">
+                <div class="grid_12" style="border-bottom: none">
+                    @Html.Partial("_AdminTopMenu")
+
+                </div>
+                <div class="breadcrumbs">
+                    <div class="center_align">
+                        <ul>
+                            <li class="category287"><strong>@Html.ActionLink("DashBoard", "Index", "Order")      </strong><span>
+                                <img src="/../images/breadcrumbs_divider.png"></span></li>
+
+
+
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="grid_12" style="background-color: white; padding: 10px;">
+
+
+
+
+
+                    <div class="grid_3">
+                        <label class="label label-default">From</label>
+                        <input type="text" data-val="true" data-val-required="<i><b>From Date:</b> can not be empty.</i>" class="" onkeydown="return false;" onkeypress="return false;" onpaste="return false;" id="fromDate" name="from-date" style="width: 70%; height: 30px;" />
+                    </div>
+                    <div class="grid_3">
+                        <label class="label label-default">To</label>
+                        <input type="text" data-val="true" data-val-required="<i><b>To Date:</b> can not be empty.</i>" class="right" id="toDate" name="to-date" onkeypress="return false;" onpaste="return false;" style="width: 70%; height: 30px;" />
+                    </div>
+                    <div class="grid_3">
+                        <input id="btnAddHoliday" class="btn btn-default" name="Submit" type="button" value="Submit" style="margin-top: 0px;" />
+                    </div>
+
+  @if (Model.Count() > 0 && Model != null)
+                        {
+                            if(Model.ElementAt(0).pkOrderId>0)
+                            {
+                    
+<div style="float:right">
+                    Page Size  
+                    <select id="ddlPageSize" onchange="RefreshGrid(this)" >
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+
+                    </select>
+    </div>
+  }
+  }
+                   
+
+                    <div id="mvcGrid" style="float: left" class="grid_12">
+
+                        <input type="hidden" id="pagesize" value="@ViewBag.pagesize" />
+                       
+                        @if (Model.Count() > 0 && Model != null)
+                        {
+                            if(Model.ElementAt(0).pkOrderId>0)
+                            {
+                            <strong>Showing @Model.FirstOrDefault().CategoryType :-</strong>
+                     
+                            @Html.Grid(Model).Columns(col =>
+                            {
+                               // col.For(p => p.ProjectName).Named("Project Name").Sortable(false);
+                                col.For(p => p.ProjectType).Named("Project Type").Sortable(true);
+                                col.For(p => p.OrderDate).Named("Date").Sortable(false);
+                                col.For(p => p.ClientName).Named("Client Name").Sortable(false);
+                                col.For(p => !string.IsNullOrWhiteSpace(p.Phone) ? p.Phone.Replace(" ", "").Replace("-", "").Replace("(","").Replace(")","") : string.Empty).Named("Phone Number").Sortable(false);
+                                col.For(p => p.Email).Named("Email").Sortable(false);
+                                col.For(p => p.OrderNumber).Named("Order Number").Sortable(false);
+                                col.For(p => Html.ActionLink(" ", "Edit", new { id = p.pkOrderId }, new { @class = "btn btn-mini disable-on-click fa fa-pencil" })).Named("Details").Sortable(false);
+                            
+                            
+                            
+                            }).Attributes(@class => "records_list table table-bordered table-hover table-responsive").RowAttributes(m => new MvcContrib.Hash(@class =>
+                                ((m.Item.IsAccepted == false)) ? "warning" : ""))
+                            
+                            <div class="index-nav" style="text-align: center">
+                                @Html.Raw(Html.Pager((IPagination)Model))
+                 
+                             
+                            </div>
+                        }
+                        else
+                        {
+                                <div class="grid_12">
+                                <h3>No Records Found</h3>
+                            </div>
+                        }
+
+
+                        }
+                        else
+                        {
+                            <div class="grid_12">
+                                <h3>No Records Found</h3>
+                            </div>
+                        }
+                    </div>
+  @if (Model.Count() > 0 && Model != null)
+                        {
+                            if(Model.ElementAt(0).pkOrderId>0)
+                            {
+ <div style="float: right">
+                                    Page Size  
+                                    <select id="ddlPageSize2" onchange="RefreshGrid(this)">
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+
+                                    </select>
+                                </div>
+
+  }
+  }
+                </div>
+      
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    //var pagesize = document.getElementById("pagesize").value;
+  //  alert(pagesize);
+   // $("#ddlPageSize2").val(pagesize);
+ //   $("#ddlPageSize").val(pagesize);
+    
+    var gridParent = $("#mvcGrid");
+    function RefreshGrid(e) {
+
+        url = "/Admin/Order/Index?pagesize=" + e.value;
+        $("#ddlPageSize2").val(e.value);
+        $("#ddlPageSize").val(e.value);
+
+
+        $.get(url).success(function (data) {
+            var container = '#' + $(gridParent).attr('id');
+            var table = $('<div/>').html(data).find(container).html()
+            $(container).html(table);
+        });
+
+    }
+
+
+    $("#fromDate").datepicker({ maxDate: new Date() });
+   // $("#toDate").datepicker();
+    $("#toDate").datepicker({
+        maxDate: new Date(),
+        onSelect: function (selectedDate) {
+
+                var _fromdate = $("#fromDate").val();
+               if (selectedDate >= _fromdate) {
+
+                              } else {
+                    toastr.error("To Date should be greather than the From date.");
+
+                    $("#toDate").val("");
+
+                }
+           
+
+        }
+    });
+
+
+    $("#btnAddHoliday").bind("click", function () {
+        var $form = $(this).closest("form");
+
+        var _fromdate = $("#fromDate").val();
+        var _todate = $("#toDate").val();
+        var page = 1;
+
+
+        var url;
+        url = "/Admin/Order/Index?page=" + page + "&fromdate=" + _fromdate + "&todate=" + _todate + "";
+
+        $.get(url).success(function (data) {
+            debugger;
+
+            var container = '#' + $(gridParent).attr('id');
+            var table = $('<div/>').html(data).find(container).html()
+            $(container).html(table);
+        });
+
+
+
+    });
+
+
+
+
+    function ChangeDesigner(e) {
+        var result = confirm("Want to Assign Designer?");
+        if (result == true) {
+            //Logic to delete the item
+
+
+
+            var OrderId = e.id;
+            var DesignerId = e.value;
+            // alert(OrderId);
+            $.ajax({
+                url: "@Url.Action("AssignDesigner", "Order")",
+            type: "POST",
+            data: { OrderId: OrderId, DesignerId: DesignerId },
+            error: function (options) {
+
+            },
+            success: function (options) {
+                if (options.result == "Done") {
+                    toastr.success("Desinger Changed Succesfully");
+                    // alert("Desinger Changed Succesfully");
+                }
+                else {
+                }
+            }
+        });
+    }
+}
+
+</script>

@@ -1,0 +1,376 @@
+﻿@model pEasyPrint.Areas.Admin.Models.DesignerModel
+
+@using MvcContrib.UI.Grid
+@using MvcContrib.UI.Pager
+@using MvcContrib.Pagination
+@using MvcContrib.UI.Grid.ActionSyntax
+@using System.Linq;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #Sex
+    {
+        height: 10px;
+    }
+
+    #active
+    {
+        height: 10px;
+    }
+
+    #not-active
+    {
+        height: 10px;
+    }
+
+    .adddiv label
+    {
+        font-family: Arial;
+        font-size: 17px;
+        font-weight: normal;
+    }
+</style>
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+<link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+
+<div class="container-fluid  content-center">
+    <div class="row">
+        <div class="grid_3  left-sidebar" style="width: 16.667%">
+            @Html.Partial("_AdminLeftMenu", Model.objOrderModel)
+        </div>
+        <div id="mvcGrid1" class="col-md-10">
+
+            <div class="grid_12" style="border-bottom: none">
+                @Html.Partial("_AdminTopMenu")
+
+            </div>
+            <div class="breadcrumbs">
+                <div class="center_align">
+                    <ul>
+                        <li class="category287"><strong>@Html.ActionLink("Content writers", "Index", "ContentWriter")      </strong><span>
+                            <img src="/../images/breadcrumbs_divider.png"></span></li>
+                        <li class="category287"><strong>@Html.ActionLink("Edit Content Writer", "Add", "ContentWriter", new { id = @Model.DesignerID })      </strong></li>
+
+
+
+
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="grid_12 breadcrumb">
+                @using (Html.BeginForm("Edit", "ContentWriter", FormMethod.Post, new { @class = "form" }))
+                {
+                    @Html.HiddenFor(m => m.DesignerID)
+                    @Html.HiddenFor(m => m.AddedOn, new { @id = "hiddendate" })
+                    <div class="col-md-10 adddiv" style="background-color: white">
+                        <div class="table-responsive tabletr ">
+                            <table class="table table-hover table-bordered">
+                                <tr style="background-color: #cccccc; align-content: center">
+
+                                    <td colspan="2">
+                                        <label for="DesignerFirstName">Update  Information</label></td>
+
+
+
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <label for="DesignerFirstName">FirstName</label></td>
+                                    <td>@Html.TextBoxFor(m => m.DesignerFirstName)
+                                        @Html.ValidationMessageFor(m => m.DesignerFirstName)
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="DesigenerLastName">LastName</label></td>
+                                    <td>@Html.TextBoxFor(m => m.DesigenerLastName)
+                                        @Html.ValidationMessageFor(m => m.DesigenerLastName)
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <label for="Sex">Sex</label>
+                                    </td>
+
+                                    <td>
+                                        <label for="Male">Male</label>
+                                        @Html.RadioButtonFor(m => m.Sex, "Male", true)
+                                        <label for="Female">Female</label>
+                                        @Html.RadioButtonFor(m => m.Sex, "Female", false)
+                                        @Html.ValidationMessageFor(m => m.Sex)
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <label for="DesignerExperience">Designer Experience</label></td>
+                                    <td>@Html.TextBoxFor(m => m.DesignerExperience)
+                                        @Html.ValidationMessageFor(m => m.DesignerExperience)
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        <label for="DesignerAddress">Address</label>
+                                    </td>
+                                    <td>@Html.TextAreaFor(m => m.DesignerAddress)
+                                        @Html.ValidationMessageFor(m => m.DesignerAddress)
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Country">Country</label></td>
+                                    <td>
+                                        @Html.DropDownListFor(m => m.Country, new SelectList(Model.ListCountry, "PkCountryId", "CountryName"), "Select")
+                                        @Html.ValidationMessageFor(m => m.Country)
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="State">State</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.StateName)
+
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="City">City</label></td>
+                                    <td>
+                                        @Html.TextBoxFor(m => m.CityName)
+
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Zip">Zip</label></td>
+                                    <td>@Html.TextBoxFor(m => m.Zip)
+                                        @Html.ValidationMessageFor(m => m.Zip)
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="Mobile">Mobile</label></td>
+                                    <td>@Html.TextBoxFor(m => m.Mobile)
+                                        @Html.ValidationMessageFor(m => m.Mobile)
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label for="EmailId">EmailId</label></td>
+                                    <td>@Html.TextBoxFor(m => m.EmailId)
+                                        @Html.ValidationMessageFor(m => m.EmailId)
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="EmailId">Active</label></td>
+                                    <td>
+                                        <label for="Yes">Yes</label>
+                                        @Html.RadioButtonFor(m => m.IsActive, true, new { id = "active" })
+                                        <label for="No">No</label>@Html.RadioButtonFor(m => m.IsActive, false, new { id = "not-active" })
+
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2" style="text-align: center">
+                                        <input class="btn btn-default" type="Submit" value="Submit" id="btnDesigner" style="width: 168px" />
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $("#AddedOn").datepicker();
+    //  $("#toDate").datepicker();
+
+    var gridParent = $("#mvcGrid");
+    $("#btnDesigner").bind("click", function () {
+        var $form = $(this).closest("form");
+
+        var _AddedOn = $("#AddedOn").val();
+        var _todate = $("#toDate").val();
+        var page = 1;
+
+
+        var url;
+        url = "/Admin/Order/Index?page=" + page + "&AddedOn=" + _AddedOn + "";
+
+        $.get(url).success(function (data) {
+            debugger;
+
+            var container = '#' + $(gridParent).attr('id');
+            var table = $('<div/>').html(data).find(container).html()
+            $(container).html(table);
+        });
+
+
+
+    });
+
+
+
+    //Dropdownlist Selectedchange event   
+
+    $("#Country").change(function () {
+
+
+        $("#State").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetStatelistBycountryID",
+
+            data: { id: $("#Country").val() },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+                var count = 0;
+                $.each(data, function (i, city) {
+                    if (count == 0) {
+                        getcitylist(city.Value);
+                    }
+                    count++;
+
+                    $("#State").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    })
+    function getcitylist(id) {
+        $("#City").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetCitylistBystateID",
+
+            dataType: 'json',
+
+            data: { id: id },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+
+                $.each(data, function (i, city) {
+
+                    $("#City").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    }
+    $("#State").change(function () {
+
+        $("#City").empty();
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: "GetCitylistBystateID",
+
+            dataType: 'json',
+
+            data: { id: $("#State").val() },
+
+            success: function (data) {
+                //  $("#State").val(data.Country)
+
+                // states contains the JSON formatted list
+
+                // of states passed from the controller
+
+                $.each(data, function (i, city) {
+
+                    $("#City").append('<option value="'
+
+                + city.Value + '">'
+
+                + city.Text + '</option>');
+
+                });
+
+            },
+
+
+
+            error: function (data) {
+
+            }
+        });
+    })
+    $(document).ready(function () {
+        var txtaddedon = $('#hiddendate').val();
+        $("#AddedOn").val(txtaddedon);
+    });
+
+
+
+
+</script>

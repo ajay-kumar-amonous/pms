@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pEasy Print</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @*<link href="~/Content/style.css" rel="stylesheet" type="text/css" />*@
+
+
+    <script src="~/Scripts/jquery-2.1.1.min.js"></script>
+    <link href="~/Content/css/font-awesome.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.8.24.js"></script>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    @Styles.Render("~/Content/Style")
+    @Styles.Render("~/Content/themes/base/css")
+    @Styles.Render("~/Content/bootstrap")
+    @Styles.Render("~/Content/toastr")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+<style>
+    .has-hover:hover
+    {
+        background-color: red;
+    }
+</style>
+<body>
+    <div class="header-container">
+        <div class="header" style="margin-left: 10px">
+            <a class="logo has-hover:hover" title="ATA Ink  Office Print Solutions" href="http://peasyprint.com/"><strong>ATA Ink  Office Print Solutions</strong><img alt="ATA" src="http://peasyprint.com/skin/frontend/default/printstore/images/logo.png"></a>
+        </div>
+        <div class="header">
+            <div class="top-search">
+                <ul class="links">
+                    <li class="first1">
+                        <a title="Log In" href="#">@Html.Partial("_LoginPartial")</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="wp-nav-container" class="nav-container">
+                <div id="custommenu">
+                    <div class="wp-custom-menu-popup">
+                    </div>
+
+                    <div id="cssmenu" class="header-wraper">
+                        <ul>
+                            <li class="active"><a href='http://peasyprint.com'><span>Home</span></a></li>
+                           @* <li>@Html.ActionLink("My Account", "CustomerLoginMagento",new { Controller ="Account", Area = "" } , null)</li>*@
+                            <li><a href="http://peasyprint.com/index.php/customer/account/">My Account</a></li>
+                            @*<li><a href='projects.html'><span>FAQs</span></a> </li>
+             <li><a href='news.html'><span>What's New</span></a></li>
+             <li class='last'><a href='contact-us.html'><span>Contact us</span></a></li>*@
+                        </ul>
+                    </div>
+                    <div class="clearBoth"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="header-container"> 
+       <a class="logo" title="ATA Ink" href="#"><img alt="ATA" src="http://peasyprint.com/skin/frontend/default/printstore/images/logo.png"></a>
+		<div class="top-search">
+		   <ul class="links">
+              <li class="first">  <a title="Log In" href="#">@Html.Partial("_LoginPartial")</a></li>
+           
+            </ul>
+          </div>
+        <div id="wp-nav-container" class="nav-container">    
+          <div id="custommenu"><div class="wp-custom-menu-popup">
+      </div>
+
+<div id="cssmenu" class="header-wraper"> 
+          <ul>
+             <li class="active"><a href='index.html'><span>Home</span></a></li>
+             <li class='has-sub'><a href='#'><span>About Us</span></a>
+                <ul>
+                   <li><a href='our-vision.html'><span>Our Vision</span></a></li>
+                   <li><a href='our-mission.html'><span>Our Mission</span></a></li>
+                   <li><a href='our-values'><span>Our Values</span></a></li>
+                </ul>
+             </li>
+             <li><a href='services.html'><span>Events</span></a></li>
+             <li><a href='projects.html'><span>FAQs</span></a> </li>
+             <li><a href='news.html'><span>What's New</span></a></li>
+             <li class='last'><a href='contact-us.html'><span>Contact us</span></a></li>
+           </ul>
+          </div>
+    <div class="clearBoth"></div></div>
+ </div>
+        
+        </div>*@
+
+    <!-----------header container------------->
+
+    <div class="main-container col2-left-layout">
+        <div class="main">
+            @* <div class="breadcrumbs">
+                <div class="center_align">
+
+                    @if (Request.IsAuthenticated) 
+                    {
+                        <ul>
+                            <li class="home"><a title="Go to Home Page" href="/">Home</a><span><img src="~/Images/breadcrumbs_divider.png"></span></li>
+                            <li class="category49"><a title="" href="#">All Products</a><span><img src="~/Images/breadcrumbs_divider.png"></span></li>
+                            <li class="category10"><a title="" href="#l">Print Products</a><span><img src="~/Images/breadcrumbs_divider.png"></span></li>
+                            <li class="category287"><strong>Business Card</strong></li>
+                        </ul>
+                    }
+                </div>
+            </div>*@
+            <div id="body">
+                <section style="min-height: 440PX">
+                    <div class="center-contain" style="padding: 3px;">
+                        @RenderBody()
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="footer-container">
+        <div class="disclaimer">
+            <p>
+                Copyright &copy; 2014 PeasyPrint. Use of this website constitutes acceptance of our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
+        </div>
+    </div>
+
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/toastr")
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

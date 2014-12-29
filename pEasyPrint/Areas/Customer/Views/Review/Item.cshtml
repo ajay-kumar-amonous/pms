@@ -1,0 +1,613 @@
+﻿@model pEasyPrint.Models.OrderProofViewModel
+@using pEasyPrint.Models
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Customer/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .trheader {
+        background-color: #eaeaea;
+    }
+
+    #tblControl1 > tbody {
+        width: 100%;
+    }
+
+    .proofApproved {
+    }
+
+    /* styles unrelated to zoom */
+    * {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+
+    .col-md-12.frontback {
+        left: 38%;
+        position: absolute;
+        top: 96px;
+    }
+
+    /* these styles are for the demo, but are not required for the plugin */
+    .zoom {
+        display: inline-block;
+        position: relative;
+    }
+
+        /* magnifying glass icon */
+        .zoom:after {
+            content: '';
+            display: block;
+            width: 33px;
+            height: 33px;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .zoom img {
+            display: block;
+        }
+
+            .zoom img::selection {
+                background-color: transparent;
+            }
+
+    .btnsbmt1 input {
+        float: right;
+        padding: 6px 7px !important;
+    }
+
+    .bussinessCard {
+        background: 0;
+        border: 0;
+        box-shadow: none;
+        height: 100%;
+        margin-bottom: 15px;
+        padding: 0;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .brochure-img {
+        max-height: 100% !important;
+        width: 100% !important;
+    }
+
+    .sumit-style {
+        float: right;
+        margin: 0 0 0 0;
+        text-align: right;
+    }
+</style>
+
+
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+<script src="~/Scripts/jquery.zoom.js"></script>
+<script>
+    $(document).ready(function () {
+        jQuery.noConflict();
+        jQuery('.zoom').zoom({
+            magnify: 1 //This value is multiplied against the full size of the zoomed image. The default value is 1, meaning the zoomed image should be at 100% of it's natural width and height.
+        });
+    });
+</script>
+
+
+
+
+
+
+
+<section class="center-contain">
+    <div class="content-center reviewdiv">
+        <div class="reviewcontain" style="float: left; background-color: #dcdcdc">
+            <div class="col-md-12">
+                <div style="text-align: center; background-color: #e6e7e7" class="trheader" data-toggle="collapse" data-target="#OrderInfo">
+                    <h3>Custom Design Proofs</h3>
+
+                    <h4>Happy Days! Here's what you've been waiting for.Please approve the design or</h4>
+                    <h4>give us feedback and we'll make the changes until you're  100% happy.</h4>
+                </div>
+                <div style="background-color: #f2f2f2; padding: 10px; margin-bottom: 10PX; border-style: outset; border-width: 5px; float: left; width: 100%">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div style="text-align: left">Project Name : @Model.ProjectName</div>
+                        </div>
+                        <div class="text col-md-6" style="text-align: right"><a href="~/Customer/Review">Back to my Proofs</a></div>@*@Html.ActionLink("Back To My Proofs", "Review", "",new { @class = "request" })*@
+                    </div>
+                    <div class="center1">
+                        @if (Model.ItemProofs != null)
+                        { 
+                            <div class="col-md-12" id="prooflog">
+                                <div class="panel  panel-default" style="position:relative">
+                                    <div class="panel-heading" data-toggle="collapse" data-target="#prooflogdiv" style="font-size: 18px;">Proof Log</div>
+                                    <div class="panel-body" id="prooflogdiv">
+                                        <div class="row form-group">
+                                            <div class="col-sm-12">
+                                                @for (int i = 0; i < Model.ItemProofs.Count(); i++)
+                                                {
+                                                    var Proofno = i + 1;
+                                                    var id = "tblControl" + @Proofno;
+                                                    var frontpoofID = "frontpoof" + @Proofno;
+                                                    var backpoofID = "backpoof" + @Proofno;
+                                                    var ApprovedProofId = "Approved_" + @Model.ItemProofs.ElementAt(i).PkOrderProofId;
+                                                    <div class="panel  panel-default" style="position:relative">
+                                                        <div class="panel-heading" style="font-weight:bold" data-toggle="collapse" data-target="#@id" >
+                                                            Proof @Proofno @if (@Model.ItemProofs.ElementAt(i).IsCustomerApproved == true)
+                                                                           {
+                                                                <div style="float: right">Approved</div>
+                                                                           }
+                                                        </div>
+                                                        <div class="panel-body collapse" id="@id">
+                                                            @{
+                                                                           char[] splitedBy = new char[] { ',' };
+                                                                           var AllFiles = @Model.ItemProofs.ElementAt(i).DesignerFiles;
+                                                                           var splitedfile = AllFiles.Split(splitedBy);
+                                                                           var CustomerFrontFile = @Model.ItemProofs.ElementAt(i).CustomerFiles;
+                                                            }
+
+                                                            @if (AllFiles != null && AllFiles != "")
+                                                            {
+                                                                <div class="col-md-12 boxgrid">
+                                                                    <div class="panel  panel-default" id="@frontpoofID"style="position:relative;">
+                                                                        <div class="panel-heading" data-toggle="collapse">
+                                                                            Front Proof 
+                                                                        </div>
+                                                                        <div class="panel-body">
+
+                                                                            <div class="row form-group" style="margin-top: 15px;">
+                                                                                <label for="inputEmail3" class="col-sm-5 control-label">Designer Files</label>
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="center-contain" style="text-align: center; padding-bottom: 100px">
+                                                                                        @for (int j = 1; j < splitedfile.Count(); j++)
+                                                                                        {
+                                                                                            var imgpath = "/../Images/proofUpload/" + splitedfile.ElementAt(j); 
+                                                                                            <span class='zoom' id='ex11'>
+                                                                                                @if (Model.ItemName.ToLower().Contains("brochure"))
+                                                                                                {
+                                                                                                    <div style="width:100%; height:100%">
+                                                                                                        <img src="@imgpath" class="brochure-img" style="width:100%; height:100%"/>
+                                                                                                    </div>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    <div style="width:100%; height:100%">
+                                                                                                        <img src="@imgpath" class="bussinessCard" style="width:100%; height:100%"/>
+                                                                                                    </div>
+                                                                                                }
+
+
+
+                                                                                            </span>
+                                                                                            <div class="col-sm-12">
+                                                                                                @Html.ActionLink("Download Front Proof", "DownloadProofFile", new { FileName = splitedfile.ElementAt(j).ToString() })
+                                                                                            </div>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <hr />
+                                                                            <div class="row form-group">
+                                                                                <label for="inputEmail3" class="col-sm-5 control-label">Designer Comment</label>
+                                                                                <div class="col-sm-7">
+                                                                                    @Model.ItemProofs.ElementAt(i).FrontComments
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row form-group">
+                                                                                <label for="inputEmail3" class="col-sm-5 control-label">Peasy Comment</label>
+                                                                                <div class="col-sm-7">
+                                                                                    @Model.ItemProofs.ElementAt(i).AdminFrontComment
+                                                                                </div>
+                                                                            </div>
+                                                                            @if (CustomerFrontFile != null)
+                                                                            {
+                                                                                <div class="row form-group">
+                                                                                    @{  var splitedCustomerFrontFile = CustomerFrontFile.Split(splitedBy);}
+                                                                                    <label for="inputEmail3" class="col-sm-5 control-label">Customer Files</label>
+                                                                                    <div class="col-sm-12" style="text-align: center">
+                                                                                        @for (int j = 1; j < splitedCustomerFrontFile.Count(); j++)
+                                                                                        {
+                                                                                            var imgpath = "/../Images/proofUpload/" + splitedCustomerFrontFile.ElementAt(j); 
+                                                                                            <span class='zoom'>
+                                                                                                <img src="@imgpath"  style="width:100%; height:100%"/>
+                                                                                            </span>
+                                                                                        }
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                            @using (Html.BeginForm("CustomerFilesUpload", "Review", FormMethod.Post, new { Id = "main_graphics", @class = "", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                                                                            {
+                                                                                <div class="row form-group">
+                                                                                    <label for="inputEmail3" class="col-sm-3 control-label">Got File for us?</label>
+                                                                                    <input type="hidden" value="@Model.ItemProofs.ElementAt(i).PkOrderProofId" id="hdnPkOrderProofId" name="hdnPkOrderProofId" />
+                                                                                    <input type="hidden" value="@Model.ItemProofs.ElementAt(i).OrderNumber" id="hdnPkOrderID" name="hdnPkOrderID" />
+                                                                                    <input type="hidden" value="FrontFile" id="IsfrontFile" name="FileType" />
+                                                                                    <div class="col-sm-7">
+                                                                                        <input type="file" name="files" id="Files" />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row form-group">
+                                                                                    <label for="inputEmail3" class="col-sm-3 control-label">Customer Comment</label>
+                                                                                    <div class="col-sm-9">
+                                                                                        @{var frontcommentId = "CustomerfrontComment_" + Model.ItemProofs.ElementAt(i).PkOrderProofId;}
+                                                                                        <textarea  id="@frontcommentId" cols="50" rows="5" style="width:98%"  name="CustomerBackComment"> @Model.ItemProofs.ElementAt(i).CustomerFrontComment</textarea>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row form-group">
+                                                                                    <div class="col-sm-12 sumit-style">
+                                                                                        <input type="submit" style="float:left; width:165px;" class="customerfront btn-danger " id="@Model.ItemProofs.ElementAt(i).PkOrderProofId" value="Submit" onclick="AddCustomerComment(this, 'customerfront')" />
+                                                                                        @if (@Model.IsProofApproved != true)
+                                                                                        {
+                                                                                            <input class="btn btn-success proofApproved" type="button"   value="I APPROVE DESIGN" id="@ApprovedProofId" style="color: white;float: right; width:165px; margin-top:0px; height:36px" />
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            @{
+                                                            char[] splitedBy2 = new char[] { ',' };
+                                                            var AllFiles2 = @Model.ItemProofs.ElementAt(i).DesignerBackFiles;
+                                                            var splitedfile2 = AllFiles2.Split(splitedBy);
+                                                            var CustomerBackFile = @Model.ItemProofs.ElementAt(i).CustomerBackFiles;
+                                                            }
+                                                            @if (AllFiles2 != null && AllFiles2 != "")
+                                                            {
+                                                                <div class="col-md-12 boxgrid expand">
+                                                                    <div class="panel  panel-default" id="@backpoofID" style="display:none; position:relative;">
+                                                                        <div class="panel-heading" data-toggle="collapse">
+                                                                            Back Proof
+                                                                        </div>
+                                                                        <div class="panel-body">
+                                                                            <div class="row form-group" style="margin-top: 15px;">
+                                                                                <label for="inputEmail3" class="col-sm-5 control-label">Designer Files</label>
+                                                                                <div class="col-sm-12">
+                                                                                    <div class="center-contain" style="text-align: center; padding-bottom: 100px">
+                                                                                        @for (int j = 1; j < splitedfile2.Count(); j++)
+                                                                                        {
+                                                                                            var imgpath = "/../Images/proofUpload/" + splitedfile2.ElementAt(j); 
+                                                                                            <span class='zoom'>
+
+                                                                                                @if (Model.ItemName.ToLower().Contains("brochure"))
+                                                                                                {
+                                                                                                    <img src="@imgpath" class="brochure-img" style="width:100%; height:100%" />
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    <img src="@imgpath" class="bussinessCard" style="width:100%; height:100%" />
+                                                                                                }
+
+
+
+                                                                                            </span>
+                                                                                        
+                                                                                            <div class="col-sm-12">
+                                                                                                @Html.ActionLink("Download Back Proof", "DownloadProofFile", new { FileName = splitedfile2.ElementAt(j).ToString() })
+                                                                                            </div>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <hr />
+
+                                                                            @if (CustomerBackFile != null)
+                                                                            {
+                                                                                <div class="row form-group">
+                                                                                    @{var splitedCustomerFile = CustomerBackFile.Split(splitedBy);}
+                                                                                    <label for="inputEmail3" class="col-sm-5 control-label">Customer Files</label>
+                                                                                    <div class="col-sm-12" style="text-align: center">
+                                                                                        @for (int j = 1; j < splitedCustomerFile.Count(); j++)
+                                                                                        {
+                                                                                            var imgpath = "/../Images/proofUpload/" + splitedCustomerFile.ElementAt(j); 
+                                                                                            <span class='zoom'>
+                                                                                                <img src="@imgpath"  style="width:100%; height:100%"/>
+                                                                                            </span>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                            <div class="row form-group">
+                                                                                <label for="inputEmail3" class="col-sm-5 control-label">Designer Comment</label>
+                                                                                <div class="col-sm-7">
+                                                                                    @Model.ItemProofs.ElementAt(i).BackComments
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row form-group">
+                                                                                <label for="inputEmail3" class="col-sm-5 control-label">Peasy Comment</label>
+                                                                                <div class="col-sm-7">
+                                                                                    @Model.ItemProofs.ElementAt(i).AdminBackComment
+                                                                                </div>
+                                                                            </div>
+                                                                            @using (Html.BeginForm("CustomerFilesUpload", "Review", FormMethod.Post, new { Id = "main_graphics", @class = "", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                                                                            {
+                                                                                <div class="row form-group">
+                                                                                    <label for="inputEmail3" class="col-sm-3 control-label">Got File for us?</label>
+                                                                                    <input type="hidden" value="@Model.ItemProofs.ElementAt(i).PkOrderProofId" id="hdnPkOrderProofId" name="hdnPkOrderProofId" />
+                                                                                    <input type="hidden" value="@Model.ItemProofs.ElementAt(i).OrderNumber" id="hdnPkOrderID" name="hdnPkOrderID" />
+                                                                                    <input type="hidden" value="backFile" id="IsfrontFile1" name="FileType" />
+                                                                                    <div class="col-sm-7">
+                                                                                        <input type="file" name="files" id="Files1" />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row form-group">
+                                                                                    <label for="inputEmail3" class="col-sm-3 control-label">Customer Comment</label>
+                                                                                    <div class="col-sm-9">
+                                                                                        @{var frontcommentId = "CustomerfrontComment_" + Model.ItemProofs.ElementAt(i).PkOrderProofId;}
+                                                                                        <textarea  id="@frontcommentId" cols="50" rows="5" style="width:98%" name="CustomerBackComment"> @Model.ItemProofs.ElementAt(i).CustomerBackComment</textarea>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="row form-group">
+                                                                                    <div class="col-sm-12">
+                                                                                        <input type="submit" class="customerfront btn-danger"  style="float:left; width:165px;"  id="@Model.ItemProofs.ElementAt(i).PkOrderProofId" value="Submit" />
+                                                                                        @if (@Model.IsProofApproved != true)
+                                                                                        {
+                                                                                            <input class="btn btn-success proofApproved" type="button"   value="I APPROVE DESIGN" id="@ApprovedProofId" style="color: white;float: right; width:165px; margin-top:0px; height:36px" />
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            <div class="col-md-12 frontback" style="margin-top: 5px;">
+                                                                @*      <div class="col-md-4">
+                                                               @Html.ActionLink("Request PDF proofs", "#", new { userID = Model.ItemID }, new { @class = "request",@target="_Blank"  })
+                                                                </div>*@
+                                                                <div class="col-md-4 btnfrnt">
+                                                                    <div class="btn btn-success frontProof" title="@backpoofID" id="@frontpoofID" style="color: white ; background-color:#5cb85c !important" data-toggle="collapse"  >Front</div>
+                                                                    @if(AllFiles2 != null && AllFiles2 != "")
+                                                                    {
+                                                                    
+                                                                   <div class="btn btn-success frontProof1" title="@frontpoofID" id="@backpoofID"  style="color: white ; background-color:#5cb85c !important" data-toggle="collapse"  >Back</div>
+                                                                    }
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                <h4>No proof uploaded for this Order</h4>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+
+                @*@using (Html.BeginForm("UploadCustomerFile", "Review", FormMethod.Post, new { Id = "main_graphics", @class = "", @enctype = "multipart/form-data", @onSuccess = "UploadFiles" }))
+                {
+                     
+                    <div class="top-frontdiv">
+                        <div class="container-fluid anythingfiles">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h4>ANYTHING FILES FOR US</h4>
+
+                                    <div>
+                                        <input class="browserfile" type="file" name="files" />
+                                    </div>
+                                    <div>
+                                        <input class="browserfile" type="file" name="files" />
+                                    </div>
+                                    <div>
+                                        <input class="browserfile" type="file" name="files" />
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-8 after">
+                                    <h5>After you submit your changes your designer working immidiately and you will be notified once the changes are done</h5>
+                                    <div class="container-fluid">
+                                        <div class="row bttntwo">
+                                            <div class="col-md-3 btnsvltr">
+                                               
+
+                                            </div>
+                                            <div class="col-md-6 btnsbmt1">
+                                                <input class="btn btn-default btn-success" type="Submit" value="SUBMIT" id="btnsbmt1" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }*@
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+
+    function AddCustomerComment(e, CommentType) {
+
+        debugger;
+        var PkOrderProofId = e.id;
+
+        var CustomerBackComment = "#CustomerBackComment_" + PkOrderProofId;
+        var CustomerfrontComment = "#CustomerfrontComment_" + PkOrderProofId;
+        var IsFrontComment = false;
+
+        var frntid = "#AdminBackComment1_" + PkOrderProofId;
+        var Comments = "";
+
+        if (CommentType == "customerfront") {
+            IsFrontComment = true;
+            var Comments = $(CustomerfrontComment).val();
+
+        }
+        else {
+            var Comments = $(CustomerBackComment).val();
+
+
+        }
+
+
+
+        $.ajax({
+            url: '@Url.Action("SaveCustomerProofInDb", "Review")',
+
+            type: "POST",
+            data: { Comments: Comment, PkOrderProofId: PkOrderProofId, IsFrontComment: IsFrontComment },
+
+
+            success: function (result) {
+                toastr.success("Saved Succesfully");
+
+
+
+            }
+        });
+
+
+    }
+    //.bind("click", function () {
+    $(".frontProof").bind("click", function () {
+        var otherproofID = this.title;
+        var CurrentproofID = this.id;
+
+        //$(".frontProof1").css("background-color", "#e7e7e7");
+        // $(".frontProof").css("background-color", "white");
+
+
+        $("#" + otherproofID).css("display", "none");
+        $("#" + CurrentproofID).css("display", "block");;
+
+    })
+    $(".frontProof1").bind("click", function () {
+        var otherproofID = this.title;
+        var CurrentproofID = this.id;
+
+        // $(".frontProof").css("background-color", "#e7e7e7");
+        //$(".frontProof1").css("background-color", "white");
+        $("#" + otherproofID).css("display", "none");
+        $("#" + CurrentproofID).css("display", "block");
+
+
+    });
+
+    function checkFile(e) {
+
+        /// get list of files
+        var file_list = e.files;
+
+        /// go through the list of files
+        for (var i = 0, file; file = file_list[i]; i++) {
+
+            var sFileName = file.name;
+
+            var sFileExtension = sFileName.split('.')[sFileName.split('.').length - 1].toLowerCase();
+            if (sFileExtension != "png") {
+                toastr.success("only PNG files will be uploaded.");
+                removeRow(e);
+
+            }
+            else {
+                return true;
+            }
+        }
+    }
+
+    function checkFile2(e) {
+
+        /// get list of files
+        var file_list = e.files;
+
+        /// go through the list of files
+        for (var i = 0, file; file = file_list[i]; i++) {
+
+            var sFileName = file.name;
+            var sFileExtension = sFileName.split('.')[sFileName.split('.').length - 1].toLowerCase();
+            if (sFileExtension != "png") {
+                toastr.success("only PNG files will be uploaded.");
+                removeRow2(e);
+
+            }
+            else {
+
+                return true;
+            }
+        }
+    }
+
+
+    function addRow() {
+        var div = document.createElement('div');
+
+        div.className = 'row';
+        div.style = 'padding:7px';
+
+        div.innerHTML = '<input type="file" name="files"  style="float:left;"onchange="return checkFile(this);"  />\
+        \
+        \
+        <input style="float:right;margin-top:2px" type="button" value="Remove" onclick="removeRow(this)">';
+
+        document.getElementById('content').appendChild(div);
+    }
+
+
+    function addRow2() {
+        var div = document.createElement('div');
+
+        div.className = 'row';
+        div.style = 'padding:7px';
+
+        div.innerHTML = '<input type="file" name="files2"  style="float:left;" onchange="return checkFile2(this);"  />\
+        \
+        \
+        <input style="float:right;margin-top:2px" type="button" value="Remove" onclick="checkFile2(this)">';
+
+        document.getElementById('content2').appendChild(div);
+    }
+
+    function removeRow(input) {
+        document.getElementById('content').removeChild(input.parentNode);
+    }
+    function removeRow2(input) {
+        document.getElementById('content2').removeChild(input.parentNode);
+    }
+
+    $(".proofApproved").bind("click", function () {
+
+        var chkOrderId = this.id;
+        var splitid = chkOrderId.split("_");
+        var PkOrderProofId = splitid[1];
+
+
+        $.ajax({
+            url: '@Url.Action("ApproveProof", "Review")',
+
+            type: "POST",
+            data: { PkOrderProofId: PkOrderProofId },
+
+            success: function (result) {
+
+
+                location.reload();
+                toastr.success("Proof Approved Succesfully");
+
+
+            }
+        });
+    });
+</script>
+

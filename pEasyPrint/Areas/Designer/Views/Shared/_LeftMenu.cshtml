@@ -1,0 +1,137 @@
+﻿@model pEasyPrint.Areas.Designer.Models.OrderModel     
+<style>
+
+    .Leftmenu {
+     cursor:pointer;
+    }
+</style>
+<div class="left-sidebar">
+    <div class="service-div">
+        <h2>Order Information</h2>
+        <div id="industry-group1">
+@*            <p class="Leftmenu list-group-item" id="-1">Total Earnings <span class="badge">@Model.TotalEarnings</span></p>
+            <p class="Leftmenu list-group-item" id="-2">Earning for this months <span class="badge">@Model.MonthEarnings</span></p>*@
+            <p class="Leftmenu list-group-item" id="1">New Orders <span class="badge">@Model.NewOrderCount </span></p>
+            <p class="Leftmenu list-group-item" id="2">Order In Design Stage <span class="badge">@Model.DesignStagerCount </span></p>
+            <p class="Leftmenu list-group-item" id="3">Order In Proof Stage <span class="badge">@Model.ProofStageCount </span></p>
+            <p class="Leftmenu list-group-item" id="4">Approved <span class="badge">@Model.ApprovedCount</span></p>
+            <p class="Leftmenu list-group-item" id="6">Completed <span class="badge">@Model.CompletedCount</span></p>
+            <p class="Leftmenu list-group-item" id="5">Printings <span class="badge">@Model.PrintingCount</span></p>
+
+
+
+
+        </div>
+
+        <h2>Search Order</h2>
+
+        <div id="industry-group2" style="padding: 12px">
+            <select id="OrdersSearchType">
+                <option value="-1">Select Option</option>
+                <option value="OrderNumber">Order Number</option>
+                <option value="ClientName">Client Name</option>
+                <option value="Project">Project</option>
+                <option value="ProjectType">Project Type</option>
+                <option value="Phone">Phone</option>
+                <option value="OrderEmail">Email</option>
+
+
+            </select>
+
+            <input id="txtOrderEmail" name="email" type="text" class="email" placeholder="Email Address" style="margin-top: 5px;" />
+            <input id="btnDesignerOrdetSearch" class="btn btn-default" name="Submit" type="button" value="Submit" style="margin-top: 5px; margin: 5px 5px 5px 45px" />
+        </div>
+
+
+    </div>
+</div>
+<script>
+   // var gridParent = $("#mvcGrid");
+    $("#btnDesignerOrdetSearch").bind("click", function () {
+       
+        var currenturl = window.location.href.toLowerCase();;
+
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = "";
+      
+        var SearchType = "";
+        var SearchValue = "";
+
+
+         SearchType = $("#OrdersSearchType").val(); //txtDesignerEmail
+         SearchValue = $("#txtOrderEmail").val();
+         var finalstring = currenturl.split("project");
+         if (SearchType != -1) {
+             
+             if (SearchValue != "") {
+                 if (currenturl.indexOf("project/picknewjob") != -1) {
+                     var finalstring = currenturl.split("designer/project/picknewjob");
+                     window.location.href =finalstring[0]+ "Designer/Project/PickNewJob" + "?page=" + page + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue + "&OrderStage=" + "&SearchBy=" + "Designer";
+                 }
+                 else {
+
+                     window.location.href = finalstring[0] + "project?page=" + page + "&SearchBy=" + "Designer" + "&SearchType=" + SearchType + "&SearchValue=" + SearchValue;
+                 }
+             }
+             else {
+                 alert("Please fill search value.");
+             }
+         }
+         else {
+             alert("Please select option.");
+         }
+
+
+    });
+
+    $(".Leftmenu").bind("click", function () {
+        var $form = $(this).closest("form");
+        var currenturl = window.location.href.toLowerCase();
+        var _fromdate = "";
+        var _todate = "";
+        var page = 1;
+        var DesignerId = ""; //txtDesignerEmail
+        var DesignerEmail = "";
+        var OrderStage = this.id;
+
+        var OrderNumber = "";
+        var url;
+
+        if (currenturl.indexOf("project/edit") != -1) {
+            var finalstring = currenturl.split("edit/");
+            window.location.href = finalstring[0] + "?page=" + page + "&OrderStage=" + OrderStage;
+        }
+        else if (currenturl.indexOf("project/item") != -1) {
+            var finalstring = currenturl.split("item/");
+            window.location.href = finalstring[0] + "?page=" + page + "&OrderStage=" + OrderStage;
+        }
+        else if (currenturl.indexOf("project/picknewjob") != -1) {
+            var finalstring = currenturl.split("pickNewJob/");
+            
+            window.location.href = "/Designer/Project?page=" + page + "&OrderStage=" + OrderStage + "";
+        }
+        else {
+            
+            url = "/Designer/Project?page=" + page +  "&OrderStage=" + OrderStage + "";
+
+
+            $.get(url).success(function (data) {
+               
+                var container = '#' + $(gridParent).attr('id');
+                var table = $('<div/>').html(data).find(container).html()
+                $(container).html(table);
+            });
+        }
+
+
+
+
+
+
+    });
+
+
+
+</script>
