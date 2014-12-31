@@ -35,16 +35,16 @@ namespace pEasyPrint.Controllers
 
             filters fil = new filters();
             tblOrder _orders = objdb.tblOrders.OrderByDescending(i => i.OrderNumber).FirstOrDefault();
-            // List<salesOrderListEntity> orderlist = ms.salesOrderList(sessionId, fil).Where(i => Convert.ToDateTime(i.created_at) > (DateTime.Now.AddDays(-2))).ToList();
-            List<salesOrderListEntity> orderlist = new List<salesOrderListEntity>();
-            if (_orders != null)
-            {
-                orderlist = ms.salesOrderList(sessionId, fil).AsEnumerable().Where(i => Convert.ToInt64(i.increment_id) > Convert.ToInt64(_orders.OrderNumber)).ToList();
-            }
-            else
-            {
-                orderlist = ms.salesOrderList(sessionId, fil).ToList();
-            }
+            List<salesOrderListEntity> orderlist = ms.salesOrderList(sessionId, fil).Where(i => Convert.ToDateTime(i.created_at) > (DateTime.Now.AddDays(Convert.ToInt16(ConfigurationSettings.AppSettings["DaystoCall"])))).ToList();
+            //List<salesOrderListEntity> orderlist = new List<salesOrderListEntity>();
+            //if (_orders != null)
+            //{
+            //    orderlist = ms.salesOrderList(sessionId, fil).AsEnumerable().Where(i => Convert.ToInt64(i.created_at) > Convert.ToInt64(_orders.OrderNumber)).ToList();
+            //}
+            //else
+            //{
+            //    orderlist = ms.salesOrderList(sessionId, fil).ToList();
+            //}
             foreach (salesOrderListEntity oList in orderlist)
             {
                 var increment_id = Convert.ToInt64(oList.increment_id);
